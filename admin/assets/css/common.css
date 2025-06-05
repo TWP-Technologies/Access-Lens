@@ -1,0 +1,146 @@
+/**
+ * Protected Media Links - Admin Common CSS
+ * Version: 1.2.1
+ * Shared styles across different PML admin screens.
+ */
+
+/* Common Admin Notices (AJAX, etc.) */
+.pml-admin-ajax-notice {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    &.notice { /* Ensure WP notice styles apply */
+        padding: 10px 15px;
+        p {
+            margin: 0;
+        }
+    }
+}
+.pml-error-text {
+    color: #dc3232;
+    font-weight: 600;
+    display: block;
+    padding: 5px 0;
+}
+
+/* Code Block Styling */
+.pml-code-block {
+    background-color: #f0f0f1; border: 1px solid #ccd0d4; padding: 10px 15px;
+    overflow-x: auto; white-space: pre; border-radius: 4px;
+    font-family: monospace; font-size: 0.9em; margin-top: 5px; margin-bottom: 15px;
+}
+
+/* Common Modal Styles (base for Quick Edit) */
+.pml-modal {
+    position: fixed; /* Use fixed to cover viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 160000; /* Above WP media modal (usually 150000-ish) */
+    display: none; /* Hidden by default, JS toggles to flex */
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    &.is-visible { /* Class added by JS to show modal */
+        display: flex;
+    }
+}
+.pml-modal-overlay {
+    position: absolute; /* Changed to absolute to be child of .pml-modal */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75); /* Slightly darker overlay */
+    cursor: pointer; /* Indicate overlay can be clicked to close */
+}
+.pml-modal-content {
+    background-color: #fcfcfc;
+    padding: 0; /* Remove padding, header/body/footer will have it */
+    border-radius: 4px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+    width: 90%;
+    max-width: 550px;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 40px); /* Prevent modal from being too tall */
+}
+.pml-modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    & .pml-modal-title {
+        margin: 0;
+        font-size: 1.3em;
+        font-weight: 600;
+        color: #1d2327;
+    }
+    & .pml-modal-close {
+        padding: 0; /* Reset padding for icon button */
+        line-height: 1;
+        color: #646970;
+        text-decoration: none;
+        border: none;
+        background: none;
+        cursor: pointer;
+        & > .dashicons {
+            font-size: 24px; /* Larger close icon */
+            line-height: 1;
+        }
+        &:hover, &:focus {
+            color: #1d2327;
+            outline: none; /* WordPress usually handles focus outlines */
+        }
+    }
+}
+.pml-modal-body {
+    padding: 20px;
+    flex-grow: 1; /* Allow body to take available space */
+    overflow-y: auto; /* Scroll only body if content overflows */
+}
+.pml-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    border-top: 1px solid #ddd;
+    background-color: #f9f9f9; /* Slightly different footer background */
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    & .spinner {
+        float: none; vertical-align: middle; visibility: hidden;
+        &.is-active { visibility: visible; }
+    }
+}
+.pml-loading-indicator {
+    text-align: center; padding: 20px; font-style: italic; color: #50575e;
+    & .spinner { vertical-align: middle; margin-right: 5px; }
+}
+
+/* Common form field group styling */
+.pml-meta-field-group, .pml-grid-form-container .pml-meta-field-group {
+    margin-bottom: 18px;
+    &:last-child { margin-bottom: 0; }
+    & label:not(.pml-checkbox-label) { /* Exclude checkbox label from this rule */
+        font-weight: 600; display: block; margin-bottom: 6px; color: #3c434a;
+    }
+    & input[type="url"], & input[type="text"], & select {
+        width: 100%; box-sizing: border-box; padding: 6px 8px; min-height: 36px;
+    }
+    & .pml-checkbox-label {
+        font-weight: normal; display: inline-flex; align-items: center; gap: 6px;
+        color: #3c434a; /* Ensure label text has good contrast */
+        & input[type="checkbox"] { margin-top: 0; }
+    }
+    & .description.pml-field-description {
+        font-style: italic; color: #555d66; font-size: 0.9em; margin-top: 5px;
+    }
+}
+hr.pml-meta-hr { border: 0; border-top: 1px solid #ddd; margin: 20px 0; }
+hr.pml-meta-hr-dashed { border: 0; border-top: 1px dashed #ddd; margin: 15px 0; }

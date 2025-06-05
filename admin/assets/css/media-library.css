@@ -1,0 +1,337 @@
+/**
+ * Protected Media Links - Media Library Specific CSS
+ * Version: 1.2.2
+ */
+
+/* PML Status Column in List View */
+.wp-list-table td.column-pml_status
+{
+    width          : 170px; /* Adjusted width */
+    vertical-align : top;
+}
+
+.column-pml_status .pml-status-column-content
+{
+    display        : flex;
+    flex-direction : column;
+    gap            : 6px;
+    align-items    : flex-start;
+    font-size      : 13px;
+}
+
+.column-pml_status .pml-status-text
+{
+    font-weight   : 600;
+    padding       : 3px 8px;
+    border-radius : 3px;
+    font-size     : 0.9em;
+    line-height   : 1.4;
+    display       : inline-block;
+    margin-bottom : 2px;
+
+    &.is-protected
+    {
+        background-color : #E7F5E8;
+        color            : #27672B;
+        border           : 1px solid #C3E6CB;
+    }
+
+    &.is-unprotected
+    {
+        background-color : #F8F9FA;
+        color            : #50575E;
+        border           : 1px solid #DEE2E6;
+    }
+}
+
+.column-pml_status .pml-status-actions a
+{
+    text-decoration  : none;
+    font-size        : 0.9em;
+    display          : inline-flex;
+    align-items      : center;
+    gap              : 4px;
+    padding          : 3px 6px;
+    border           : 1px solid #CCD0D4;
+    border-radius    : 3px;
+    background-color : #F6F7F7;
+    color            : #0071A1;
+
+    &:hover
+    {
+        background-color : #F0F0F1;
+        border-color     : #0071A1;
+        color            : #00A0D2;
+    }
+
+    & .dashicons
+    {
+        font-size   : 16px;
+        line-height : 1;
+    }
+
+    &.disabled
+    {
+        color            : #A0A5AA;
+        pointer-events   : none;
+        background-color : #FCFCFC;
+    }
+
+    & .spinner
+    {
+        width  : 16px;
+        height : 16px;
+        margin : 0;
+    }
+}
+
+/* PML Quick Edit Modal (List View - uses common .pml-modal styles) */
+#pml-quick-edit-modal
+{
+    /* Base styles in pml-admin-common.css */
+
+    & .pml-quick-edit-advanced-link
+    {
+        margin-top  : 20px;
+        padding-top : 15px;
+        border-top  : 1px dashed #DDD;
+
+        & p
+        {
+            margin-bottom : 5px;
+        }
+
+        & a
+        {
+            text-decoration : none;
+            display         : inline-flex;
+            align-items     : center;
+            gap             : 4px;
+            color           : #0071A1;
+
+            &:hover
+            {
+                color : #00A0D2;
+            }
+
+            & .dashicons
+            {
+                font-size      : 16px;
+                vertical-align : middle;
+            }
+        }
+
+        & .description.pml-field-description
+        {
+            font-size  : 0.85em;
+            color      : #646970;
+            margin-top : 8px;
+        }
+    }
+}
+
+/* Grid View Sidebar PML Section */
+.pml-grid-settings-section
+{ /* Removed .settings-save-status */
+    border-top  : 1px solid #DFDFDF;
+    padding-top : 12px;
+    margin-top  : 12px;
+    clear       : both;
+
+    & .pml-grid-status-toggle
+    {
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+        margin-bottom   : 10px; /* Space before "Manage additional" button */
+        padding         : 2px 0;
+
+        & label.name
+        {
+            font-weight  : 600;
+            color        : #1D2327;
+            margin       : 0;
+            padding      : 0;
+            flex-shrink  : 0;
+            margin-right : 8px;
+        }
+
+        & .pml-status-text-grid
+        {
+            font-weight   : 600;
+            padding       : 2px 6px;
+            border-radius : 3px;
+            font-size     : 0.9em;
+            margin-left   : 8px;
+
+            &.is-protected
+            {
+                background-color : #E7F5E8;
+                color            : #27672B;
+                border           : 1px solid #C3E6CB;
+            }
+
+            &.is-unprotected
+            {
+                background-color : #F8F9FA;
+                color            : #50575E;
+                border           : 1px solid #DEE2E6;
+            }
+        }
+
+        & .button.pml-toggle-protection-grid
+        {
+            margin-left : auto;
+            line-height : normal;
+            padding     : 3px 8px !important;
+            min-height  : auto;
+            display     : inline-flex;
+            align-items : center;
+            gap         : 4px;
+
+            & .dashicons
+            {
+                font-size   : 16px;
+                line-height : 1;
+            }
+
+            & .spinner
+            {
+                width  : 16px;
+                height : 16px;
+                margin : 0;
+            }
+
+            &.disabled
+            {
+                pointer-events : none;
+                opacity        : 0.7;
+            }
+        }
+    }
+
+    & .pml-grid-trigger-wrapper
+    { /* New wrapper for the "Manage" button */
+        padding    : 5px 0;
+        border-top : 1px dashed #EEE; /* Optional separator */
+        margin-top : 8px;
+
+        & .button.pml-manage-grid-settings
+        {
+            text-decoration : none;
+            font-size       : 0.95em;
+            padding         : 0;
+            box-shadow      : none;
+            border          : none;
+            color           : #0071A1;
+            display         : inline-flex;
+            align-items     : center;
+            gap             : 3px;
+
+            &:hover
+            {
+                color : #00A0D2;
+            }
+
+            & .dashicons
+            {
+                font-size   : 18px;
+                line-height : 1;
+                transition  : transform 0.2s ease-in-out;
+            }
+
+            &.expanded .dashicons
+            {
+                transform : rotate(180deg);
+            }
+        }
+    }
+}
+
+.pml-grid-form-container
+{
+    margin-top       : 10px;
+    padding          : 15px;
+    background-color : #FDFDFD;
+    border           : 1px solid #E5E5E5;
+    border-radius    : 3px;
+    /* .pml-meta-field-group styles from common.css will apply */
+
+    & .pml-quick-edit-advanced-link
+    {
+        font-size   : 0.9em;
+        margin-top  : 12px;
+        padding-top : 10px;
+
+        & .description.pml-field-description
+        {
+            font-size : 0.9em;
+        }
+    }
+}
+
+.pml-grid-form-actions
+{
+    margin-top : 15px;
+    text-align : right;
+
+    & .spinner
+    {
+        vertical-align : middle;
+        visibility     : hidden;
+
+        &.is-active
+        {
+            visibility : visible;
+        }
+    }
+}
+
+.pml-saved-feedback
+{
+    margin-left : 10px;
+    font-style  : italic;
+    font-size   : 0.9em;
+
+    &.success
+    {
+        color : #27672B;
+    }
+
+    &.error
+    {
+        color : #D63638;
+    }
+}
+
+/* Responsive adjustments for Media Library specifics */
+@media screen and (max-width : 782px)
+{
+    .wp-list-table td.column-pml_status
+    {
+        width : auto;
+    }
+
+    #pml-quick-edit-modal .pml-modal-content
+    {
+        width   : calc(100% - 30px);
+        padding : 15px;
+    }
+
+    #pml-quick-edit-modal .pml-modal-title
+    {
+        font-size : 1.2em;
+    }
+
+    .pml-grid-settings-section .pml-grid-status-toggle
+    {
+        flex-direction : column;
+        align-items    : flex-start;
+        gap            : 5px;
+
+        & .button.pml-toggle-protection-grid
+        {
+            margin-left : 0;
+        }
+    }
+}
