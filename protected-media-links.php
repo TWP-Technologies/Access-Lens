@@ -23,18 +23,18 @@ if ( !defined( 'ABSPATH' ) )
 }
 
 // Define plugin constants.
-const PML_PLUGIN_NAME     = 'Protected Media Links';
-const PML_PLUGIN_SLUG     = 'protected-media-links';
-const PML_TEXT_DOMAIN     = 'protected-media-links';
-const PML_PREFIX          = 'pml';
-const PML_VERSION         = '1.1.0';
-const PML_DB_VERSION      = '1.0.0';
-const PML_MIN_WP_VERSION  = '5.8';
-const PML_MIN_PHP_VERSION = '7.4';
-const PML_PLUGIN_FILE     = __FILE__;
+const PML_PLUGIN_NAME      = 'Protected Media Links';
+const PML_PLUGIN_SLUG      = 'protected-media-links';
+const PML_TEXT_DOMAIN      = 'protected-media-links';
+const PML_PREFIX           = 'pml';
+const PML_VERSION          = '1.1.0';
+const PML_DB_VERSION       = '1.0.0';
+const PML_MIN_WP_VERSION   = '5.8';
+const PML_MIN_PHP_VERSION  = '7.4';
+const PML_PLUGIN_FILE      = __FILE__;
 define( 'PML_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PML_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-const PML_SELECT2_VERSION = '4.0.13';
+const PML_SELECT2_VERSION  = '4.0.13';
 
 $pml_generated_links_cache = [];
 
@@ -386,11 +386,11 @@ add_action( PML_PREFIX . '_daily_token_cleanup_hook', 'pml_execute_token_cleanup
  */
 function pml_add_settings_link( array $links ): array
 {
-    $settings_link = '<a href="' .
-                     admin_url( 'options-general.php?page=' . PML_PLUGIN_SLUG . '-settings' ) .
-                     '">' .
-                     esc_html__( 'Settings', PML_TEXT_DOMAIN ) .
-                     '</a>';
+    $settings_link = sprintf(
+        "<a href=\"%s\">%s</a>",
+        admin_url( 'admin.php?page=' . PML_PLUGIN_SLUG ),
+        esc_html__( 'Settings', PML_TEXT_DOMAIN ),
+    );
     array_unshift( $links, $settings_link );
     return $links;
 }

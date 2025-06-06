@@ -195,7 +195,7 @@ class PML_Install
     }
 
     /**
-     * Manages .htaccess rules for the plugin.
+     * Manages .htaccess rules for the plugin, inserting them before the WordPress block.
      *
      * @param bool $add True to add rules, false to remove.
      *
@@ -203,15 +203,16 @@ class PML_Install
      */
     public static function manage_htaccess_rules( bool $add = true ): bool
     {
-        if ( !function_exists( 'get_home_path' ) || !function_exists( 'insert_with_markers' ) || !function_exists( 'extract_from_markers' ) )
+        // This function requires file system access
+        if ( !function_exists( 'get_home_path' ) )
         {
             require_once ABSPATH . 'wp-admin/includes/file.php';
-            require_once ABSPATH . 'wp-admin/includes/misc.php'; // extract_from_markers is in misc.php
         }
 
         $htaccess_file = get_home_path() . '.htaccess';
         $marker_name   = PML_PLUGIN_NAME;
 
+        // Check for .htaccess file existence and writability
         if ( !file_exists( $htaccess_file ) )
         {
             if ( !is_writable( get_home_path() ) )
@@ -219,46 +220,123 @@ class PML_Install
                 error_log( PML_PLUGIN_NAME . ' Htaccess Error: Cannot create .htaccess, home path not writable.' );
                 return false;
             }
-
-            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
-            if ( false === file_put_contents( $htaccess_file, '' ) )
+            if ( false === @file_put_contents( $htaccess_file, '' ) )
             {
                 error_log( PML_PLUGIN_NAME . ' Htaccess Error: Failed to create empty .htaccess file.' );
                 return false;
             }
         }
-
-        if ( !is_writable( $htaccess_file ) )
+        elseif ( !is_writable( $htaccess_file ) )
         {
             error_log( PML_PLUGIN_NAME . ' Htaccess Error: .htaccess file is not writable at ' . $htaccess_file );
-            // Set transient for admin notice
             set_transient( PML_PREFIX . '_admin_notice_htaccess_writable', true, MINUTE_IN_SECONDS * 5 );
             return false;
         }
 
-        $rules = [];
+        // Read the current .htaccess content
+        $htaccess_content = @file_get_contents( $htaccess_file );
+        if ( false === $htaccess_content )
+        {
+            error_log( PML_PLUGIN_NAME . ' Htaccess Error: Could not read .htaccess file.' );
+            return false;
+        }
+
+        // Sanitize EOL characters for consistency and remove any existing PML block
+        $htaccess_content = str_replace( "\r\n", "\n", $htaccess_content );
+        $htaccess_content = preg_replace( "/# BEGIN Protected Media Links(.*?)# END Protected Media Links\s*/is", '', $htaccess_content );
+        $htaccess_content = trim( $htaccess_content );
+
         if ( $add )
         {
+            // Define the specific file extensions to protect
+            $protectable_extensions = [
+                // document and media file extensions
+                'pdf',
+                'doc',
+                'docx',
+                'ppt',
+                'pptx',
+                'pps',
+                'ppsx',
+                'odt',
+                'xls',
+                'xlsx',
+                'csv',
+                'txt',
+                'rtf',
+                // archive and image file extensions
+                'zip',
+                'rar',
+                '7z',
+                'tar',
+                'gz',
+                // image and audio/video file extensions
+                'jpg',
+                'jpeg',
+                'jpe',
+                'png',
+                'gif',
+                'webp',
+                'bmp',
+                'tif',
+                'tiff',
+                'svg',
+                // audio and video file extensions
+                'mp3',
+                'wav',
+                'ogg',
+                'm4a',
+                // video file extensions
+                'mp4',
+                'mov',
+                'wmv',
+                'avi',
+                'mpg',
+                'mpeg',
+                'm4v',
+                'webm',
+            ];
+            $extensions_regex       = implode( '|', $protectable_extensions );
+
             $rules = [
                 'RewriteEngine On',
-                'RewriteCond %{REQUEST_FILENAME} -f', // Only apply if the requested file exists
+                'RewriteCond %{REQUEST_FILENAME} -f',
+                'RewriteCond %{REQUEST_URI} \.(' . $extensions_regex . ')$ [NC]',
                 'RewriteRule ^wp-content/uploads/(.*)$ index.php?' . PML_PREFIX . '_media_request=$1 [QSA,L]',
             ];
+
+            // Build the new block content with markers
+            $pml_block = '# BEGIN ' . $marker_name . "\n";
+            $pml_block .= implode( "\n", $rules ) . "\n";
+            $pml_block .= '# END ' . $marker_name;
+
+            $wp_marker     = '# BEGIN WordPress';
+            $wp_marker_pos = strpos( $htaccess_content, $wp_marker );
+
+            if ( false !== $wp_marker_pos )
+            {
+                // Insert the PML block right before the WordPress block
+                $pre_wp_block     = substr( $htaccess_content, 0, $wp_marker_pos );
+                $post_wp_block    = substr( $htaccess_content, $wp_marker_pos );
+                $htaccess_content = trim( $pre_wp_block ) . "\n\n" . $pml_block . "\n\n" . $post_wp_block;
+            }
+            else
+            {
+                // Fallback: WordPress block not found, append PML block at the end
+                $htaccess_content .= "\n\n" . $pml_block;
+            }
         }
 
-        // insert_with_markers will remove the block if $rules is empty.
-        $result = insert_with_markers( $htaccess_file, $marker_name, $rules );
-        if ( !$result && $add )
+        // Clean up extra newlines and write the updated content back to the file
+        $htaccess_content = preg_replace( "/\n{3,}/", "\n\n", trim( $htaccess_content ) );
+        if ( false === @file_put_contents( $htaccess_file, $htaccess_content . "\n" ) )
         {
-            error_log( PML_PLUGIN_NAME . ' Htaccess Error: insert_with_markers failed to add rules.' );
+            error_log( PML_PLUGIN_NAME . ' Htaccess Error: Failed to write updated rules to .htaccess file.' );
             set_transient( PML_PREFIX . '_admin_notice_htaccess_needed', true, MINUTE_IN_SECONDS * 5 );
-        }
-        elseif ( !$result && !$add )
-        {
-            error_log( PML_PLUGIN_NAME . ' Htaccess Error: insert_with_markers failed to remove rules.' );
+            return false;
         }
 
-        return $result;
+        return true;
     }
 
     public static function are_htaccess_rules_present(): bool
