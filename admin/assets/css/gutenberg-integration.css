@@ -1,0 +1,286 @@
+/**
+ * Protected Media Links - Gutenberg Media Modal Integration CSS
+ * Version: 1.2.5
+ * Styles for the PMLAttachmentSettings React component, aiming for consistency
+ * with the Media Library Grid view's PML section.
+ */
+
+.pml-grid-settings-section
+{
+    border-top  : 1px solid #DFDFDF;
+    padding-top : 12px;
+    margin-top  : 12px;
+    clear       : both;
+
+    .components-notice
+    {
+        margin : 0 0 10px 0;
+    }
+
+    .pml-grid-status-toggle
+    {
+        display         : grid;
+        grid-template-columns : 1fr 1fr;
+        justify-content : space-between;
+        align-items     : center;
+        margin-bottom   : 10px;
+        padding         : 2px 0;
+
+        label.name
+        {
+            grid-column   : 1 / span 2;
+            font-weight  : 600;
+            color        : #1D2327;
+            margin       : 0;
+            padding      : 0;
+            flex-shrink  : 0;
+            margin-right : 8px;
+        }
+
+        .pml-status-text-grid
+        {
+            font-weight   : 600;
+            padding       : 3px 8px;
+            border-radius : 3px;
+            font-size     : 0.9em;
+            line-height   : 1.4;
+            margin        : 0 8px;
+            border        : 1px solid transparent;
+
+            &.is-protected
+            {
+                background-color : #E7F5E8;
+                color            : #27672B;
+                border-color     : #C3E6CB;
+            }
+
+            &.is-unprotected
+            {
+                background-color : #F8F9FA;
+                color            : #50575E;
+                border-color     : #DEE2E6;
+            }
+        }
+
+        button.pml-toggle-protection-grid.components-button
+        {
+            display        : inline-flex;
+            align-items    : center;
+            gap            : 4px;
+            margin-left    : auto;
+            vertical-align : middle;
+
+            & .dashicons
+            {
+                font-size       : 16px;
+                line-height     : 1;
+                display         : inline-flex;
+                flex-direction  : column;
+                justify-content : center;
+            }
+
+            .components-icon svg
+            {
+                width          : 1em;
+                height         : 1em;
+                vertical-align : text-bottom;
+            }
+
+            &.is-busy .components-spinner
+            {
+                margin-left : 5px;
+            }
+        }
+
+        .components-spinner
+        { /* Spinner specifically within the toggle area */
+            height : 18px;
+            width  : 18px;
+            margin : 0 0 0 5px;
+        }
+    }
+
+    .pml-grid-trigger-wrapper
+    {
+        padding    : 5px 0;
+        border-top : 1px dashed #EEE;
+        margin-top : 8px;
+
+        button.pml-manage-grid-settings.components-button.is-link
+        {
+            text-decoration : none;
+            font-size       : 0.95em;
+            color           : #0071A1;
+            display         : inline-flex;
+            align-items     : center;
+            gap             : 3px;
+            padding         : 0;
+            box-shadow      : none;
+            border          : none;
+            background      : none;
+
+            &:hover
+            {
+                color : #00A0D2;
+            }
+
+            .components-icon
+            {
+                transition : transform 0.2s ease-in-out;
+                width      : 18px;
+                height     : 18px;
+            }
+        }
+    }
+
+    .pml-grid-form-container
+    {
+        background-color : #FDFDFD;
+        border           : 1px solid #E5E5E5;
+        border-top       : none;
+        border-radius    : 0 0 3px 3px;
+        padding          : 0;
+        margin-top       : -1px;
+        overflow         : hidden;
+        max-height       : 0;
+        opacity          : 0;
+        transition       : max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
+
+        &.is-open
+        {
+            padding    : 15px;
+            max-height : 600px;
+            opacity    : 1;
+            border-top : 1px solid #E5E5E5;
+        }
+
+        .pml-gutenberg-form-field
+        {
+            margin-bottom : 15px;
+
+            &:last-child
+            {
+                /* margin-bottom: 0; No longer always last due to advanced link */
+            }
+        }
+
+        .components-base-control__label
+        {
+            font-weight   : 600;
+            display       : block;
+            margin-bottom : 6px;
+            color         : #1D2327;
+        }
+
+        .components-base-control__help
+        {
+            font-style : italic;
+            color      : #50575E;
+            font-size  : 12px;
+            margin-top : 5px;
+        }
+
+        input[type='url'].components-text-control__input,
+        .components-select-control__input
+        {
+            width     : 100%;
+            font-size : 13px;
+        }
+
+        .pml-gutenberg-form-actions
+        {
+            margin-top      : 20px;
+            padding-top     : 15px;
+            border-top      : 1px dashed #DDD;
+            text-align      : right;
+            display         : flex;
+            justify-content : flex-end;
+            align-items     : center;
+            gap             : 8px;
+
+            .button.button-primary.button-small
+            {
+                font-size   : 11px;
+                line-height : 2.18181818;
+                min-height  : 26px;
+                padding     : 0 8px;
+            }
+
+            .components-spinner
+            {
+                height : 18px;
+                width  : 18px;
+                margin : 0 0 0 5px;
+            }
+        }
+
+        .pml-quick-edit-advanced-link
+        {
+            margin-top  : 20px;
+            padding-top : 15px;
+            border-top  : 1px dashed #DDD;
+
+            p
+            {
+                margin-bottom : 5px;
+                font-size     : 13px;
+
+                &:last-child
+                {
+                    margin-bottom : 0;
+                }
+            }
+
+            a
+            {
+                text-decoration : none;
+                display         : inline-flex;
+                align-items     : center;
+                gap             : 4px;
+                color           : #0071A1;
+
+                &:hover
+                {
+                    color : #00A0D2;
+                }
+
+                .components-icon
+                {
+                    vertical-align : middle;
+                }
+            }
+
+            .description.pml-field-description
+            {
+                font-size  : 0.9em;
+                color      : #646970;
+                margin-top : 8px;
+            }
+        }
+    }
+
+    /* Correct placement of the form container if it's immediately after the trigger */
+
+    .pml-grid-trigger-wrapper + .pml-grid-form-container.is-open
+    {
+        margin-top : 0;
+        border-top : 1px solid #E5E5E5;
+    }
+}
+
+.pml-gutenberg-loading.settings
+{
+    display     : flex;
+    align-items : center;
+    gap         : 8px;
+    padding     : 10px 0;
+    font-style  : italic;
+    color       : #50575E;
+}
+
+hr.pml-meta-hr-dashed
+{ /* Standalone HR if used directly in React */
+    border     : 0;
+    border-top : 1px dashed #DDD;
+    margin     : 15px 0;
+}

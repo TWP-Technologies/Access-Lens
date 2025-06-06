@@ -1,9 +1,9 @@
 /**
  * Protected Media Links - Media Library JavaScript
- * Version: 1.2.4
+ * Version: 1.2.5
  * Handles UI enhancements and interactions specific to the Media Library views (List & Grid).
  */
-jQuery( document ).ready( function( $ )
+jQuery( document ).ready( function( $ ) // Cannot convert document.ready to arrow function if it uses `this` internally, $ is passed as arg
 {
 
     const params = typeof pml_media_params !== 'undefined' ? pml_media_params :
@@ -17,12 +17,16 @@ jQuery( document ).ready( function( $ )
 
     const PLUGIN_PREFIX = params.plugin_prefix || 'pml';
     const PLUGIN_NAME   = params.plugin_name || 'Protected Media Links';
+    // Arrow function for i18n fallback is fine
+    const i18n          = wp.i18n || { __: s => s, _n: (s1, s2, n) => (n > 1 ? s2 : s1), sprintf: (fmt, ...args) => fmt.replace(/%([sd%])/g, (m, p) => (p === '%' ? '%' : args.shift())) };
 
-    // --- Common Select2 Initialization for Attachment Edit Page (Full Meta Box) ---
+
+    // Common Select2 Initialization for Attachment Edit Page (Full Meta Box)
     if ( $( 'body' ).hasClass( 'post-type-attachment' ) && $( 'form#post' ).length )
     {
         if ( typeof $.fn.select2 === 'function' && params.search_users_nonce && params.user_select_placeholder )
         {
+            // This function itself is not a callback that would benefit from arrow func's `this`
             const initializeAttachmentUserSelect2 = function( selector )
             {
                 const $element = $( selector );
@@ -35,16 +39,18 @@ jQuery( document ).ready( function( $ )
                         url            : params.ajax_url,
                         dataType       : 'json',
                         delay          : 300,
+                        // `data` function in Select2 ajax often uses `this` referring to Select2 instance, keep as function
                         data           : function( sParams )
                         {
                             return {
-                                action      : PLUGIN_PREFIX + '_search_users',
+                                action      : `${PLUGIN_PREFIX}_search_users`,
                                 _ajax_nonce : params.search_users_nonce,
                                 q           : sParams.term,
                                 page        : sParams.page || 1,
                             };
                         },
-                        processResults : function( data, sParams )
+                        // `processResults` can be arrow if `this` isn't Select2 specific
+                        processResults : ( data, sParams ) =>
                         {
                             sParams.page = sParams.page || 1;
                             if ( data && data.success && data.data && data.data.items !== undefined )
@@ -63,33 +69,21 @@ jQuery( document ).ready( function( $ )
                     width              : '100%',
                     allowClear         : true,
                     multiple           : true,
-                    escapeMarkup       : function( markup )
-                    {
-                        return markup;
+                    escapeMarkup       : markup => markup, // Arrow function is fine
+                    templateResult     : data => { // Arrow function is fine
+                        if ( data.loading ) return data.text;
+                        return `<div class="select2-result-repository clearfix"><div class="select2-result-repository__title">${data.text || 'Invalid item'}</div></div>`;
                     },
-                    templateResult     : function( data )
-                    {
-                        if ( data.loading )
-                        {
-                            return data.text;
-                        }
-                        return '<div class="select2-result-repository clearfix"><div class="select2-result-repository__title">' +
-                               ( data.text || 'Invalid item' ) + '</div></div>';
-                    },
-                    templateSelection  : function( data )
-                    {
-                        return data.text || data.id;
-                    },
+                    templateSelection  : data => data.text || data.id, // Arrow function is fine
                 } );
             };
-            // Ensure IDs are unique if this script runs on pages with quick edit forms too
-            initializeAttachmentUserSelect2( '#' + PLUGIN_PREFIX + '_user_allow_list_select_full' );
-            initializeAttachmentUserSelect2( '#' + PLUGIN_PREFIX + '_user_deny_list_select_full' );
+            initializeAttachmentUserSelect2( `#${PLUGIN_PREFIX}_user_allow_list_select_full` );
+            initializeAttachmentUserSelect2( `#${PLUGIN_PREFIX}_user_deny_list_select_full` );
 
+            // jQuery `each` or `on` often use `this` for element context, keep as function for `$(this)`
             $( 'select.pml-role-select-media-meta' ).select2( {
                 width       : '100%',
-                placeholder : $( this ).data( 'placeholder' ) ||
-                              ( wp.i18n && wp.i18n.__ ? wp.i18n.__( 'Select roles...' ) : 'Select roles...' ),
+                placeholder : $( this ).data( 'placeholder' ) || i18n.__( 'Select roles...' ),
             } );
         }
     }
@@ -100,65 +94,48 @@ jQuery( document ).ready( function( $ )
     }
 
     // === List View: Toggle Protection ===
+    // jQuery event handler, `this` refers to the clicked element. Keep as function.
     $( '#wpbody-content' ).on( 'click', '.pml-toggle-protection', function( e )
     {
         e.preventDefault();
         const $link = $( this );
-        if ( $link.hasClass( 'disabled' ) )
-        {
-            return;
-        }
+        if ( $link.hasClass( 'disabled' ) ) return;
 
-        const $cellContent  = $link.closest( '.pml-status-column-content' );
+        const $cellContent = $link.closest( '.pml-status-column-content' );
         const attachmentId  = $cellContent.data( 'attachment-id' );
         const currentAction = $link.data( 'action' );
-        const originalHTML  = $link.html();
-        $link.html( '<span class="spinner is-active" style="float:none; vertical-align:middle; margin-right: 5px;"></span>' +
-                    ( wp.i18n && wp.i18n.__ ? wp.i18n.__( 'Updating...' ) : 'Updating...' ) ).addClass( 'disabled' );
+        const originalHTML = $link.html();
+        $link.html( `<span class="spinner is-active" style="float:none; vertical-align:middle; margin-right: 5px;"></span>${i18n.__( 'Updating...' )}` ).addClass( 'disabled' );
 
         $.post( params.ajax_url, {
-            action        : PLUGIN_PREFIX + '_toggle_protection_status',
+            action        : `${PLUGIN_PREFIX}_toggle_protection_status`,
             nonce         : params.toggle_nonce,
             attachment_id : attachmentId,
             new_action    : currentAction,
         } )
-            .done( function( response )
-            {
-                if ( response.success )
-                {
+            .done( response => { // Arrow function for AJAX callback
+                if ( response.success ) {
                     $cellContent.find( '.pml-status-text' )
                         .text( response.data.status_text )
                         .removeClass( 'is-protected is-unprotected' )
                         .addClass( response.data.is_protected ? 'is-protected' : 'is-unprotected' );
                     $link.data( 'action', response.data.toggle_action )
                         .attr( 'title', response.data.toggle_text )
-                        .html( '<span class="dashicons ' + response.data.toggle_icon + '"></span> ' + response.data.toggle_text );
-                } else
-                {
-                    if ( typeof PML_Admin_Utils !== 'undefined' &&
-                         PML_Admin_Utils.showAdminNotice )
-                    {
-                        PML_Admin_Utils.showAdminNotice( response.data.message ||
-                                                         params.text_error, 'error' );
+                        .html( `<span class="dashicons ${response.data.toggle_icon}"></span> ${response.data.toggle_text}` );
+                } else {
+                    if ( typeof PML_Admin_Utils !== 'undefined' && PML_Admin_Utils.showAdminNotice ) {
+                        PML_Admin_Utils.showAdminNotice( response.data.message || params.text_error, 'error' );
                     }
                     $link.html( originalHTML );
                 }
             } )
-            .fail( function()
-            {
-                if ( typeof PML_Admin_Utils !== 'undefined' && PML_Admin_Utils.showAdminNotice )
-                {
-                    PML_Admin_Utils.showAdminNotice(
-                        params.text_error,
-                        'error',
-                    );
+            .fail( () => { // Arrow function for AJAX callback
+                if ( typeof PML_Admin_Utils !== 'undefined' && PML_Admin_Utils.showAdminNotice ) {
+                    PML_Admin_Utils.showAdminNotice( params.text_error, 'error' );
                 }
                 $link.html( originalHTML );
             } )
-            .always( function()
-            {
-                $link.removeClass( 'disabled' );
-            } );
+            .always( () => { $link.removeClass( 'disabled' ); } ); // Arrow function for AJAX callback
     } );
 
     // === List View: Quick Edit Modal ===
@@ -168,38 +145,34 @@ jQuery( document ).ready( function( $ )
     {
         if ( !$pmlQuickEditModal || !$pmlQuickEditModal.length )
         {
-            $pmlQuickEditModal = $(
-                '<div id="pml-quick-edit-modal" class="pml-modal" role="dialog" aria-modal="true" aria-labelledby="pml-modal-title">' +
-                '<div class="pml-modal-overlay" tabindex="-1"></div>' +
-                '<div class="pml-modal-content">' +
-                '<div class="pml-modal-header">' +
-                '<h2 id="pml-modal-title" class="pml-modal-title">' + params.text_quick_edit_pml + '</h2>' +
-                '<button type="button" class="pml-modal-close button-link"><span class="dashicons dashicons-no-alt"></span><span class="screen-reader-text">' +
-                ( wp.i18n && wp.i18n.__ ? wp.i18n.__( 'Close' ) : 'Close' ) + '</span></button>' +
-                '</div>' +
-                '<div class="pml-modal-body"></div>' +
-                '<div class="pml-modal-footer">' +
-                '<button type="button" class="button button-secondary pml-modal-cancel">' +
-                ( wp.i18n && wp.i18n.__ ? wp.i18n.__( 'Cancel' ) : 'Cancel' ) + '</button>' +
-                '<button type="button" class="button button-primary pml-modal-save">' +
-                ( wp.i18n && wp.i18n.__ ? wp.i18n.__( 'Save Changes' ) : 'Save Changes' ) + '</button>' +
-                '<span class="spinner"></span>' +
-                '</div>' +
-                '</div>' +
-                '</div>',
-            ).appendTo( 'body' );
+            $pmlQuickEditModal = $(`
+                <div id="pml-quick-edit-modal" class="pml-modal" role="dialog" aria-modal="true" aria-labelledby="pml-modal-title">
+                    <div class="pml-modal-overlay" tabindex="-1"></div>
+                    <div class="pml-modal-content">
+                        <div class="pml-modal-header">
+                            <h2 id="pml-modal-title" class="pml-modal-title">${params.text_quick_edit_pml}</h2>
+                            <button type="button" class="pml-modal-close button-link">
+                                <span class="dashicons dashicons-no-alt"></span>
+                                <span class="screen-reader-text">${i18n.__( 'Close' )}</span>
+                            </button>
+                        </div>
+                        <div class="pml-modal-body"></div>
+                        <div class="pml-modal-footer">
+                            <button type="button" class="button button-secondary pml-modal-cancel">${i18n.__( 'Cancel' )}</button>
+                            <button type="button" class="button button-primary pml-modal-save">${i18n.__( 'Save Changes' )}</button>
+                            <span class="spinner"></span>
+                        </div>
+                    </div>
+                </div>
+            `).appendTo( 'body' );
 
-            // Corrected Close event handlers
-            $pmlQuickEditModal.on( 'click', '.pml-modal-close, .pml-modal-cancel', function( e )
+            // jQuery event handler, `this` might be used or its good practice to keep for consistency
+            $pmlQuickEditModal.on( 'click', '.pml-modal-close, .pml-modal-cancel, .pml-modal-overlay', function( e )
             {
                 e.preventDefault();
                 $pmlQuickEditModal.removeClass( 'is-visible' );
             } );
-            $pmlQuickEditModal.on( 'click', '.pml-modal-overlay', function( e )
-            {
-                e.preventDefault();
-                $pmlQuickEditModal.removeClass( 'is-visible' );
-            } );
+            // jQuery event handler for document keydown
             $( document ).on( 'keydown', function( e )
             {
                 if ( e.key === 'Escape' && $pmlQuickEditModal.hasClass( 'is-visible' ) )
@@ -208,90 +181,52 @@ jQuery( document ).ready( function( $ )
                 }
             } );
 
+            // jQuery event handler, `this` refers to the save button
             $pmlQuickEditModal.on( 'click', '.pml-modal-save', function()
             {
                 const $form = $pmlQuickEditModal.find( 'form' );
-                if ( !$form.length )
-                {
-                    return;
-                }
-                const $saveButton  = $( this );
-                const $spinner     = $pmlQuickEditModal.find( '.pml-modal-footer .spinner' );
-                const attachmentId = $form.data( 'attachment-id' );
+                if ( !$form.length ) return;
 
-                const rawFormData         = $form.serializeArray();
+                const $saveButton = $( this ); // `this` is the clicked button
+                const $spinner    = $pmlQuickEditModal.find( '.pml-modal-footer .spinner' );
+                const attachmentId = $form.data( 'attachment-id' );
+                const rawFormData  = $form.serializeArray();
                 const settingsDataPayload = {};
-                // The quick edit form fields are named 'pml_settings[field_key]'
-                // The PHP AJAX handler expects 'pml_settings' to be an array of these field_keys.
-                $.each( rawFormData, function( i, field )
-                {
+
+                // $.each callback, `this` refers to the current item in iteration. Keep as function.
+                $.each( rawFormData, function( i, field ) {
                     const keyMatch = field.name.match( /^pml_settings\[(.*?)\]$/ );
-                    if ( keyMatch && keyMatch[ 1 ] )
-                    {
+                    if ( keyMatch && keyMatch[ 1 ] ) {
                         settingsDataPayload[ keyMatch[ 1 ] ] = field.value;
                     }
                 } );
-                // Ensure 'is_protected' is present if unchecked (as it's not in quick edit form anymore)
-                // This value will be based on the main toggle, not a checkbox in this form.
-                // For save, we only send fields that *are* in this form.
-                // The `save_quick_edit_data` PHP function should only update fields it receives.
 
                 $spinner.addClass( 'is-active' );
                 $saveButton.prop( 'disabled', true );
                 $pmlQuickEditModal.find( '.pml-modal-cancel' ).prop( 'disabled', true );
 
                 $.post( params.ajax_url, {
-                    action        : PLUGIN_PREFIX + '_save_quick_edit_form',
+                    action        : `${PLUGIN_PREFIX}_save_quick_edit_form`,
                     nonce         : params.save_form_nonce,
                     attachment_id : attachmentId,
                     pml_settings  : settingsDataPayload,
                 } )
-                    .done( function( response )
-                    {
-                        if ( response.success )
-                        {
+                    .done( response => { // Arrow function for AJAX callback
+                        if ( response.success ) {
                             $pmlQuickEditModal.removeClass( 'is-visible' );
-                            // Update the list view column for this item based on response
-                            const $cellContent = $( '.pml-status-column-content[data-attachment-id="' + attachmentId + '"]' );
-                            if ( $cellContent.length )
-                            {
-                                // The main protection status is updated by its own toggle,
-                                // but if save_quick_edit_form returns it, we can sync.
-                                // For now, assume only quick_edit specific fields change the UI here if needed.
-                                // The toggle button already updates the status text.
+                            if ( typeof PML_Admin_Utils !== 'undefined' && PML_Admin_Utils.showAdminNotice ) {
+                                PML_Admin_Utils.showAdminNotice( response.data.message || 'Settings saved.', 'success' );
                             }
-                            if ( typeof PML_Admin_Utils !== 'undefined' &&
-                                 PML_Admin_Utils.showAdminNotice )
-                            {
-                                PML_Admin_Utils.showAdminNotice(
-                                    response.data.message || 'Settings saved.',
-                                    'success',
-                                );
-                            }
-                        } else if ( typeof PML_Admin_Utils !== 'undefined' &&
-                                    PML_Admin_Utils.showAdminNotice )
-                        {
-                            PML_Admin_Utils.showAdminNotice(
-                                response.data.message || params.text_error,
-                                'error',
-                                $pmlQuickEditModal.find( '.pml-modal-body' ),
-                            );
+                        } else if ( typeof PML_Admin_Utils !== 'undefined' && PML_Admin_Utils.showAdminNotice ) {
+                            PML_Admin_Utils.showAdminNotice( response.data.message || params.text_error, 'error', $pmlQuickEditModal.find( '.pml-modal-body' ) );
                         }
                     } )
-                    .fail( function()
-                    {
-                        if ( typeof PML_Admin_Utils !== 'undefined' &&
-                             PML_Admin_Utils.showAdminNotice )
-                        {
-                            PML_Admin_Utils.showAdminNotice(
-                                params.text_error,
-                                'error',
-                                $pmlQuickEditModal.find( '.pml-modal-body' ),
-                            );
+                    .fail( () => { // Arrow function for AJAX callback
+                        if ( typeof PML_Admin_Utils !== 'undefined' && PML_Admin_Utils.showAdminNotice ) {
+                            PML_Admin_Utils.showAdminNotice( params.text_error, 'error', $pmlQuickEditModal.find( '.pml-modal-body' ) );
                         }
                     } )
-                    .always( function()
-                    {
+                    .always( () => { // Arrow function for AJAX callback
                         $spinner.removeClass( 'is-active' );
                         $pmlQuickEditModal.find( '.pml-modal-save, .pml-modal-cancel' ).prop( 'disabled', false );
                     } );
@@ -299,343 +234,273 @@ jQuery( document ).ready( function( $ )
         }
     }
 
-    if ( $( 'body' ).hasClass( 'upload-php' ) )
-    {
-        initPMLQuickEditModal();
-    }
+    if ( $( 'body' ).hasClass( 'upload-php' ) ) { initPMLQuickEditModal(); }
 
+    // jQuery event handler, `this` refers to the clicked trigger. Keep as function.
     $( '#wpbody-content' ).on( 'click', '.pml-quick-edit-trigger', function( e )
     {
         e.preventDefault();
-        if ( !$pmlQuickEditModal || !$pmlQuickEditModal.length )
-        {
+        if ( !$pmlQuickEditModal || !$pmlQuickEditModal.length ) {
             initPMLQuickEditModal();
         }
-        const attachmentId    = $( this ).data( 'attachment-id' );
-        const $modalBody      = $pmlQuickEditModal.find( '.pml-modal-body' );
-        const $modalTitle     = $pmlQuickEditModal.find( '.pml-modal-title' );
+        const attachmentId = $( this ).data( 'attachment-id' );
+        const $modalBody    = $pmlQuickEditModal.find( '.pml-modal-body' );
+        const $modalTitle   = $pmlQuickEditModal.find( '.pml-modal-title' );
         const attachmentTitle = $( this ).closest( 'tr' ).find( '.title .row-title' ).text() ||
                                 $( this ).closest( '.attachment-preview' ).find( '.title' ).text() || 'Item';
-        $modalTitle.text( ( wp.i18n && wp.i18n.sprintf ?
-                            wp.i18n.sprintf( wp.i18n.__( 'Quick Edit PML: %s', 'protected-media-links' ), attachmentTitle ) :
-                            'Quick Edit PML: ' + attachmentTitle ) );
-        $modalBody.html( '<p class="pml-loading-indicator"><span class="spinner is-active"></span> ' + params.text_loading +
-                         '</p>' );
+
+        $modalTitle.text( i18n.sprintf( i18n.__( 'Quick Edit PML: %s', 'protected-media-links' ), attachmentTitle ) );
+        $modalBody.html( `<p class="pml-loading-indicator"><span class="spinner is-active"></span> ${params.text_loading}</p>` );
         $pmlQuickEditModal.addClass( 'is-visible' );
-        $.post(
-            params.ajax_url,
-            {
-                action        : PLUGIN_PREFIX + '_get_quick_edit_form',
-                nonce         : params.get_form_nonce,
-                attachment_id : attachmentId,
-            },
-        )
-            .done( function( response )
-            {
-                if ( response.success )
-                {
-                    $modalBody.html( '<form data-attachment-id="' + attachmentId + '">' +
-                                     response.data.form_html + '</form>' );
-                } else
-                {
-                    $modalBody.html( '<p class="pml-error-text">' + ( response.data.message || params.text_error ) + '</p>' );
+
+        $.post( params.ajax_url, {
+            action        : `${PLUGIN_PREFIX}_get_quick_edit_form`,
+            nonce         : params.get_form_nonce,
+            attachment_id : attachmentId,
+        })
+            .done( response => { // Arrow function for AJAX callback
+                if ( response.success && response.data.form_html ) {
+                    $modalBody.html( `<form data-attachment-id="${attachmentId}">${response.data.form_html}</form>` );
+                } else {
+                    $modalBody.html( `<p class="pml-error-text">${response.data.message || params.text_error}</p>` );
                 }
             } )
-            .fail( function()
-            {
-                $modalBody.html( '<p class="pml-error-text">' + params.text_error + '</p>' );
+            .fail( () => { // Arrow function for AJAX callback
+                $modalBody.html( `<p class="pml-error-text">${params.text_error}</p>` );
             } );
     } );
+
 
     // === Grid View: Attachment Details Sidebar Integration ===
     if ( typeof wp !== 'undefined' && typeof wp.media !== 'undefined' )
     {
         if ( wp.media.view.Attachment.Details.TwoColumn )
         {
-            const originalAttachmentDetailsRender      = wp.media.view.Attachment.Details.TwoColumn.prototype.render;
+            if (wp.media.view.Attachment.Details.TwoColumn.prototype.pmlExtendedGrid) {
+                return;
+            }
+            wp.media.view.Attachment.Details.TwoColumn.prototype.pmlExtendedGrid = true;
+
+            const originalAttachmentDetailsRender = wp.media.view.Attachment.Details.TwoColumn.prototype.render;
+            // Backbone view methods - `this` is critical. Do NOT convert to arrow.
             wp.media.view.Attachment.Details.TwoColumn = wp.media.view.Attachment.Details.TwoColumn.extend( {
-                render                : function()
-                {
+                render                : function() {
                     originalAttachmentDetailsRender.apply( this, arguments );
-                    const self = this;
-                    _.defer( function()
-                    {
-                        self.addPMLSettingsSection();
+                    const self = this; // Capture Backbone `this` for use in deferred function
+                    // _.defer callback. `this` inside might not be the Backbone view if it was an arrow func.
+                    // Using self ensures we refer to the Backbone view.
+                    _.defer( function() {
+                        self.addPMLSettingsSectionToGrid();
                     } );
                     return this;
                 },
-                addPMLSettingsSection : function()
-                {
-                    if ( !this.model || !this.model.get( 'id' ) )
-                    {
-                        return;
-                    }
-                    const attachmentId = this.model.get( 'id' );
-                    const $sidebar     = this.$el.find( '.attachment-info .settings' );
+                addPMLSettingsSectionToGrid : function() { // Backbone method
+                    if ( !this.model || !this.model.get( 'id' ) ) return;
 
-                    if ( $sidebar.length && !$sidebar.find( '.pml-grid-settings-section' ).length )
-                    {
-                        const $pmlSection = $(
-                            `<div class='pml-grid-settings-section'>
-                                <div class='pml-grid-status-toggle'>
-                                    <label class='name'>${ PLUGIN_NAME } Status</label>
-                                    <span class='pml-status-text-grid'></span>
-                                    <button type='button' class='button button-small pml-toggle-protection-grid' data-attachment-id='${ attachmentId }'>
-                                        <span class='spinner' style='float:none; vertical-align:middle; margin-right:3px;'></span>
+                    const attachmentId = this.model.get( 'id' );
+                    const $sidebar = this.$el.find( '.attachment-info .settings' ); // `this.$el` is Backbone specific
+
+                    if ( $sidebar.length && !$sidebar.find( '.pml-grid-settings-section' ).length ) {
+                        const $pmlSection = $(`
+                            <div class="pml-grid-settings-section">
+                                <div class="pml-grid-status-toggle">
+                                    <label class="name">${params.plugin_name || 'PML'} Status</label>
+                                    <span class="pml-status-text-grid"></span>
+                                    <button type="button" class="button button-small pml-toggle-protection-grid" data-attachment-id="${attachmentId}">
                                     </button>
                                 </div>
-                                <div class='pml-grid-trigger-wrapper'>
-                                    <button type='button' class='button button-link pml-manage-grid-settings' data-attachment-id='${ attachmentId }'>
-                                        ${ params.text_manage_pml }
-                                        <span class='dashicons dashicons-arrow-down-alt2'></span>
+                                <div class="pml-grid-trigger-wrapper">
+                                    <button type="button" class="button button-link pml-manage-grid-settings" data-attachment-id="${attachmentId}">
+                                        ${params.text_manage_pml || 'Manage PML'} <span class="dashicons dashicons-arrow-down-alt2"></span>
                                     </button>
                                 </div>
-                                <div class='pml-grid-form-container' style='display:none;'></div>
-                            </div>`,
-                        );
+                                <div class="pml-grid-form-container" style="display:none;"></div>
+                            </div>
+                        `);
                         $sidebar.append( $pmlSection );
 
-                        const updateGridToggleUI = function( isProtected, initialLoad = false )
-                        {
+                        // This function is fine as an arrow function as it doesn't use `this` internally
+                        // and captures `params` and `$pmlSection` from outer scope.
+                        const updateGridToggleUI = ( isProtectedParam, initialLoad = false ) => {
                             const $statusTextSpan = $pmlSection.find( '.pml-status-text-grid' );
-                            const $toggleButton   = $pmlSection.find( '.pml-toggle-protection-grid' );
-                            const statusText      = isProtected ? params.text_protected : params.text_unprotected;
-                            const toggleText      = isProtected ? params.text_toggle_unprotect : params.text_toggle_protect;
-                            const toggleAction    = isProtected ? 'unprotect' : 'protect';
-                            const toggleIcon      = isProtected ? 'dashicons-unlock' : 'dashicons-lock';
+                            const $toggleButton = $pmlSection.find( '.pml-toggle-protection-grid' );
+                            const statusText = isProtectedParam ? params.text_protected : params.text_unprotected;
+                            const toggleText   = isProtectedParam ? params.text_toggle_unprotect : params.text_toggle_protect;
+                            const toggleAction = isProtectedParam ? 'unprotect' : 'protect';
+                            const toggleIcon = isProtectedParam ? 'dashicons-unlock' : 'dashicons-lock';
 
                             $statusTextSpan.text( statusText )
                                 .removeClass( 'is-protected is-unprotected' )
-                                .addClass( isProtected ? 'is-protected' : 'is-unprotected' );
+                                .addClass( isProtectedParam ? 'is-protected' : 'is-unprotected' );
+
                             $toggleButton.data( 'action', toggleAction )
                                 .attr( 'title', toggleText )
-                                .html( '<span class="dashicons ' + toggleIcon + '"></span> ' + toggleText );
-                            if ( initialLoad )
-                            {
-                                $toggleButton.find( '.spinner' ).removeClass( 'is-active' );
-                            }
+                                .html( `<span class="dashicons ${toggleIcon}"></span> ${toggleText}` );
                         };
 
-                        $pmlSection.find( '.pml-toggle-protection-grid .spinner' ).addClass( 'is-active' );
+                        const $toggleButtonForInit = $pmlSection.find( '.pml-toggle-protection-grid' );
+                        $toggleButtonForInit.html(`<span class="spinner is-active" style="float:none; vertical-align:middle; margin-right:3px;"></span>${i18n.__( 'Loading...' )}`);
+
+                        // Storing `this` (Backbone view instance) for use in AJAX callbacks
+                        const viewInstance = this;
+
                         $.post( params.ajax_url, {
-                            action        : PLUGIN_PREFIX + '_get_quick_edit_form',
+                            action        : `${PLUGIN_PREFIX}_get_quick_edit_form`,
                             nonce         : params.get_form_nonce,
                             attachment_id : attachmentId,
-                        } ).done( function( response )
-                        {
-                            if ( response.success && response.data.form_html )
-                            {
-                                const tempForm         = $( '<div>' ).html( response.data.form_html );
-                                const isProtectedValue = tempForm.find( 'input[name="pml_settings[' + PLUGIN_PREFIX +
-                                                                        '_is_protected]"]' ).is( ':checked' );
-                                updateGridToggleUI( isProtectedValue, true );
-                                if ( this.model )
-                                {
-                                    this.model.set( PLUGIN_PREFIX + '_is_protected', isProtectedValue ? '1' : '0' );
-                                } // Update Backbone model
-                            } else
-                            {
-                                updateGridToggleUI( false, true ); // Default to unprotected on error
+                        } ).done( function( response ) { // Keep as function for `this` if used, or use viewInstance
+                            if ( response.success && typeof response.data.is_protected !== 'undefined' ) {
+                                updateGridToggleUI( response.data.is_protected, true );
+                                if ( viewInstance.model ) { // Use captured viewInstance
+                                    viewInstance.model.set( `${PLUGIN_PREFIX}_is_protected`, response.data.is_protected ? '1' : '0' );
+                                }
+                            } else {
+                                updateGridToggleUI( false, true );
+                                console.error("PML Grid: Error fetching initial status or is_protected missing.", response);
                             }
-                        }.bind( this ) ).fail( function()
-                        {
-                            updateGridToggleUI( false, true ); // Default to unprotected on error
-                        } ).always( function()
-                        {
-                            // Spinner removed by updateGridToggleUI logic implicitly if it clears button HTML
-                            // Ensure spinner is explicitly removed if button HTML isn't fully replaced
-                            if ( !$pmlSection.find( '.pml-toggle-protection-grid .spinner' ).hasClass( 'is-active' ) )
-                            {
-                                // If spinner still there but not active, it means button text was set.
-                            } else
-                            {
-                                // Fallback if spinner was only thing
-                                $pmlSection.find( '.pml-toggle-protection-grid' ).html( params.text_toggle_protect ); // Default text
+                        } ).fail( () => { // Arrow function ok
+                            updateGridToggleUI( false, true );
+                            console.error("PML Grid: AJAX failed to fetch initial status.");
+                        } ).always( () => { // Arrow function ok
+                            if ($toggleButtonForInit.find('.spinner.is-active').length) {
+                                updateGridToggleUI(false, true); // Call with a defined state
                             }
                         } );
 
-                        $pmlSection.on( 'click', '.pml-toggle-protection-grid', function( e )
-                        {
+                        // jQuery event handlers, `this` refers to the element. Keep as functions.
+                        $pmlSection.on( 'click', '.pml-toggle-protection-grid', function( e ) {
                             e.stopPropagation();
                             const $button = $( this );
-                            if ( $button.hasClass( 'disabled' ) )
-                            {
-                                return;
-                            }
-                            const attachmentId  = $button.data( 'attachment-id' );
-                            const currentAction = $button.data( 'action' );
-                            const originalHTML  = $button.html();
-                            $button.html( '<span class="spinner is-active" style="float:none; vertical-align:middle;"></span>' )
-                                .addClass( 'disabled' );
+                            if ( $button.hasClass( 'disabled' ) || $button.find('.spinner.is-active').length ) return;
+
+                            const attachmentIdFromButton  = $button.data( 'attachment-id' );
+                            const currentActionFromButton = $button.data( 'action' );
+                            const originalHTMLButton = $button.html();
+
+                            $button.html( `<span class="spinner is-active" style="float:none; vertical-align:middle; margin-right:3px;"></span>${i18n.__( 'Updating...' )}` ).addClass( 'disabled' );
 
                             $.post( params.ajax_url, {
-                                action        : PLUGIN_PREFIX + '_toggle_protection_status',
+                                action        : `${PLUGIN_PREFIX}_toggle_protection_status`,
                                 nonce         : params.toggle_nonce,
-                                attachment_id : attachmentId,
-                                new_action    : currentAction,
+                                attachment_id : attachmentIdFromButton,
+                                new_action    : currentActionFromButton,
                             } )
-                                .done( function( response )
-                                {
-                                    if ( response.success )
-                                    {
+                                .done( function( response ) { // Keep as function for viewInstance or explicit this binding.
+                                    if ( response.success ) {
                                         updateGridToggleUI( response.data.is_protected );
-                                        if ( this.model )
-                                        {
-                                            this.model.set(
-                                                PLUGIN_PREFIX + '_is_protected',
-                                                response.data.is_protected ? '1' : '0',
-                                            );
+                                        // Try to get the view instance from data attribute if not using .bind(this) on done.
+                                        const currentViewInstance = $button.closest('.attachment-details').data('backboneView') || viewInstance;
+                                        if (currentViewInstance && currentViewInstance.model) {
+                                            currentViewInstance.model.set( `${PLUGIN_PREFIX}_is_protected`, response.data.is_protected ? '1' : '0' );
                                         }
-                                    } else
-                                    {
-                                        if ( typeof PML_Admin_Utils !== 'undefined' &&
-                                             PML_Admin_Utils.showAdminNotice )
-                                        {
-                                            PML_Admin_Utils.showAdminNotice(
-                                                response.data.message || params.text_error,
-                                                'error',
-                                                $pmlSection.find( '.pml-grid-form-container' ),
-                                            );
+                                    } else {
+                                        $button.html( originalHTMLButton );
+                                        if ( typeof PML_Admin_Utils !== 'undefined' && PML_Admin_Utils.showAdminNotice ) {
+                                            PML_Admin_Utils.showAdminNotice( response.data.message || params.text_error, 'error', $pmlSection.find( '.pml-grid-form-container' ) );
                                         }
-                                        $button.html( originalHTML ); // Revert on error
                                     }
-                                }.bind( this ) )
-                                .fail( function()
-                                {
-                                    if ( typeof PML_Admin_Utils !== 'undefined' &&
-                                         PML_Admin_Utils.showAdminNotice )
-                                    {
-                                        PML_Admin_Utils.showAdminNotice(
-                                            params.text_error,
-                                            'error',
-                                            $pmlSection.find( '.pml-grid-form-container' ),
-                                        );
-                                    }
-                                    $button.html( originalHTML ); // Revert on error
                                 } )
-                                .always( function()
-                                {
+                                .fail( () => { // Arrow function ok
+                                    $button.html( originalHTMLButton );
+                                    if ( typeof PML_Admin_Utils !== 'undefined' && PML_Admin_Utils.showAdminNotice ) {
+                                        PML_Admin_Utils.showAdminNotice( params.text_error, 'error', $pmlSection.find( '.pml-grid-form-container' ) );
+                                    }
+                                } )
+                                .always( () => { // Arrow function ok
                                     $button.removeClass( 'disabled' );
+                                    if ($button.find('.spinner.is-active').length) {
+                                        const isProtectedNow = $pmlSection.find('.pml-status-text-grid').hasClass('is-protected');
+                                        updateGridToggleUI(isProtectedNow);
+                                    }
                                 } );
                         } );
 
-                        $pmlSection.on( 'click', '.pml-manage-grid-settings', function( e )
-                        {
+                        $pmlSection.on( 'click', '.pml-manage-grid-settings', function( e ) {
                             e.stopPropagation();
                             const $button        = $( this );
                             const $formContainer = $pmlSection.find( '.pml-grid-form-container' );
                             const $indicator     = $button.find( '.dashicons' );
                             const isVisible      = $formContainer.is( ':visible' );
+
                             $button.toggleClass( 'expanded', !isVisible );
-                            if ( isVisible )
-                            {
+                            $indicator.toggleClass( 'dashicons-arrow-down-alt2 dashicons-arrow-up-alt2' );
+
+                            if ( isVisible ) {
                                 $formContainer.slideUp( 200 );
-                                $indicator.removeClass( 'dashicons-arrow-up-alt2' ).addClass( 'dashicons-arrow-down-alt2' );
-                            } else
-                            {
-                                $formContainer.html( '<p class="pml-loading-indicator"><span class="spinner is-active"></span> ' +
-                                                     params.text_loading + '</p>' ).slideDown( 200 );
-                                $indicator.removeClass( 'dashicons-arrow-down-alt2' ).addClass( 'dashicons-arrow-up-alt2' );
-                                $.post(
-                                    params.ajax_url,
-                                    {
-                                        action        : PLUGIN_PREFIX + '_get_quick_edit_form',
-                                        nonce         : params.get_form_nonce,
-                                        attachment_id : attachmentId,
-                                    },
-                                )
-                                    .done( function( response )
-                                    {
-                                        if ( response.success )
-                                        {
-                                            $formContainer.html( '<form data-attachment-id="' + attachmentId +
-                                                                 '">' + response.data.form_html +
-                                                                 '<div class="pml-grid-form-actions"><button type="button" class="button button-primary button-small pml-save-grid-settings">' +
-                                                                 ( wp.i18n && wp.i18n.__ ? wp.i18n.__(
-                                                                     'Save Additional',
-                                                                     'protected-media-links',
-                                                                 ) : 'Save Additional' ) +
-                                                                 '</button><span class="spinner"></span></div></form>' );
-                                        } else
-                                        {
-                                            $formContainer.html( '<p class="pml-error-text">' +
-                                                                 ( response.data.message || params.text_error ) + '</p>' );
+                            } else {
+                                $formContainer.html( `<p class="pml-loading-indicator"><span class="spinner is-active"></span> ${params.text_loading}</p>` ).slideDown( 200 );
+                                $.post( params.ajax_url, {
+                                    action        : `${PLUGIN_PREFIX}_get_quick_edit_form`,
+                                    nonce         : params.get_form_nonce,
+                                    attachment_id : attachmentId,
+                                })
+                                    .done( response => { // Arrow function ok
+                                        if ( response.success && response.data.form_html ) {
+                                            $formContainer.html( `
+                                            <form data-attachment-id="${attachmentId}">
+                                                ${response.data.form_html}
+                                                <div class="pml-grid-form-actions">
+                                                    <button type="button" class="button button-primary button-small pml-save-grid-settings">
+                                                        ${i18n.__( 'Save Additional', 'protected-media-links' )}
+                                                    </button>
+                                                    <span class="spinner"></span>
+                                                </div>
+                                            </form>
+                                        `);
+                                        } else {
+                                            $formContainer.html( `<p class="pml-error-text">${response.data.message || params.text_error}</p>` );
                                         }
                                     } )
-                                    .fail( function()
-                                    {
-                                        $formContainer.html( '<p class="pml-error-text">' + params.text_error + '</p>' );
+                                    .fail( () => { // Arrow function ok
+                                        $formContainer.html( `<p class="pml-error-text">${params.text_error}</p>` );
                                     } );
                             }
                         } );
 
-                        $pmlSection.on( 'click', '.pml-save-grid-settings', function( e )
-                        {
+                        $pmlSection.on( 'click', '.pml-save-grid-settings', function( e ) {
                             e.stopPropagation();
-                            const $saveButton         = $( this );
-                            const $form               = $saveButton.closest( 'form' );
-                            const $spinner            = $saveButton.siblings( '.spinner' );
-                            const attachmentId        = $form.data( 'attachment-id' );
-                            const rawFormData         = $form.serializeArray();
+                            const $saveButton = $( this );
+                            const $form       = $saveButton.closest( 'form' );
+                            const $spinner    = $saveButton.siblings( '.spinner' );
+                            const attachmentIdForm = $form.data( 'attachment-id' );
+                            const rawFormData = $form.serializeArray();
                             const settingsDataPayload = {};
-                            $.each( rawFormData, function( i, field )
-                            {
+
+                            // $.each callback, `this` refers to current item. Keep as function.
+                            $.each( rawFormData, function( i, field ) {
                                 const keyMatch = field.name.match( /^pml_settings\[(.*?)\]$/ );
-                                // Only include fields that are part of the quick edit form (redirect, bot access)
-                                if ( keyMatch && keyMatch[ 1 ] && keyMatch[ 1 ] !== ( PLUGIN_PREFIX + '_is_protected' ) )
-                                {
+                                if ( keyMatch && keyMatch[ 1 ] && keyMatch[ 1 ] !== ( `${PLUGIN_PREFIX}_is_protected` ) ) {
                                     settingsDataPayload[ keyMatch[ 1 ] ] = field.value;
                                 }
                             } );
+
                             $spinner.addClass( 'is-active' );
                             $saveButton.prop( 'disabled', true );
                             $pmlSection.find( '.pml-saved-feedback' ).remove();
-                            $.post(
-                                params.ajax_url,
-                                {
-                                    action        : PLUGIN_PREFIX + '_save_quick_edit_form',
-                                    nonce         : params.save_form_nonce,
-                                    attachment_id : attachmentId,
-                                    pml_settings  : settingsDataPayload,
-                                },
-                            )
-                                .done( function( response )
-                                {
+
+                            $.post( params.ajax_url, {
+                                action        : `${PLUGIN_PREFIX}_save_quick_edit_form`,
+                                nonce         : params.save_form_nonce,
+                                attachment_id : attachmentIdForm,
+                                pml_settings  : settingsDataPayload,
+                            })
+                                .done( response => { // Arrow function ok
                                     const feedbackClass = response.success ? 'success' : 'error';
-                                    const feedbackMsg   = response.success ? ( wp.i18n && wp.i18n.__ ?
-                                                                               wp.i18n.__( 'Saved!', 'protected-media-links' ) :
-                                                                               'Saved!' ) :
-                                                          ( response.data.message || params.text_error );
-                                    $saveButton.after( '<span class="pml-saved-feedback ' + feedbackClass + '">' + feedbackMsg +
-                                                       '</span>' );
-                                    setTimeout( function()
-                                    {
-                                        $pmlSection.find( '.pml-saved-feedback' ).fadeOut( function()
-                                        {
-                                            $( this ).remove();
-                                        } );
-                                    }, 3000 );
+                                    const feedbackMsg = response.success ? i18n.__( 'Saved!', 'protected-media-links' ) : ( response.data.message || params.text_error );
+                                    $saveButton.after( `<span class="pml-saved-feedback ${feedbackClass}">${feedbackMsg}</span>` );
+                                    setTimeout( () => { $pmlSection.find( '.pml-saved-feedback' ).fadeOut( function() { $( this ).remove(); } ); }, 3000 );
                                 } )
-                                .fail( function()
-                                {
-                                    $saveButton.after( '<span class="pml-saved-feedback error">' + params.text_error +
-                                                       '</span>' );
-                                    setTimeout( function()
-                                    {
-                                        $pmlSection.find( '.pml-saved-feedback' ).fadeOut( function()
-                                        {
-                                            $( this ).remove();
-                                        } );
-                                    }, 3000 );
+                                .fail( () => { // Arrow function ok
+                                    $saveButton.after( `<span class="pml-saved-feedback error">${params.text_error}</span>` );
+                                    setTimeout( () => { $pmlSection.find( '.pml-saved-feedback' ).fadeOut( function() { $( this ).remove(); } ); }, 3000 );
                                 } )
-                                .always( function()
-                                {
+                                .always( () => { // Arrow function ok
                                     $spinner.removeClass( 'is-active' );
                                     $saveButton.prop( 'disabled', false );
                                 } );
                         } );
                     }
-                },
+                }
             } );
         }
     }

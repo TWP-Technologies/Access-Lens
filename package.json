@@ -1,15 +1,21 @@
 {
-  "name": "protected-media-links",
-  "version": "1.2.0",
-  "description": "Build process for Protected Media Links.",
-  "main": "build/gutenberg-integration-react/gutenberg-integration.jsx",
-  "private": true,
-  "scripts": {
-    "build": "wp-scripts build",
-    "start": "wp-scripts start",
-    "lint:js": "wp-scripts lint-js"
-  },
-  "devDependencies": {
-    "@wordpress/scripts": "^30.18.0"
-  }
+    "name": "protected-media-links",
+    "version": "1.2.0",
+    "description": "Build process for Protected Media Links.",
+    "private": true,
+    "scripts": {
+        "build": "wp-scripts build build/gutenberg-integration-react/gutenberg-integration.jsx --output-path=admin/assets/js/gutenberg-integration-react/",
+        "start": "wp-scripts start build/gutenberg-integration-react/gutenberg-integration.jsx --output-path=admin/assets/js/gutenberg-integration-react/",
+        "lint:js": "wp-scripts lint-js"
+    },
+    "devDependencies": {
+        "react": "^19.1.0",
+        "@wordpress/icons": "^10.25.0",
+        "@wordpress/scripts": "^30.18.0"
+    },
+    "trustedDependencies": [
+        "@parcel/watcher",
+        "core-js",
+        "core-js-pure"
+    ]
 }
