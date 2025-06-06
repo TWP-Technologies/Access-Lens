@@ -439,7 +439,7 @@ class PML_Token_Manager
         {
             self::init();
         }
-        
+
         $token_value = sanitize_text_field( $token_value );
         return $wpdb->get_row(
             $wpdb->prepare(
@@ -494,6 +494,36 @@ class PML_Token_Manager
                 );
             }
         }
+    }
+
+    /**
+     * Updates the status of expired tokens for a single attachment.
+     * This is a targeted cleanup for on-demand checks.
+     *
+     * @param int $attachment_id The ID of the attachment to clean up tokens for.
+     */
+    public static function cleanup_tokens_for_attachment( int $attachment_id )
+    {
+        global $wpdb;
+        if ( !$attachment_id )
+        {
+            return;
+        }
+        if ( empty( self::$table_name ) )
+        {
+            self::init();
+        }
+
+        $current_utc_time = current_time( 'mysql', true );
+
+        $wpdb->query(
+            $wpdb->prepare(
+                'UPDATE ' . self::$table_name . " SET status = 'expired'
+                WHERE status = 'active' AND attachment_id = %d AND expires_at IS NOT NULL AND expires_at < %s",
+                $attachment_id,
+                $current_utc_time,
+            ),
+        );
     }
 
     /**

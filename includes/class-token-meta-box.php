@@ -169,6 +169,11 @@ class PML_Token_Meta_Box
             wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
         }
 
+        // proactively update statuses for this attachment's tokens before fetching them
+        if ( class_exists('PML_Token_Manager') ) {
+            PML_Token_Manager::cleanup_tokens_for_attachment( $attachment_id );
+        }
+
         global $wpdb;
         $table_name = PML_Token_Manager::$table_name;
         $offset     = ( $page - 1 ) * $per_page;
