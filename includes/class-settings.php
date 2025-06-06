@@ -1188,7 +1188,7 @@ class PML_Settings
                         ),
                         esc_url(
                             admin_url(
-                                'options-general.php?page=' . PML_PLUGIN_SLUG . '-settings#' . $this->option_name_prefix . 'server_config_section',
+                                sprintf( "admin.php?page=%s#%sserver_config_section", PML_PLUGIN_SLUG, $this->option_name_prefix ),
                             ),
                         ),
                         '<code>.htaccess</code>',
@@ -1220,7 +1220,7 @@ class PML_Settings
                         ),
                         esc_url(
                             admin_url(
-                                'options-general.php?page=' . PML_PLUGIN_SLUG . '-settings#' . $this->option_name_prefix . 'server_config_section',
+                                sprintf( "admin.php?page=%s#%sserver_config_section", PML_PLUGIN_SLUG, $this->option_name_prefix ),
                             ),
                         ),
                     );

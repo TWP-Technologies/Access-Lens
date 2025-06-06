@@ -116,7 +116,7 @@ class PML_Media_Meta
         echo '<h4>' . esc_html__( 'Advanced Access Control (Overridden by Global)', PML_TEXT_DOMAIN ) . '</h4>';
         // take to global settings priorities tip
         echo '<span></span><a href="' .
-             esc_url( admin_url( 'options-general.php?page=' . PML_PLUGIN_SLUG . '-settings&open-priorities-tip=1' ) ) .
+             esc_url( admin_url( 'admin.php?page=' . PML_PLUGIN_SLUG . '&open-priorities-tip=1' ) ) .
              '" target="_blank" rel="noopener noreferrer">' .
              esc_html__( 'Learn about Global Priorities', PML_TEXT_DOMAIN ) .
              '</a>';
