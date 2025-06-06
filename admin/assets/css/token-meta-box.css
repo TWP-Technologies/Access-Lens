@@ -83,10 +83,10 @@
 
         input[type='radio']
         {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            margin-right : 5px;
+            display         : inline-flex;
+            justify-content : center;
+            align-items     : center;
+            margin-right    : 5px;
         }
     }
 
@@ -99,11 +99,11 @@
     {
         vertical-align : middle;
         margin-left    : 5px;
-        visibility     : hidden;
+        display        : none;
 
         &.is-active
         {
-            visibility : visible;
+            display : block;
         }
     }
 }
@@ -117,11 +117,10 @@
     font-style : italic;
 }
 
-/* New Grid Layout Styles */
 .pml-token-grid-header
 {
     display               : grid;
-    grid-template-columns : 40px minmax(0, 4fr) minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1.5fr) minmax(120px, auto);
+    grid-template-columns : 30px minmax(0, 4fr) minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1.5fr) minmax(100px, 7rem);
     gap                   : 10px;
     padding               : 10px 15px;
     font-weight           : 600;
@@ -131,6 +130,12 @@
     border-bottom         : none;
     font-size             : 13px;
     align-items           : center;
+    text-align            : center;
+
+    #header-\#
+    {
+        text-align : end;
+    }
 }
 
 .pml-token-grid-body
@@ -142,10 +147,10 @@
 .pml-token-entry
 {
     display               : grid;
-    grid-template-columns : 40px minmax(0, 4fr) minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1.5fr) minmax(120px, auto);
+    grid-template-columns : 30px minmax(0, 4fr) minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1.5fr) minmax(100px, 7rem);
     grid-template-rows    : auto auto;
     gap                   : 10px;
-    align-items           : start;
+    align-items           : center;
     padding               : 12px 15px;
 
     &:not(:last-child)
@@ -165,8 +170,10 @@
 
     .cell-number
     {
-        grid-column : 1;
-        grid-row    : 1 / span 2;
+        align-self   : start;
+        justify-self : end;
+        grid-column  : 1;
+        grid-row     : 1 / span 2;
     }
 
     .token-value
@@ -174,19 +181,42 @@
         grid-column : 2;
     }
 
-    .token-status
+    .pml-token-cell.subgrid
     {
-        grid-column : 3;
-    }
+        grid-column           : 3 / span 3;
 
-    .token-user
-    {
-        grid-column : 4;
-    }
+        display               : grid;
+        grid-template-rows    : auto min-content;
+        grid-template-columns : subgrid;
+        gap                   : 10px;
 
-    .token-usage
-    {
-        grid-column : 5;
+        .token-status
+        {
+            grid-column : 1;
+            grid-row    : 1;
+            text-align  : center;
+        }
+
+        .token-user
+        {
+            grid-column : 2;
+            grid-row    : 1;
+            text-align  : center;
+        }
+
+        .token-usage
+        {
+            grid-column : 3;
+            grid-row    : 1;
+            text-align  : center;
+        }
+
+        .date-item
+        {
+            grid-column  : 1 / span 3;
+            grid-row     : 2;
+            justify-self : center;
+        }
     }
 
     .cell-actions
@@ -351,14 +381,17 @@
     .pml-token-date-info
     {
         display         : flex;
-        justify-content : space-between;
+        justify-content : space-around;
         flex-wrap       : wrap;
         gap             : 15px;
         padding-top     : 10px;
-        margin-top      : 10px;
         border-top      : 1px solid #E9E9E9;
-        font-size       : 0.9em;
-        color           : #50575E;
+    }
+
+    .date-item
+    {
+        color     : #50575E;
+        font-size : 0.9em;
     }
 
     .cell-actions
@@ -368,7 +401,6 @@
         align-items     : center;
         justify-content : center;
         gap             : 6px;
-        padding-left    : 10px;
         border-left     : 1px solid #E0E0E0;
         height          : 100%;
         min-width       : 120px;
@@ -383,11 +415,11 @@
 
         .spinner
         {
-            visibility : hidden;
+            display : none;
 
             &.is-active
             {
-                visibility : visible;
+                display : block;
             }
         }
     }
@@ -558,11 +590,11 @@
 
         .spinner
         {
-            visibility : hidden;
+            display : none;
 
             &.is-active
             {
-                visibility : visible;
+                display : block;
             }
         }
     }

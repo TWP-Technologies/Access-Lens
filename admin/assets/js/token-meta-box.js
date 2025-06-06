@@ -149,7 +149,7 @@ jQuery( document ).ready( function( $ )
 
         let grid_html = `
             <div class='pml-token-grid-header'>
-                <div>#</div>
+                <div id='header-#'>#</div>
                 <div>Token</div>
                 <div>Status</div>
                 <div>Created By</div>
@@ -181,23 +181,29 @@ jQuery( document ).ready( function( $ )
                             <span class='pml-copied-text'>Copied</span>
                         </button>
                     </div>
-                    <div class='pml-token-cell token-status'>
-                        <span class='pml-token-status status-${ token.status.toLowerCase() }'>${ params.i18n?.[ `status_${ token.status.toLowerCase() }` ] ||
-                                                                                                 token.status }</span>
-                    </div>
-                    <div class='pml-token-cell token-user'>${ token.user_display_name }</div>
-                    <div class='pml-token-cell token-usage'>
-                        <div class='editable-max-uses ${ at_limit ? 'at-limit' : '' }' title='${ edit_title }'>
-                            <span class='usage-display'>${ usage_text }</span>
-                            <div class='usage-edit-form' style='display:none;'>
-                                <input type='number' class='max-uses-input' value='${ token.max_uses }' min='${ token.use_count }' max='${ params.effective_max_uses >
-                                                                                                                                           0 ?
-                                                                                                                                           params.effective_max_uses :
-                                                                                                                                           '' }' size='4'>
-                                <button type='button' class='button-link-blue save-max-uses'><span class='dashicons dashicons-yes-alt'></span></button>
-                                <button type='button' class='button-link-grey cancel-max-uses'><span class='dashicons dashicons-no'></span></button>
+                    <div class='pml-token-cell subgrid'>
+                        <div class='pml-token-cell token-status'>
+                            <span class='pml-token-status status-${ token.status.toLowerCase() }'>${ params.i18n?.[ `status_${ token.status.toLowerCase() }` ] ||
+                                                                                                     token.status }</span>
+                        </div>
+                        <div class='pml-token-cell token-user'>${ token.user_display_name }</div>
+                        <div class='pml-token-cell token-usage'>
+                            <div class='editable-max-uses ${ at_limit ? 'at-limit' : '' }' title='${ edit_title }'>
+                                <span class='usage-display'>${ usage_text }</span>
+                                <div class='usage-edit-form' style='display:none;'>
+                                    <input type='number' class='max-uses-input' value='${ token.max_uses }' min='${ token.use_count }' max='${ params.effective_max_uses >
+                                                                                                                                               0 ?
+                                                                                                                                               params.effective_max_uses :
+                                                                                                                                               '' }' size='4'>
+                                    <button type='button' class='button-link-blue save-max-uses'><span class='dashicons dashicons-yes-alt'></span></button>
+                                    <button type='button' class='button-link-grey cancel-max-uses'><span class='dashicons dashicons-no'></span></button>
+                                </div>
                             </div>
                         </div>
+                        <span class='date-item'>
+                            <strong>Last Used:</strong> 
+                            ${ token.last_used_at_raw ? format_date_time( token.last_used_at_raw ) : ( params.i18n?.not_yet_used || 'Not yet' ) }
+                        </span>
                     </div>
                     
                     <div class='pml-token-entry-cell cell-actions'>
@@ -210,13 +216,9 @@ jQuery( document ).ready( function( $ )
                         <button type='button' class='button button-link-delete pml-delete-token' data-token-id='${ token.id }'><span class='dashicons dashicons-trash'></span> Delete</button>
                         <span class='spinner'></span>
                     </div>
-
                     <div class='pml-token-date-info' data-raw-expires='${ token.expires_at_raw }'>
                         <span class='date-item'><strong>Created:</strong> ${ format_date_time( token.created_at_raw ) }</span>
                         <span class='date-item'><strong>Expires:</strong> ${ format_date_time( token.expires_at_raw ) }</span>
-                        <span class='date-item'><strong>Last Used:</strong> ${ token.last_used_at_raw ?
-                                                                               format_date_time( token.last_used_at_raw ) :
-                                                                               ( params.i18n?.not_yet_used || 'Not yet' ) }</span>
                     </div>
                 </div>
             `;
@@ -740,7 +742,7 @@ jQuery( document ).ready( function( $ )
     if ( $app_container.find( `#${ pml_prefix }-generate-token-form-fields` ).length )
     {
         initialize_token_generation_form( `${ pml_prefix }-generate-token-form-fields`, {
-            default_date : new Date().fp_incr( 1 )
+            default_date : new Date().fp_incr( 1 ),
         } );
     }
 } );
