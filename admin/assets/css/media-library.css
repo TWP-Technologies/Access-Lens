@@ -88,8 +88,6 @@
 /* PML Quick Edit Modal (List View - uses common .pml-modal styles) */
 #pml-quick-edit-modal
 {
-    /* Base styles in pml-admin-common.css */
-
     & .pml-quick-edit-advanced-link
     {
         margin-top  : 20px;
@@ -132,7 +130,7 @@
 
 /* Grid View Sidebar PML Section */
 .pml-grid-settings-section
-{ /* Removed .settings-save-status */
+{
     border-top  : 1px solid #DFDFDF;
     padding-top : 12px;
     margin-top  : 12px;
@@ -143,7 +141,7 @@
         display         : flex;
         justify-content : space-between;
         align-items     : center;
-        margin-bottom   : 10px; /* Space before "Manage additional" button */
+        margin-bottom   : 10px;
         padding         : 2px 0;
 
         & label.name
@@ -211,9 +209,9 @@
     }
 
     & .pml-grid-trigger-wrapper
-    { /* New wrapper for the "Manage" button */
+    {
         padding    : 5px 0;
-        border-top : 1px dashed #EEE; /* Optional separator */
+        border-top : 1px dashed #EEE;
         margin-top : 8px;
 
         & .button.pml-manage-grid-settings

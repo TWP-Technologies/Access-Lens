@@ -109,10 +109,10 @@ jQuery( document ).ready( function( $ )
             return;
         }
 
-        const $cellContent = $link.closest( '.pml-status-column-content' );
+        const $cellContent  = $link.closest( '.pml-status-column-content' );
         const attachmentId  = $cellContent.data( 'attachment-id' );
         const currentAction = $link.data( 'action' );
-        const originalHTML = $link.html();
+        const originalHTML  = $link.html();
         $link.html( '<span class="spinner is-active" style="float:none; vertical-align:middle; margin-right: 5px;"></span>' +
                     ( wp.i18n && wp.i18n.__ ? wp.i18n.__( 'Updating...' ) : 'Updating...' ) ).addClass( 'disabled' );
 
@@ -215,7 +215,7 @@ jQuery( document ).ready( function( $ )
                 {
                     return;
                 }
-                const $saveButton = $( this );
+                const $saveButton  = $( this );
                 const $spinner     = $pmlQuickEditModal.find( '.pml-modal-footer .spinner' );
                 const attachmentId = $form.data( 'attachment-id' );
 
@@ -311,8 +311,8 @@ jQuery( document ).ready( function( $ )
         {
             initPMLQuickEditModal();
         }
-        const attachmentId = $( this ).data( 'attachment-id' );
-        const $modalBody    = $pmlQuickEditModal.find( '.pml-modal-body' );
+        const attachmentId    = $( this ).data( 'attachment-id' );
+        const $modalBody      = $pmlQuickEditModal.find( '.pml-modal-body' );
         const $modalTitle     = $pmlQuickEditModal.find( '.pml-modal-title' );
         const attachmentTitle = $( this ).closest( 'tr' ).find( '.title .row-title' ).text() ||
                                 $( this ).closest( '.attachment-preview' ).find( '.title' ).text() || 'Item';
@@ -371,39 +371,38 @@ jQuery( document ).ready( function( $ )
                         return;
                     }
                     const attachmentId = this.model.get( 'id' );
-                    const $sidebar = this.$el.find( '.attachment-info .settings' );
+                    const $sidebar     = this.$el.find( '.attachment-info .settings' );
 
                     if ( $sidebar.length && !$sidebar.find( '.pml-grid-settings-section' ).length )
                     {
                         const $pmlSection = $(
-                            '<div class="pml-grid-settings-section">' +
-                            '<div class="pml-grid-status-toggle">' +
-                            '<label class="name">' + PLUGIN_NAME + ' Status</label>' +
-                            '<span class="pml-status-text-grid"></span>' +
-                            '<button type="button" class="button button-small pml-toggle-protection-grid" data-attachment-id="' +
-                            attachmentId + '">' +
-                            '<span class="spinner" style="float:none; vertical-align:middle; margin-right:3px;"></span>' +
-                            '</button>' +
-                            '</div>' +
-                            '<div class="pml-grid-trigger-wrapper">' +
-                            '<button type="button" class="button button-link pml-manage-grid-settings" data-attachment-id="' +
-                            attachmentId + '">' +
-                            params.text_manage_pml + ' <span class="dashicons dashicons-arrow-down-alt2"></span>' +
-                            '</button>' +
-                            '</div>' +
-                            '<div class="pml-grid-form-container" style="display:none;"></div>' +
-                            '</div>',
+                            `<div class='pml-grid-settings-section'>
+                                <div class='pml-grid-status-toggle'>
+                                    <label class='name'>${ PLUGIN_NAME } Status</label>
+                                    <span class='pml-status-text-grid'></span>
+                                    <button type='button' class='button button-small pml-toggle-protection-grid' data-attachment-id='${ attachmentId }'>
+                                        <span class='spinner' style='float:none; vertical-align:middle; margin-right:3px; display: inline-flex; flex-direction: column; justify-content: center;'></span>
+                                    </button>
+                                </div>
+                                <div class='pml-grid-trigger-wrapper'>
+                                    <button type='button' class='button button-link pml-manage-grid-settings' data-attachment-id='${ attachmentId }'>
+                                        ${ params.text_manage_pml }
+                                        <span class='dashicons dashicons-arrow-down-alt2'></span>
+                                    </button>
+                                </div>
+                                <div class='pml-grid-form-container' style='display:none;'></div>
+                            </div>`,
                         );
                         $sidebar.append( $pmlSection );
 
                         const updateGridToggleUI = function( isProtected, initialLoad = false )
                         {
                             const $statusTextSpan = $pmlSection.find( '.pml-status-text-grid' );
-                            const $toggleButton = $pmlSection.find( '.pml-toggle-protection-grid' );
-                            const statusText = isProtected ? params.text_protected : params.text_unprotected;
-                            const toggleText   = isProtected ? params.text_toggle_unprotect : params.text_toggle_protect;
-                            const toggleAction = isProtected ? 'unprotect' : 'protect';
-                            const toggleIcon = isProtected ? 'dashicons-unlock' : 'dashicons-lock';
+                            const $toggleButton   = $pmlSection.find( '.pml-toggle-protection-grid' );
+                            const statusText      = isProtected ? params.text_protected : params.text_unprotected;
+                            const toggleText      = isProtected ? params.text_toggle_unprotect : params.text_toggle_protect;
+                            const toggleAction    = isProtected ? 'unprotect' : 'protect';
+                            const toggleIcon      = isProtected ? 'dashicons-unlock' : 'dashicons-lock';
 
                             $statusTextSpan.text( statusText )
                                 .removeClass( 'is-protected is-unprotected' )
@@ -465,7 +464,7 @@ jQuery( document ).ready( function( $ )
                             }
                             const attachmentId  = $button.data( 'attachment-id' );
                             const currentAction = $button.data( 'action' );
-                            const originalHTML = $button.html();
+                            const originalHTML  = $button.html();
                             $button.html( '<span class="spinner is-active" style="float:none; vertical-align:middle;"></span>' )
                                 .addClass( 'disabled' );
 
@@ -525,8 +524,8 @@ jQuery( document ).ready( function( $ )
                             e.stopPropagation();
                             const $button        = $( this );
                             const $formContainer = $pmlSection.find( '.pml-grid-form-container' );
-                            const $indicator = $button.find( '.dashicons' );
-                            const isVisible = $formContainer.is( ':visible' );
+                            const $indicator     = $button.find( '.dashicons' );
+                            const isVisible      = $formContainer.is( ':visible' );
                             $button.toggleClass( 'expanded', !isVisible );
                             if ( isVisible )
                             {
@@ -573,10 +572,10 @@ jQuery( document ).ready( function( $ )
                         $pmlSection.on( 'click', '.pml-save-grid-settings', function( e )
                         {
                             e.stopPropagation();
-                            const $saveButton = $( this );
-                            const $form      = $saveButton.closest( 'form' );
-                            const $spinner     = $saveButton.siblings( '.spinner' );
-                            const attachmentId      = $form.data( 'attachment-id' );
+                            const $saveButton         = $( this );
+                            const $form               = $saveButton.closest( 'form' );
+                            const $spinner            = $saveButton.siblings( '.spinner' );
+                            const attachmentId        = $form.data( 'attachment-id' );
                             const rawFormData         = $form.serializeArray();
                             const settingsDataPayload = {};
                             $.each( rawFormData, function( i, field )
@@ -603,10 +602,10 @@ jQuery( document ).ready( function( $ )
                                 .done( function( response )
                                 {
                                     const feedbackClass = response.success ? 'success' : 'error';
-                                    const feedbackMsg = response.success ? ( wp.i18n && wp.i18n.__ ?
-                                                                             wp.i18n.__( 'Saved!', 'protected-media-links' ) :
-                                                                             'Saved!' ) :
-                                                        ( response.data.message || params.text_error );
+                                    const feedbackMsg   = response.success ? ( wp.i18n && wp.i18n.__ ?
+                                                                               wp.i18n.__( 'Saved!', 'protected-media-links' ) :
+                                                                               'Saved!' ) :
+                                                          ( response.data.message || params.text_error );
                                     $saveButton.after( '<span class="pml-saved-feedback ' + feedbackClass + '">' + feedbackMsg +
                                                        '</span>' );
                                     setTimeout( function()
@@ -636,7 +635,7 @@ jQuery( document ).ready( function( $ )
                                 } );
                         } );
                     }
-                }
+                },
             } );
         }
     }
