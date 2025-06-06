@@ -381,7 +381,7 @@ jQuery( document ).ready( function( $ )
                                     <label class='name'>${ PLUGIN_NAME } Status</label>
                                     <span class='pml-status-text-grid'></span>
                                     <button type='button' class='button button-small pml-toggle-protection-grid' data-attachment-id='${ attachmentId }'>
-                                        <span class='spinner' style='float:none; vertical-align:middle; margin-right:3px; display: inline-flex; flex-direction: column; justify-content: center;'></span>
+                                        <span class='spinner' style='float:none; vertical-align:middle; margin-right:3px;'></span>
                                     </button>
                                 </div>
                                 <div class='pml-grid-trigger-wrapper'>

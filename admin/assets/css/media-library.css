@@ -189,8 +189,11 @@
 
             & .dashicons
             {
-                font-size   : 16px;
-                line-height : 1;
+                font-size       : 16px;
+                line-height     : 1;
+                display         : inline-flex;
+                flex-direction  : column;
+                justify-content : center;
             }
 
             & .spinner
