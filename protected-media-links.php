@@ -36,6 +36,8 @@ define( 'PML_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PML_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 const PML_SELECT2_VERSION = '4.0.13';
 
+$pml_generated_links_cache = [];
+
 /**
  * Checks PHP and WordPress versions.
  *
@@ -64,14 +66,13 @@ function pml_php_version_notice()
         <p>
             <?php
             printf(
-            /* translators: 1: Plugin Name, 2: Required PHP version, 3: Current PHP version */
-                esc_html__(
-                    '%1$s requires PHP version %2$s or higher. Your current version is %3$s. Please update PHP to use this plugin.',
-                    PML_TEXT_DOMAIN,
-                ),
-                esc_html( PML_PLUGIN_NAME ),
-                esc_html( PML_MIN_PHP_VERSION ),
-                esc_html( PHP_VERSION ),
+            /* translators: 1: Plugin Name, 2: Required PHP version, 3: Current PHP version */ esc_html__(
+                                                                                                   '%1$s requires PHP version %2$s or higher. Your current version is %3$s. Please update PHP to use this plugin.',
+                                                                                                   PML_TEXT_DOMAIN,
+                                                                                               ),
+                                                                                               esc_html( PML_PLUGIN_NAME ),
+                                                                                               esc_html( PML_MIN_PHP_VERSION ),
+                                                                                               esc_html( PHP_VERSION ),
             );
             ?>
         </p>
@@ -111,51 +112,67 @@ if ( !pml_compatibility_check() )
  *
  * @param string $class_name The fully-qualified class name.
  */
-function pml_classmap_autoloader( string $class_name ) {
+function pml_classmap_autoloader( string $class_name )
+{
     static $class_map = null;
 
     // Load the class map only once.
-    if ( null === $class_map ) {
+    if ( null === $class_map )
+    {
         $map_file = PML_PLUGIN_DIR . 'includes/pml-class-map.php';
-        if ( file_exists( $map_file ) ) {
+        if ( file_exists( $map_file ) )
+        {
             // The class map file returns an array.
             // Paths in the map are relative to the map file's directory (includes/)
             // and are constructed like: __DIR__ . '/path/to/class.php'
             $class_map = require $map_file;
-        } else {
+        }
+        else
+        {
             // Class map is missing. Fallback or error.
             // For production, this should ideally not happen if the build process is correct.
             // We could log an error or display an admin notice.
             $class_map = []; // Empty map to prevent repeated file_exists checks.
-            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && is_admin() ) {
+            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && is_admin() )
+            {
                 // Display a notice only if WP_DEBUG is on, to avoid issues on live sites if map is temporarily missing.
-                add_action( 'admin_notices', function() {
-                    echo '<div class="notice notice-error is-dismissible"><p>';
-                    echo '<strong>' . esc_html( PML_PLUGIN_NAME ) . ' Critical Error:</strong> ';
-                    echo esc_html__( 'The class map file (includes/pml-class-map.php) is missing. Autoloading will fail. Please regenerate the class map using the build script or reinstall the plugin.', PML_TEXT_DOMAIN );
-                    echo '</p></div>';
-                });
+                add_action(
+                    'admin_notices',
+                    function () {
+                        echo '<div class="notice notice-error is-dismissible"><p>';
+                        echo '<strong>' . esc_html( PML_PLUGIN_NAME ) . ' Critical Error:</strong> ';
+                        echo esc_html__(
+                            'The class map file (includes/pml-class-map.php) is missing. Autoloading will fail. Please regenerate the class map using the build script or reinstall the plugin.',
+                            PML_TEXT_DOMAIN,
+                        );
+                        echo '</p></div>';
+                    },
+                );
             }
             // Log the error for administrators to see.
-            error_log( PML_PLUGIN_NAME . ' Error: Class map file not found at ' . $map_file . '. Autoloading may fail.');
+            error_log( PML_PLUGIN_NAME . ' Error: Class map file not found at ' . $map_file . '. Autoloading may fail.' );
         }
     }
 
     // Check if the class exists in our map.
-    if ( isset( $class_map[ $class_name ] ) ) {
+    if ( isset( $class_map[ $class_name ] ) )
+    {
         $file_path = $class_map[ $class_name ];
         // The path in $class_map already includes __DIR__ (of the map file),
         // so it's an absolute path ready to be required.
-        if ( file_exists( $file_path ) ) {
+        if ( file_exists( $file_path ) )
+        {
             require_once $file_path;
-        } else {
+        }
+        else
+        {
             // Log error if file specified in map doesn't exist.
-            error_log( PML_PLUGIN_NAME . ' Error: Class map references a missing file for class ' . $class_name . ': ' . $file_path);
+            error_log( PML_PLUGIN_NAME . ' Error: Class map references a missing file for class ' . $class_name . ': ' . $file_path );
         }
     }
 }
-spl_autoload_register( 'pml_classmap_autoloader' );
 
+spl_autoload_register( 'pml_classmap_autoloader' );
 
 /** Loads the plugin text domain for translation. */
 function pml_load_textdomain()
@@ -166,6 +183,7 @@ function pml_load_textdomain()
         dirname( plugin_basename( PML_PLUGIN_FILE ) ) . '/languages/',
     );
 }
+
 add_action( 'plugins_loaded', 'pml_load_textdomain' );
 
 /** Initializes the plugin. */
@@ -173,8 +191,10 @@ function pml_init_plugin()
 {
     // Critical classes check (can be simplified if class map autoloader is robust)
     // For now, keeping a light check for PML_Core as it's the entry point.
-    if ( !class_exists( 'PML_Core' ) ) {
-        if ( is_admin() ) {
+    if ( !class_exists( 'PML_Core' ) )
+    {
+        if ( is_admin() )
+        {
             add_action(
                 'admin_notices',
                 function () {
@@ -183,16 +203,15 @@ function pml_init_plugin()
                                 '%1$s core class (PML_Core) is missing or could not be autoloaded. The plugin cannot function correctly. Please ensure the class map is up to date or reinstall the plugin.',
                                 PML_TEXT_DOMAIN,
                             ),
-                            esc_html( PML_PLUGIN_NAME )
+                            esc_html( PML_PLUGIN_NAME ),
                         ) . '</p></div>';
-                }
+                },
             );
         }
         return; // Halt further initialization.
     }
 
-
-    PML_Core::get_instance(); // Initialize the core plugin class.
+    PML_Core::get_instance();   // Initialize the core plugin class.
     PML_Token_Manager::init();  // Initialize token manager (sets table name).
 
     // Schedule or clear cron job based on settings.
@@ -208,9 +227,10 @@ function pml_init_plugin()
         wp_clear_scheduled_hook( PML_PREFIX . '_daily_token_cleanup_hook' );
     }
 
-    // AJAX action for user search (used by Select2).
     add_action( 'wp_ajax_' . PML_PREFIX . '_search_users', 'pml_ajax_search_users' );
+    add_action( 'wp_ajax_' . PML_PREFIX . '_search_media', 'pml_ajax_search_media' );
 }
+
 add_action( 'plugins_loaded', 'pml_init_plugin', 10 ); // Ensure it runs after classes might be loaded.
 
 /** Handles AJAX request for searching users. */
@@ -268,7 +288,52 @@ function pml_ajax_search_users()
         [
             'items'       => $items,
             'total_count' => $total_users,
-        ]
+        ],
+    );
+}
+
+/** Handles AJAX request for searching media files (attachments). */
+function pml_ajax_search_media()
+{
+    check_ajax_referer( 'pml_search_media_nonce', '_ajax_nonce' );
+    if ( !current_user_can( 'upload_files' ) ) // Capability to view media library
+    {
+        wp_send_json_error( [ 'message' => esc_html__( 'Insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+    }
+
+    $search_term    = isset( $_GET[ 'q' ] ) ? sanitize_text_field( wp_unslash( $_GET[ 'q' ] ) ) : '';
+    $page           = isset( $_GET[ 'page' ] ) ? absint( $_GET[ 'page' ] ) : 1;
+    $posts_per_page = 10;
+
+    $query_args = [
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'posts_per_page' => $posts_per_page,
+        'paged'          => $page,
+        's'              => $search_term,
+    ];
+
+    $query = new WP_Query( $query_args );
+    $items = [];
+    if ( $query->have_posts() )
+    {
+        while ( $query->have_posts() )
+        {
+            $query->the_post();
+            $mime_type = get_post_mime_type( get_the_ID() );
+            $items[]   = [
+                'id'   => get_the_ID(),
+                'text' => esc_html( get_the_title() . ' (ID: ' . get_the_ID() . ' | ' . $mime_type . ')' ),
+            ];
+        }
+    }
+    wp_reset_postdata();
+
+    wp_send_json_success(
+        [
+            'items'       => $items,
+            'total_count' => $query->found_posts,
+        ],
     );
 }
 
@@ -289,20 +354,17 @@ else
         add_action(
             'admin_notices',
             function () {
-                echo '<div class="notice notice-error"><p>' .
-                     sprintf(
-                         esc_html__(
-                             '%1$s installation/uninstallation controller class (PML_Install) is missing or could not be autoloaded. The plugin might not (de)activate or uninstall correctly. Please ensure the class map is up to date or reinstall the plugin.',
-                             PML_TEXT_DOMAIN,
-                         ),
-                         esc_html( PML_PLUGIN_NAME ),
-                     ) .
-                     '</p></div>';
+                echo '<div class="notice notice-error"><p>' . sprintf(
+                        esc_html__(
+                            '%1$s installation/uninstallation controller class (PML_Install) is missing or could not be autoloaded. The plugin might not (de)activate or uninstall correctly. Please ensure the class map is up to date or reinstall the plugin.',
+                            PML_TEXT_DOMAIN,
+                        ),
+                        esc_html( PML_PLUGIN_NAME ),
+                    ) . '</p></div>';
             },
         );
     }
 }
-
 
 /** Executes the daily token cleanup cron job. */
 function pml_execute_token_cleanup()
@@ -312,6 +374,7 @@ function pml_execute_token_cleanup()
         PML_Token_Manager::cleanup_tokens();
     }
 }
+
 add_action( PML_PREFIX . '_daily_token_cleanup_hook', 'pml_execute_token_cleanup' );
 
 /**
@@ -331,5 +394,6 @@ function pml_add_settings_link( array $links ): array
     array_unshift( $links, $settings_link );
     return $links;
 }
+
 add_filter( 'plugin_action_links_' . plugin_basename( PML_PLUGIN_FILE ), 'pml_add_settings_link' );
 

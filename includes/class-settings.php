@@ -22,21 +22,24 @@ class PML_Settings
 
         add_action( 'admin_menu', [ $this, 'add_settings_page' ] );
         add_action( 'admin_init', [ $this, 'register_settings' ] );
-        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_settings_page_scripts' ] ); // Renamed for clarity
+        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
         add_action( 'admin_notices', [ $this, 'display_server_config_needed_notice' ] );
     }
 
     /**
      * Enqueues scripts and styles specific to the PML Settings Page.
      */
-    public function enqueue_settings_page_scripts( string $hook_suffix ): void
+    public function enqueue_admin_scripts( string $hook_suffix ): void
     {
-        if ( 'settings_page_' . PML_PLUGIN_SLUG . '-settings' !== $hook_suffix )
+        $main_settings_hook_suffix = PML_PLUGIN_SLUG . '-settings';
+        $shortcodes_hook_suffix    = PML_PLUGIN_SLUG . '-shortcodes';
+
+        if ( str_ends_with( $hook_suffix, $main_settings_hook_suffix ) === false && str_ends_with( $hook_suffix, $shortcodes_hook_suffix ) === false )
         {
             return;
         }
 
-        // Enqueue Select2 CSS and JS (shared dependency)
+        // --- Common Assets for All PML Pages ---
         wp_enqueue_style(
             'select2',
             "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/css/select2.min.css",
@@ -50,74 +53,116 @@ class PML_Settings
             PML_SELECT2_VERSION,
             true,
         );
-
-        // Enqueue Common Admin CSS (shared across PML admin pages)
-        wp_enqueue_style(
-            PML_PLUGIN_SLUG . '-admin-common-css',
-            PML_PLUGIN_URL . 'admin/assets/css/common.css',
-            [ 'dashicons' ], // Dashicons for modals, notices etc.
-            PML_VERSION,
-        );
-
-        // Enqueue Settings Page Specific CSS
-        wp_enqueue_style(
-            PML_PLUGIN_SLUG . '-settings-page-css',
-            PML_PLUGIN_URL . 'admin/assets/css/settings-page.css',
-            [ PML_PLUGIN_SLUG . '-admin-common-css', 'select2' ], // Depends on common and select2
-            PML_VERSION,
-        );
-
-        // Enqueue Common Admin Utilities JS
+        wp_enqueue_style( PML_PLUGIN_SLUG . '-admin-common-css', PML_PLUGIN_URL . 'admin/assets/css/common.css', [ 'dashicons' ], PML_VERSION );
         wp_enqueue_script(
             PML_PLUGIN_SLUG . '-admin-common-utils-js',
             PML_PLUGIN_URL . 'admin/assets/js/common-utils.js',
-            [ 'jquery', 'wp-i18n' ], // wp-i18n for translatable JS strings
+            [ 'jquery', 'wp-i18n' ],
             PML_VERSION,
             true,
         );
-        // Ensure translations are available for JS
         wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
 
-        // Enqueue Settings Page Specific JS
-        wp_enqueue_script(
-            PML_PLUGIN_SLUG . '-settings-page-js',
-            PML_PLUGIN_URL . 'admin/assets/js/settings-page.js',
-            [ 'jquery', 'select2', PML_PLUGIN_SLUG . '-admin-common-utils-js', 'wp-i18n' ], // Depends on jQuery, Select2, common utils
-            PML_VERSION,
-            true,
-        );
-        wp_set_script_translations( PML_PLUGIN_SLUG . '-settings-page-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+        // --- Assets for Main Settings Page ---
+        if ( $hook_suffix === $main_settings_hook_suffix )
+        {
+            wp_enqueue_style(
+                PML_PLUGIN_SLUG . '-settings-page-css',
+                PML_PLUGIN_URL . 'admin/assets/css/settings-page.css',
+                [ PML_PLUGIN_SLUG . '-admin-common-css', 'select2' ],
+                PML_VERSION,
+            );
+            wp_enqueue_script(
+                PML_PLUGIN_SLUG . '-settings-page-js',
+                PML_PLUGIN_URL . 'admin/assets/js/settings-page.js',
+                [ 'jquery', 'select2', PML_PLUGIN_SLUG . '-admin-common-utils-js', 'wp-i18n' ],
+                PML_VERSION,
+                true,
+            );
+            wp_set_script_translations( PML_PLUGIN_SLUG . '-settings-page-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
 
-        // Localize script with parameters for AJAX, nonces, and translatable strings for JS
-        // This is now primarily for pml-settings-page.js
-        wp_localize_script(
-            PML_PLUGIN_SLUG . '-settings-page-js', // Localize against the specific page script
-            'pml_admin_params',                    // Keep same object name for consistency if other scripts check it
-            [
-                'ajax_url'                => admin_url( 'admin-ajax.php' ),
-                'search_users_nonce'      => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
-                'user_select_placeholder' => esc_html__( 'Search for users by name or email...', PML_TEXT_DOMAIN ),
-                'confirm_remove_user'     => esc_html__( 'Are you sure you want to remove this user from the list?', PML_TEXT_DOMAIN ),
-                'error_searching_users'   => esc_html__( 'Error searching users. Please try again or contact support.', PML_TEXT_DOMAIN ),
-                'error_ajax_failed'       => esc_html__(
-                    'An AJAX error occurred. Please check your connection or contact support.',
-                    PML_TEXT_DOMAIN,
-                ),
-                'default_bot_user_agents' => $this->get_default_bot_user_agents(),
-                'default_bot_domains'     => $this->get_default_bot_domains(),
-            ],
-        );
+            wp_localize_script(
+                PML_PLUGIN_SLUG . '-settings-page-js',
+                'pml_admin_params',
+                [
+                    'ajax_url'                => admin_url( 'admin-ajax.php' ),
+                    'search_users_nonce'      => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
+                    'user_select_placeholder' => esc_html__( 'Search for users...', PML_TEXT_DOMAIN ),
+                    'confirm_remove_user'     => esc_html__( 'Are you sure you want to remove this user from the list?', PML_TEXT_DOMAIN ),
+                    'error_searching_users'   => esc_html__( 'Error searching users. Please try again or contact support.', PML_TEXT_DOMAIN ),
+                    'error_ajax_failed'       => esc_html__(
+                        'An AJAX error occurred. Please check your connection or contact support.',
+                        PML_TEXT_DOMAIN,
+                    ),
+                    'default_bot_user_agents' => $this->get_default_bot_user_agents(),
+                    'default_bot_domains'     => $this->get_default_bot_domains(),
+                ],
+            );
+        }
+
+        // --- Assets for Shortcodes Page ---
+        if ( str_ends_with( $hook_suffix, $shortcodes_hook_suffix ) )
+        {
+            wp_enqueue_style(
+                PML_PLUGIN_SLUG . '-shortcodes-page-css',
+                PML_PLUGIN_URL . 'admin/assets/css/shortcodes-page.css',
+                [ 'wp-components' ],
+                PML_VERSION,
+            );
+            wp_enqueue_script(
+                PML_PLUGIN_SLUG . '-shortcode-generator-js',
+                PML_PLUGIN_URL . 'admin/assets/js/shortcode-generator.js',
+                [ 'jquery', 'select2', 'wp-i18n' ],
+                PML_VERSION,
+                true,
+            );
+            wp_set_script_translations( PML_PLUGIN_SLUG . '-shortcode-generator-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+
+            wp_localize_script(
+                PML_PLUGIN_SLUG . '-shortcode-generator-js',
+                'pml_shortcode_params',
+                [
+                    'ajax_url'                 => admin_url( 'admin-ajax.php' ),
+                    'search_media_nonce'       => wp_create_nonce( 'pml_search_media_nonce' ),
+                    'media_select_placeholder' => esc_html__( 'Search for a media file...', PML_TEXT_DOMAIN ),
+                    'text_copied'              => esc_html__( 'Copied!', PML_TEXT_DOMAIN ),
+                ],
+            );
+        }
     }
 
-    // ... (rest of PML_Settings class remains the same as v1.1.5)
     public function add_settings_page()
     {
-        add_options_page(
-            PML_PLUGIN_NAME . ' ' . esc_html__( 'Settings', PML_TEXT_DOMAIN ),
+        // create the top-level menu page.
+        add_menu_page(
             PML_PLUGIN_NAME,
+            'Protected Media',
             'manage_options',
-            PML_PLUGIN_SLUG . '-settings',
+            PML_PLUGIN_SLUG,
             [ $this, 'render_settings_page' ],
+            'dashicons-lock',
+            10, // set next to media library menu
+        );
+
+        // add the "settings" sub-page.
+        // the first sub-page with the same slug as the parent becomes the main link.
+        add_submenu_page(
+            PML_PLUGIN_SLUG,
+            PML_PLUGIN_NAME . ' ' . esc_html__( 'Settings', PML_TEXT_DOMAIN ),
+            esc_html__( 'Settings', PML_TEXT_DOMAIN ),
+            'manage_options',
+            PML_PLUGIN_SLUG,
+            [ $this, 'render_settings_page' ],
+        );
+
+        // add the "shortcodes" sub-page.
+        add_submenu_page(
+            PML_PLUGIN_SLUG,
+            esc_html__( 'Shortcodes', PML_TEXT_DOMAIN ) . ' - ' . PML_PLUGIN_NAME,
+            esc_html__( 'Shortcodes', PML_TEXT_DOMAIN ),
+            'manage_options',
+            PML_PLUGIN_SLUG . '-shortcodes',
+            [ $this, 'render_shortcodes_page' ],
         );
     }
 
@@ -536,6 +581,195 @@ class PML_Settings
         <?php
     }
 
+    public function render_shortcodes_page()
+    {
+        if ( !current_user_can( 'manage_options' ) )
+        {
+            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', PML_TEXT_DOMAIN ) );
+        }
+        ?>
+        <div class="wrap pml-shortcodes-wrap">
+            <div class="pml-page-header">
+                <h1><?php esc_html_e( 'Shortcode Generator', PML_TEXT_DOMAIN ); ?></h1>
+                <p><?php esc_html_e(
+                        'Use this tool to easily generate and copy shortcodes for use in your posts, pages, and widgets.',
+                        PML_TEXT_DOMAIN,
+                    ); ?></p>
+            </div>
+
+            <div class="pml-generator-grid">
+                <div class="pml-generator-form-container">
+                    <h2 class="title"><?php esc_html_e( 'Generator', PML_TEXT_DOMAIN ); ?></h2>
+                    <form id="pml-shortcode-generator-form">
+                        <fieldset>
+                            <legend><?php esc_html_e( 'Core Link Settings', PML_TEXT_DOMAIN ); ?></legend>
+                            <div class="form-field">
+                                <label for="pml-media-id"><?php esc_html_e( 'Media File (Required)', PML_TEXT_DOMAIN ); ?></label>
+                                <select id="pml-media-id" name="pml_media_id" style="width:100%;"></select>
+                            </div>
+                            <div class="form-field">
+                                <label for="pml-text"><?php esc_html_e( 'Link Text (Optional)', PML_TEXT_DOMAIN ); ?></label>
+                                <input type="text"
+                                       id="pml-text"
+                                       name="pml_text"
+                                       placeholder="<?php esc_attr_e( 'Defaults to file title', PML_TEXT_DOMAIN ); ?>">
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend><?php esc_html_e( 'Token Behavior', PML_TEXT_DOMAIN ); ?></legend>
+                            <div class="form-field">
+                                <label for="pml-duration"><?php esc_html_e( 'Token Duration (Optional)', PML_TEXT_DOMAIN ); ?></label>
+                                <select id="pml-duration" name="pml_duration">
+                                    <option value=""><?php esc_html_e( 'Use Global Default', PML_TEXT_DOMAIN ); ?> (<?php echo esc_html(
+                                            PML_Core::format_duration( get_option( PML_PREFIX . '_settings_default_token_expiry' ) ),
+                                        ); ?>)
+                                    </option>
+                                    <?php foreach ( self::get_token_expiry_options() as $seconds => $label ) : ?>
+                                        <option value="<?php echo esc_attr( $seconds ); ?>"><?php echo esc_html( $label ); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="pml-max-uses"><?php esc_html_e( 'Maximum Uses (Optional)', PML_TEXT_DOMAIN ); ?></label>
+                                <input type="number"
+                                       id="pml-max-uses"
+                                       name="pml_max_uses"
+                                       min="0"
+                                       step="1"
+                                       placeholder="<?php esc_attr_e( 'Uses file or global default', PML_TEXT_DOMAIN ); ?>">
+                                <p class="description"><?php esc_html_e(
+                                        'Enter 0 for unlimited. This will update the file\'s setting if set higher.',
+                                        PML_TEXT_DOMAIN,
+                                    ); ?></p>
+                            </div>
+                            <div class="form-field form-field-checkbox">
+                                <label>
+                                    <input type="checkbox" id="pml-protect" name="pml_protect" value="true" checked>
+                                    <?php esc_html_e( 'Automatically protect this file if unprotected', PML_TEXT_DOMAIN ); ?>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend><?php esc_html_e( 'Output Formatting', PML_TEXT_DOMAIN ); ?></legend>
+                            <div class="form-field form-field-checkbox">
+                                <label>
+                                    <input type="checkbox" id="pml-html" name="pml_html" value="true" checked>
+                                    <?php esc_html_e( 'Output as a full HTML link', PML_TEXT_DOMAIN ); ?>
+                                </label>
+                            </div>
+                            <div id="pml-open-in-new-tab-wrapper" class="form-field form-field-checkbox">
+                                <label>
+                                    <input type="checkbox" id="pml-open_in_new_tab" name="pml_open_in_new_tab" value="true" checked>
+                                    <?php esc_html_e( 'Open link in a new tab', PML_TEXT_DOMAIN ); ?>
+                                </label>
+                            </div>
+                            <div class="form-field">
+                                <label for="pml-class"><?php esc_html_e( 'CSS Class (Optional)', PML_TEXT_DOMAIN ); ?></label>
+                                <input type="text"
+                                       id="pml-class"
+                                       name="pml_class"
+                                       placeholder="<?php esc_attr_e( 'e.g., my-download-button', PML_TEXT_DOMAIN ); ?>">
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+
+                <div class="pml-generator-output-container">
+                    <h2 class="title"><?php esc_html_e( 'Live Output', PML_TEXT_DOMAIN ); ?></h2>
+                    <textarea id="pml-generated-shortcode" readonly rows="4"></textarea>
+                    <div class="pml-copy-button-wrapper">
+                        <button type="button" id="pml-copy-shortcode-button" class="button button-primary">
+                            <span class="dashicons dashicons-admin-page"></span>
+                            <?php esc_html_e( 'Copy Shortcode', PML_TEXT_DOMAIN ); ?>
+                        </button>
+                        <span class="pml-copy-feedback"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pml-shortcode-docs">
+                <h2><?php esc_html_e( 'Shortcode Reference', PML_TEXT_DOMAIN ); ?></h2>
+                <div class="pml-shortcode-reference">
+                    <h3>[pml_token_link]</h3>
+                    <p><?php esc_html_e( 'Generates a new token access link to a protected media file.', PML_TEXT_DOMAIN ); ?></p>
+                    <table class="wp-list-table widefat striped">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e( 'Attribute', PML_TEXT_DOMAIN ); ?></th>
+                                <th><?php esc_html_e( 'Required', PML_TEXT_DOMAIN ); ?></th>
+                                <th><?php esc_html_e( 'Description', PML_TEXT_DOMAIN ); ?></th>
+                                <th><?php esc_html_e( 'Default Value', PML_TEXT_DOMAIN ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>id</code></td>
+                                <td><strong><?php esc_html_e( 'Yes', PML_TEXT_DOMAIN ); ?></strong></td>
+                                <td><?php esc_html_e( 'The ID of the media file from the Media Library.', PML_TEXT_DOMAIN ); ?></td>
+                                <td><em>(None)</em></td>
+                            </tr>
+                            <tr>
+                                <td><code>text</code></td>
+                                <td>No</td>
+                                <td><?php esc_html_e( 'The clickable text for the link. Ignored if html="false".', PML_TEXT_DOMAIN ); ?></td>
+                                <td><?php esc_html_e( "The media file's title.", PML_TEXT_DOMAIN ); ?></td>
+                            </tr>
+                            <tr>
+                                <td><code>duration</code></td>
+                                <td>No</td>
+                                <td><?php esc_html_e( "The token's validity period in seconds (e.g., 3600 for 1 hour).", PML_TEXT_DOMAIN ); ?></td>
+                                <td><?php esc_html_e( 'The global default setting.', PML_TEXT_DOMAIN ); ?></td>
+                            </tr>
+                            <tr>
+                                <td><code>max_uses</code></td>
+                                <td>No</td>
+                                <td><?php esc_html_e( 'The maximum number of times the token can be used.', PML_TEXT_DOMAIN ); ?></td>
+                                <td><?php esc_html_e( "The file's override or global default.", PML_TEXT_DOMAIN ); ?></td>
+                            </tr>
+                            <tr>
+                                <td><code>protect</code></td>
+                                <td>No</td>
+                                <td><?php esc_html_e( 'Automatically protect the media file if it isn\'t already.', PML_TEXT_DOMAIN ); ?></td>
+                                <td><code>true</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>html</code></td>
+                                <td>No</td>
+                                <td><?php esc_html_e(
+                                        'If "true", outputs a full <a> tag. If "false", outputs only the raw URL.',
+                                        PML_TEXT_DOMAIN,
+                                    ); ?></td>
+                                <td><code>true</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>open_in_new_tab</code></td>
+                                <td>No</td>
+                                <td><?php esc_html_e(
+                                        'If "true", adds target="_blank" to the link. Ignored if html="false".',
+                                        PML_TEXT_DOMAIN,
+                                    ); ?></td>
+                                <td><code>true</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>class</code></td>
+                                <td>No</td>
+                                <td><?php esc_html_e(
+                                        'Adds a custom CSS class to the <a> link element. Ignored if html="false".',
+                                        PML_TEXT_DOMAIN,
+                                    ); ?></td>
+                                <td><em>(None)</em></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <?php
+    }
+
     public function render_text_field( array $args )
     {
         $option_name  = $args[ 'option_name' ];
@@ -793,12 +1027,10 @@ class PML_Settings
     public function render_server_config_info_section()
     {
         echo '<div class="pml-section-content-wrapper">'; // Wrap content
-        echo '<p>' .
-             esc_html__(
-                 'For file protection to work, your web server must be configured to pass requests for uploaded files to WordPress. The plugin attempts to manage this automatically for Apache servers via the .htaccess file.',
-                 PML_TEXT_DOMAIN,
-             ) .
-             '</p>';
+        echo '<p>' . esc_html__(
+                'For file protection to work, your web server must be configured to pass requests for uploaded files to WordPress. The plugin attempts to manage this automatically for Apache servers via the .htaccess file.',
+                PML_TEXT_DOMAIN,
+            ) . '</p>';
 
         $server_software = isset( $_SERVER[ 'SERVER_SOFTWARE' ] ) ? sanitize_text_field( wp_unslash( $_SERVER[ 'SERVER_SOFTWARE' ] ) ) : 'Unknown';
         $is_apache       = strpos( strtolower( $server_software ), 'apache' ) !== false;
@@ -808,48 +1040,38 @@ class PML_Settings
 
         if ( $is_apache )
         {
-            echo '<p>' .
-                 esc_html__(
-                     'It appears you are running an Apache server. The plugin attempts to automatically update your .htaccess file.',
-                     PML_TEXT_DOMAIN,
-                 ) .
-                 '</p>';
+            echo '<p>' . esc_html__(
+                    'It appears you are running an Apache server. The plugin attempts to automatically update your .htaccess file.',
+                    PML_TEXT_DOMAIN,
+                ) . '</p>';
             echo '<h5>' . esc_html__( 'Required .htaccess Rules (for reference):', PML_TEXT_DOMAIN ) . '</h5>';
-            echo '<p>' .
-                 esc_html__(
-                     'These rules should be placed inside the # BEGIN Protected Media Links ... # END Protected Media Links markers in your .htaccess file, before the standard WordPress rules.',
-                     PML_TEXT_DOMAIN,
-                 ) .
-                 '</p>';
+            echo '<p>' . esc_html__(
+                    'These rules should be placed inside the # BEGIN Protected Media Links ... # END Protected Media Links markers in your .htaccess file, before the standard WordPress rules.',
+                    PML_TEXT_DOMAIN,
+                ) . '</p>';
             echo '<pre class="pml-code-block"><code>';
             echo esc_html( "RewriteCond %{REQUEST_FILENAME} -f\n" );
             echo esc_html( "RewriteRule ^wp-content/uploads/(.*)$ index.php?" . PML_PREFIX . "_media_request=$1 [QSA,L]" );
             echo '</code></pre>';
             if ( class_exists( 'PML_Install' ) && !PML_Install::are_htaccess_rules_present() )
             {
-                echo '<p class="pml-warning">' .
-                     esc_html__(
-                         'Warning: The required .htaccess rules may not be present or automatically added. Please ensure your .htaccess file is writable by WordPress or add the rules manually.',
-                         PML_TEXT_DOMAIN,
-                     ) .
-                     '</p>';
+                echo '<p class="pml-warning">' . esc_html__(
+                        'Warning: The required .htaccess rules may not be present or automatically added. Please ensure your .htaccess file is writable by WordPress or add the rules manually.',
+                        PML_TEXT_DOMAIN,
+                    ) . '</p>';
             }
         }
         elseif ( $is_nginx )
         {
-            echo '<p>' .
-                 esc_html__(
-                     'It appears you are running an Nginx server. You will need to manually add rules to your Nginx configuration file for this plugin to work correctly.',
-                     PML_TEXT_DOMAIN,
-                 ) .
-                 '</p>';
+            echo '<p>' . esc_html__(
+                    'It appears you are running an Nginx server. You will need to manually add rules to your Nginx configuration file for this plugin to work correctly.',
+                    PML_TEXT_DOMAIN,
+                ) . '</p>';
             echo '<h5>' . esc_html__( 'Example Nginx Configuration:', PML_TEXT_DOMAIN ) . '</h5>';
-            echo '<p>' .
-                 esc_html__(
-                     'Add the following within your server block. You may need to adjust it based on your specific Nginx setup (e.g., if WordPress is in a subdirectory or your PHP-FPM setup differs).',
-                     PML_TEXT_DOMAIN,
-                 ) .
-                 '</p>';
+            echo '<p>' . esc_html__(
+                    'Add the following within your server block. You may need to adjust it based on your specific Nginx setup (e.g., if WordPress is in a subdirectory or your PHP-FPM setup differs).',
+                    PML_TEXT_DOMAIN,
+                ) . '</p>';
             echo '<pre class="pml-code-block"><code>';
             echo esc_html(
                 "location ~ ^/wp-content/uploads/(.*\.(?:pdf|zip|doc|docx|xls|xlsx|ppt|pptx|mp3|mp4|mov|txt|csv|jpg|jpeg|png|gif|webp))$ {\n",
@@ -871,12 +1093,10 @@ class PML_Settings
         }
         else
         {
-            echo '<p>' .
-                 esc_html__(
-                     'Your server software could not be definitively identified as Apache or Nginx. You may need to manually configure rewrite rules for this plugin to function.',
-                     PML_TEXT_DOMAIN,
-                 ) .
-                 '</p>';
+            echo '<p>' . esc_html__(
+                    'Your server software could not be definitively identified as Apache or Nginx. You may need to manually configure rewrite rules for this plugin to function.',
+                    PML_TEXT_DOMAIN,
+                ) . '</p>';
         }
         echo '</div>';
     }

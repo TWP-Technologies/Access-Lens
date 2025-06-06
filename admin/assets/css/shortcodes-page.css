@@ -1,0 +1,183 @@
+/**
+ * Protected Media Links - Shortcodes Page CSS
+ */
+
+/* Main wrapper for the shortcode page */
+.pml-shortcodes-wrap .pml-page-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+.pml-shortcodes-wrap .pml-page-header h1 {
+    font-size: 23px;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    line-height: 1.3;
+}
+
+.pml-shortcodes-wrap .pml-page-header p {
+    font-size: 14px;
+    color: #50575e;
+    margin-top: 8px;
+}
+
+/* Two-column layout for generator */
+.pml-generator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+/* Generator Form Container */
+.pml-generator-form-container {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.pml-generator-form-container h2.title {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.pml-generator-form-container fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+}
+
+.pml-generator-form-container legend {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1d2327;
+}
+
+.pml-generator-form-container .form-field {
+    margin-bottom: 18px;
+}
+
+.pml-generator-form-container .form-field:last-child {
+    margin-bottom: 0;
+}
+
+.pml-generator-form-container .form-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.pml-generator-form-container .form-field .select2-container,
+.pml-generator-form-container .form-field input[type="text"],
+.pml-generator-form-container .form-field input[type="number"],
+.pml-generator-form-container .form-field select {
+    width: 100%;
+}
+
+.pml-generator-form-container .form-field .description {
+    font-size: 13px;
+    color: #50575e;
+    font-style: italic;
+    margin-top: 6px;
+}
+
+.pml-generator-form-container .form-field-checkbox label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal;
+}
+.pml-generator-form-container .form-field-checkbox input[type="checkbox"] {
+    margin: 0;
+}
+.pml-generator-form-container .form-field-checkbox-disabled label {
+    color: #a0a5aa;
+    cursor: not-allowed;
+}
+
+/* Generator Output Container */
+.pml-generator-output-container {
+    position: sticky;
+    top: 50px; /* Adjust based on WP admin header height */
+    background: #f6f7f7;
+    border: 1px solid #ccd0d4;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.pml-generator-output-container h2.title {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.pml-generator-output-container #pml-generated-shortcode {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #8c8f94;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 14px;
+    min-height: 80px;
+    resize: none;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+}
+
+.pml-generator-output-container .pml-copy-button-wrapper {
+    margin-top: 15px;
+    text-align: right;
+}
+
+.pml-generator-output-container #pml-copy-shortcode-button .dashicons {
+    vertical-align: text-top;
+    margin-right: 4px;
+}
+
+.pml-generator-output-container #pml-copy-shortcode-button .pml-copy-feedback {
+    display: none;
+    font-style: italic;
+    color: #46b450;
+    margin-left: 8px;
+}
+
+/* Shortcode Documentation Section */
+.pml-shortcode-docs h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+.pml-shortcode-docs .pml-shortcode-reference {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+.pml-shortcode-docs h3 {
+    margin-top: 0;
+    display: inline-block;
+    background-color: #e0e0e0;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 16px;
+    color: #1d2327;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 960px) {
+    .pml-generator-grid {
+        grid-template-columns: 1fr;
+    }
+    .pml-generator-output-container {
+        position: static;
+        top: auto;
+    }
+}

@@ -59,25 +59,38 @@ final class PML_Core
 
     private function load_components()
     {
+        // File request handler
+        if ( class_exists( 'PML_File_Handler' ) )
+        {
+            new PML_File_Handler();
+        }
+
+        // Shortcodes page
+        if ( class_exists( 'PML_Shortcodes' ) )
+        {
+            PML_Shortcodes::get_instance();
+        }
+
+        if ( !is_admin() )
+        {
+            return;
+        }
+
         // Settings page
         if ( class_exists( 'PML_Settings' ) && is_admin() )
         {
             new PML_Settings();
         }
-        // Original protection settings meta box
+
+        // Media Edit Page PML Meta Box
         if ( class_exists( 'PML_Media_Meta' ) && is_admin() )
         {
             new PML_Media_Meta();
         }
-        // New token management meta box
+        // Media Edit Page PML Token Meta Box
         if ( class_exists( 'PML_Token_Meta_Box' ) && is_admin() )
         {
             new PML_Token_Meta_Box();
-        }
-        // File request handler
-        if ( class_exists( 'PML_File_Handler' ) )
-        {
-            new PML_File_Handler();
         }
         // User list actions on the WP Users page
         if ( class_exists( 'PML_User_List_Actions' ) && is_admin() )
@@ -134,7 +147,6 @@ final class PML_Core
         $hours   = floor( $seconds / HOUR_IN_SECONDS );
         $seconds %= HOUR_IN_SECONDS;
         $minutes = floor( $seconds / MINUTE_IN_SECONDS );
-        $seconds %= MINUTE_IN_SECONDS;
 
         $parts = [];
         if ( $days > 0 )
@@ -148,10 +160,6 @@ final class PML_Core
         if ( $minutes > 0 )
         {
             $parts[] = sprintf( _n( '%d minute', '%d minutes', $minutes, PML_TEXT_DOMAIN ), $minutes );
-        }
-        if ( $seconds > 0 && empty( $parts ) )
-        {
-            $parts[] = sprintf( _n( '%d second', '%d seconds', $seconds, PML_TEXT_DOMAIN ), $seconds );
         }
 
         return empty( $parts ) ? __( 'Less than a minute', PML_TEXT_DOMAIN ) : implode( ', ', $parts );
