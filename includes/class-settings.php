@@ -471,7 +471,7 @@ class PML_Settings
         ];
     }
 
-    private static function get_default_bot_user_agents(): array
+    public static function get_default_bot_user_agents(): array
     {
         return [
             'googlebot',
@@ -494,7 +494,7 @@ class PML_Settings
         ];
     }
 
-    private static function get_default_bot_domains(): array
+    public static function get_default_bot_domains(): array
     {
         return [
             '.googlebot.com',

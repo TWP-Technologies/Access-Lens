@@ -1,6 +1,5 @@
 /**
  * Protected Media Links - Admin Common Utilities JavaScript
- * Version: 1.2.0
  *
  * Contains utility functions shared across different admin screens.
  */

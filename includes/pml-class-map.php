@@ -12,5 +12,6 @@ return [
 	'PML_Media_Meta' => __DIR__ . '/class-media-meta.php',
 	'PML_Settings' => __DIR__ . '/class-settings.php',
 	'PML_Token_Manager' => __DIR__ . '/class-token-manager.php',
+	'PML_Token_Meta_Box' => __DIR__ . '/class-token-meta-box.php',
 	'PML_User_List_Actions' => __DIR__ . '/class-user-list-actions.php',
 ];

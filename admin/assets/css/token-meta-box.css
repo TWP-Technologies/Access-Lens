@@ -1,0 +1,569 @@
+/**
+ * Protected Media Links - Token Management Meta Box CSS
+ */
+
+.pml-token-manager-app
+{
+    font-size : 13px;
+
+    h3
+    {
+        font-size      : 1.2em;
+        margin-top     : 20px;
+        margin-bottom  : 10px;
+        padding-bottom : 8px;
+        border-bottom  : 1px solid #DDD;
+
+        &:first-child
+        {
+            margin-top : 0;
+        }
+    }
+}
+
+/* Generate Token Form */
+.pml-generate-token-form-wrapper
+{
+    padding          : 15px;
+    background-color : #F9F9F9;
+    border           : 1px solid #E5E5E5;
+    border-radius    : 3px;
+    margin-bottom    : 20px;
+
+    .pml-form-field-group, .pml-modal-body .pml-form-field-group
+    {
+        margin-bottom : 15px;
+    }
+
+    label, .pml-modal-body label
+    {
+        display       : block;
+        font-weight   : 600;
+        margin-bottom : 5px;
+        color         : #3C434A;
+    }
+
+    input[type='text'], select, input[type='number']
+    {
+        width      : 100%;
+        max-width  : 400px;
+        box-sizing : border-box;
+    }
+
+    input.small-text
+    {
+        max-width : 100px;
+    }
+
+    .select2-container, .flatpickr-input
+    {
+        margin-bottom : 5px;
+        max-width     : 400px;
+        box-sizing    : border-box;
+        width         : 100%;
+    }
+
+    .flatpickr-input
+    {
+        background-color : #FFF;
+    }
+
+    .pml-inline-radio-group
+    {
+        display   : flex;
+        gap       : 15px;
+        flex-wrap : wrap;
+
+        label
+        {
+            display     : inline-flex;
+            align-items : center;
+            font-weight : normal;
+        }
+
+        input[type='radio']
+        {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-right : 5px;
+        }
+    }
+
+    #pml-generate-token-button
+    {
+        margin-top : 10px;
+    }
+
+    .spinner
+    {
+        vertical-align : middle;
+        margin-left    : 5px;
+        visibility     : hidden;
+
+        &.is-active
+        {
+            visibility : visible;
+        }
+    }
+}
+
+/* Existing Tokens List */
+#pml-tokens-list-wrapper .pml-loading-text
+{
+    padding    : 20px;
+    text-align : center;
+    color      : #777;
+    font-style : italic;
+}
+
+/* New Grid Layout Styles */
+.pml-token-grid-header
+{
+    display               : grid;
+    grid-template-columns : 40px minmax(0, 4fr) minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1.5fr) minmax(120px, auto);
+    gap                   : 10px;
+    padding               : 10px 15px;
+    font-weight           : 600;
+    color                 : #32373C;
+    background-color      : #F9F9F9;
+    border                : 1px solid #E5E5E5;
+    border-bottom         : none;
+    font-size             : 13px;
+    align-items           : center;
+}
+
+.pml-token-grid-body
+{
+    border     : 1px solid #E5E5E5;
+    border-top : none;
+}
+
+.pml-token-entry
+{
+    display               : grid;
+    grid-template-columns : 40px minmax(0, 4fr) minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1.5fr) minmax(120px, auto);
+    grid-template-rows    : auto auto;
+    gap                   : 10px;
+    align-items           : start;
+    padding               : 12px 15px;
+
+    &:not(:last-child)
+    {
+        border-bottom : 1px solid #E5E5E5;
+    }
+
+    &:nth-child(odd)
+    {
+        background-color : #FDFDFD;
+    }
+
+    &:nth-child(even)
+    {
+        background-color : #FFF;
+    }
+
+    .cell-number
+    {
+        grid-column : 1;
+        grid-row    : 1 / span 2;
+    }
+
+    .token-value
+    {
+        grid-column : 2;
+    }
+
+    .token-status
+    {
+        grid-column : 3;
+    }
+
+    .token-user
+    {
+        grid-column : 4;
+    }
+
+    .token-usage
+    {
+        grid-column : 5;
+    }
+
+    .cell-actions
+    {
+        grid-column : 6;
+        grid-row    : 1 / span 2;
+    }
+
+    .pml-token-date-info
+    {
+        grid-column : 2 / span 4;
+    }
+
+    .cell-number
+    {
+        font-size   : 1.2em;
+        color       : #888;
+        font-weight : 600;
+        text-align  : center;
+        padding-top : 4px;
+    }
+
+    .token-value
+    {
+        position      : relative;
+        display       : flex;
+        align-items   : center;
+        padding-right : 35px;
+
+        code.pml-token-value-cell-text
+        {
+            flex-grow        : 1;
+            background-color : #F0F0F1;
+            padding          : 4px 8px;
+            border-radius    : 3px;
+            border           : 1px solid #DDD;
+            font-family      : 'Courier New', Courier, monospace;
+            word-break       : break-all;
+        }
+
+        .pml-copy-token-link
+        {
+            position        : absolute;
+            top             : 50%;
+            right           : 0;
+            transform       : translateY(-50%);
+            width           : 28px;
+            height          : 28px;
+            display         : inline-flex;
+            align-items     : center;
+            justify-content : center;
+            cursor          : pointer;
+            color           : #007CBA;
+            text-decoration : none;
+            border          : none;
+            background      : none;
+            border-radius   : 50%;
+            transition      : background-color 0.15s ease-in-out;
+
+            &:hover
+            {
+                background-color : #E0E0E0;
+                color            : #00A0D2;
+            }
+
+            .pml-copied-text
+            {
+                opacity     : 0;
+                font-family : -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+                font-size   : 11px;
+                font-weight : 600;
+                color       : #46B450;
+            }
+
+            .dashicons, .pml-copied-text
+            {
+                position   : absolute;
+                transition : opacity 0.2s ease-in-out;
+            }
+
+            &.pml-copied
+            {
+                .dashicons-admin-links
+                {
+                    opacity : 0;
+                }
+
+                .pml-copied-text
+                {
+                    opacity : 1;
+                }
+            }
+        }
+    }
+
+    .editable-max-uses
+    {
+        .usage-display
+        {
+            cursor                : pointer;
+            text-decoration       : underline;
+            text-decoration-style : dotted;
+            text-decoration-color : #007CBA;
+
+            &:hover
+            {
+                color : #00A0D2;
+            }
+        }
+
+        &.at-limit .usage-display
+        {
+            cursor                : help;
+            text-decoration-color : #D95E00;
+        }
+
+        .usage-edit-form
+        {
+            position         : relative;
+            display          : flex;
+            align-items      : center;
+            gap              : 4px;
+            background-color : #FFF;
+            padding          : 5px 8px;
+            border-radius    : 4px;
+            box-shadow       : 0 1px 4px rgba(0, 0, 0, 0.15);
+            border           : 1px solid #CCD0D4;
+            margin           : -6px -9px; /* Pull out to overlap padding */
+            width            : fit-content; /* Force width to expand past column width */
+        }
+
+        .max-uses-input
+        {
+            width      : 60px;
+            text-align : center;
+        }
+
+        .save-max-uses, .cancel-max-uses
+        {
+            border     : none;
+            background : none;
+            cursor     : pointer;
+            padding    : 2px;
+
+            .dashicons
+            {
+                font-size : 18px;
+            }
+        }
+
+        .save-max-uses
+        {
+            color : #46B450;
+        }
+
+        .cancel-max-uses
+        {
+            color : #DC3232;
+        }
+    }
+
+    .pml-token-date-info
+    {
+        display         : flex;
+        justify-content : space-between;
+        flex-wrap       : wrap;
+        gap             : 15px;
+        padding-top     : 10px;
+        margin-top      : 10px;
+        border-top      : 1px solid #E9E9E9;
+        font-size       : 0.9em;
+        color           : #50575E;
+    }
+
+    .cell-actions
+    {
+        display         : flex;
+        flex-direction  : column;
+        align-items     : center;
+        justify-content : center;
+        gap             : 6px;
+        padding-left    : 10px;
+        border-left     : 1px solid #E0E0E0;
+        height          : 100%;
+        min-width       : 120px;
+
+        button
+        {
+            display         : inline-flex;
+            align-items     : center;
+            gap             : 5px;
+            justify-content : center;
+        }
+
+        .spinner
+        {
+            visibility : hidden;
+
+            &.is-active
+            {
+                visibility : visible;
+            }
+        }
+    }
+}
+
+.select2-container > .select2-dropdown, .flatpickr-calendar.open.open
+{
+    z-index : 999990; /* required for reinstate modal */
+}
+
+.pml-token-status
+{
+    padding        : 3px 8px;
+    border-radius  : 3px;
+    font-size      : 0.9em;
+    font-weight    : 600;
+    text-transform : capitalize;
+    display        : inline-block;
+    border         : 1px solid transparent;
+    text-align     : center;
+
+    &.status-active
+    {
+        background-color : #E7F5E8;
+        color            : #27672B;
+        border-color     : #C3E6CB;
+    }
+
+    &.status-expired
+    {
+        background-color : #FFF4E5;
+        color            : #D95E00;
+        border-color     : #FFE6C6;
+    }
+
+    &.status-used
+    {
+        background-color : #F0F0F1;
+        color            : #50575E;
+        border-color     : #DCDCDE;
+    }
+
+    &.status-revoked
+    {
+        background-color : #FBEAEA;
+        color            : #C82333;
+        border-color     : #F5C6CB;
+    }
+}
+
+.pml-tokens-pagination
+{
+    margin-top      : 15px;
+    margin-bottom   : 10px;
+    display         : flex;
+    justify-content : space-between;
+    align-items     : center;
+
+    .displaying-num
+    {
+        font-size : 0.95em;
+        color     : #50575E;
+    }
+
+    .pagination-links button
+    {
+        margin-left : 5px;
+    }
+}
+
+#pml-token-actions-feedback, #pml-generate-token-feedback
+{
+    margin-top : 8px;
+}
+
+#pml-generate-token-feedback .notice, #pml-token-actions-feedback .notice
+{
+    margin : 0;
+}
+
+.pml-modal
+{
+    position        : fixed;
+    top             : 0;
+    left            : 0;
+    width           : 100%;
+    height          : 100%;
+    z-index         : 160000;
+    display         : none;
+    align-items     : center;
+    justify-content : center;
+
+    &.is-visible
+    {
+        display : flex;
+    }
+
+    .pml-modal-overlay
+    {
+        position         : absolute;
+        top              : 0;
+        left             : 0;
+        width            : 100%;
+        height           : 100%;
+        background-color : rgba(0, 0, 0, 0.75);
+    }
+
+    .pml-modal-content
+    {
+        background-color : #FCFCFC;
+        border-radius    : 4px;
+        box-shadow       : 0 5px 25px rgba(0, 0, 0, 0.25);
+        width            : 90%;
+        max-width        : 550px;
+        position         : relative;
+        z-index          : 1;
+        display          : flex;
+        flex-direction   : column;
+        max-height       : calc(100vh - 40px);
+    }
+
+    .pml-modal-header
+    {
+        padding         : 15px 20px;
+        border-bottom   : 1px solid #DDD;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+    }
+
+    .pml-modal-title
+    {
+        margin      : 0;
+        font-size   : 1.3em;
+        font-weight : 600;
+    }
+
+    .pml-modal-close
+    {
+        padding    : 0;
+        border     : none;
+        background : none;
+        cursor     : pointer;
+        color      : #646970;
+
+        .dashicons
+        {
+            font-size : 24px;
+        }
+    }
+
+    .pml-modal-body
+    {
+        padding    : 20px;
+        flex-grow  : 1;
+        overflow-y : auto;
+    }
+
+    .pml-modal-footer
+    {
+        display          : flex;
+        justify-content  : flex-end;
+        align-items      : center;
+        gap              : 10px;
+        padding          : 15px 20px;
+        border-top       : 1px solid #DDD;
+        background-color : #F9F9F9;
+
+        .spinner
+        {
+            visibility : hidden;
+
+            &.is-active
+            {
+                visibility : visible;
+            }
+        }
+    }
+}

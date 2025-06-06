@@ -127,7 +127,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
 /**
  * Protected Media Links - Gutenberg Media Modal Integration
- * Version: 1.2.5
  *
  * Integrates PML Quick Edit settings into the Gutenberg media modal's
  * attachment details sidebar using a React component.

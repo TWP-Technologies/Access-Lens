@@ -1,6 +1,5 @@
 /**
  * Protected Media Links - Settings Page JavaScript
- * Version: 1.2.0
  *
  * Handles UI enhancements and interactions specific to the PML settings page.
  */

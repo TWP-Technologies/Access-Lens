@@ -4,6 +4,7 @@
  *
  * @package ProtectedMediaLinks
  */
+
 // Exit if accessed directly.
 if ( !defined( 'ABSPATH' ) )
 {
@@ -48,26 +49,42 @@ final class PML_Core
 
         // Hook for bulk action admin notices
         add_action( 'admin_notices', [ $this, 'display_bulk_action_admin_notices' ] );
+
+        // Hook to run database upgrades on plugin load
+        if ( class_exists( 'PML_Install' ) && method_exists( 'PML_Install', 'run_database_upgrades' ) )
+        {
+            add_action( 'plugins_loaded', [ 'PML_Install', 'run_database_upgrades' ], 5 ); // Run early
+        }
     }
 
     private function load_components()
     {
-        if ( class_exists( 'PML_Settings' ) )
+        // Settings page
+        if ( class_exists( 'PML_Settings' ) && is_admin() )
         {
             new PML_Settings();
         }
-        if ( class_exists( 'PML_Media_Meta' ) )
+        // Original protection settings meta box
+        if ( class_exists( 'PML_Media_Meta' ) && is_admin() )
         {
             new PML_Media_Meta();
         }
+        // New token management meta box
+        if ( class_exists( 'PML_Token_Meta_Box' ) && is_admin() )
+        {
+            new PML_Token_Meta_Box();
+        }
+        // File request handler
         if ( class_exists( 'PML_File_Handler' ) )
         {
             new PML_File_Handler();
         }
+        // User list actions on the WP Users page
         if ( class_exists( 'PML_User_List_Actions' ) && is_admin() )
         {
             new PML_User_List_Actions();
         }
+        // Media Library list/grid view integration
         if ( class_exists( 'PML_Media_Library_Integration' ) && is_admin() )
         {
             new PML_Media_Library_Integration();
@@ -90,16 +107,11 @@ final class PML_Core
         if ( is_admin() && !empty( $_REQUEST[ PML_PREFIX . '_bulk_message' ] ) )
         {
             // Sanitize the message from the request.
-            // wp_unslash is important as WordPress might add slashes.
             $message = sanitize_text_field( wp_unslash( $_REQUEST[ PML_PREFIX . '_bulk_message' ] ) );
             if ( $message )
             {
-                // Use WordPress's standard notice HTML structure.
                 printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html( $message ) );
             }
-            // It's good practice to remove the query arg after displaying the notice to prevent it from showing on subsequent page loads if the user refreshes or navigates.
-            // However, this can be tricky if other plugins or WordPress core rely on these query args persisting for a bit.
-            // For now, let it persist for the current request. If it becomes an issue, more complex state management (like transients) might be needed.
         }
     }
 
@@ -117,12 +129,12 @@ final class PML_Core
             return __( 'No Expiry', PML_TEXT_DOMAIN );
         }
 
-        $days    = floor( $seconds / 86400 );
-        $seconds %= 86400;
-        $hours   = floor( $seconds / 3600 );
-        $seconds %= 3600;
-        $minutes = floor( $seconds / 60 );
-        $seconds %= 60;
+        $days    = floor( $seconds / DAY_IN_SECONDS );
+        $seconds %= DAY_IN_SECONDS;
+        $hours   = floor( $seconds / HOUR_IN_SECONDS );
+        $seconds %= HOUR_IN_SECONDS;
+        $minutes = floor( $seconds / MINUTE_IN_SECONDS );
+        $seconds %= MINUTE_IN_SECONDS;
 
         $parts = [];
         if ( $days > 0 )
@@ -140,7 +152,7 @@ final class PML_Core
         if ( $seconds > 0 && empty( $parts ) )
         {
             $parts[] = sprintf( _n( '%d second', '%d seconds', $seconds, PML_TEXT_DOMAIN ), $seconds );
-        } // Show seconds only if no larger units
+        }
 
         return empty( $parts ) ? __( 'Less than a minute', PML_TEXT_DOMAIN ) : implode( ', ', $parts );
     }
