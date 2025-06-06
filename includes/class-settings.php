@@ -31,10 +31,10 @@ class PML_Settings
      */
     public function enqueue_admin_scripts( string $hook_suffix ): void
     {
-        $main_settings_hook_suffix = PML_PLUGIN_SLUG . '-settings';
-        $shortcodes_hook_suffix    = PML_PLUGIN_SLUG . '-shortcodes';
+        $main_settings_hook     = 'toplevel_page_' . PML_PLUGIN_SLUG;
+        $shortcodes_hook_suffix = PML_PLUGIN_SLUG . '-shortcodes';
 
-        if ( str_ends_with( $hook_suffix, $main_settings_hook_suffix ) === false && str_ends_with( $hook_suffix, $shortcodes_hook_suffix ) === false )
+        if ( $hook_suffix !== $main_settings_hook && str_ends_with( $hook_suffix, $shortcodes_hook_suffix ) === false )
         {
             return;
         }
@@ -64,7 +64,7 @@ class PML_Settings
         wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
 
         // --- Assets for Main Settings Page ---
-        if ( str_ends_with( $hook_suffix, $main_settings_hook_suffix ) )
+        if ( $hook_suffix === $main_settings_hook )
         {
             wp_enqueue_style(
                 PML_PLUGIN_SLUG . '-settings-page-css',
