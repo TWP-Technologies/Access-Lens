@@ -143,17 +143,17 @@ class PML_Token_Meta_Box
         $loading_text = esc_html__( 'Loading tokens...', PML_TEXT_DOMAIN );
 
         echo <<<EOT
-            <h3>{$gen_title}</h3>
-            <div class='{$prefix}-generate-token-form-wrapper'>
-                <div id='{$prefix}-generate-token-form-fields'></div>
-                <button type='button' id='{$prefix}-generate-token-button' class='button button-primary'>{$create_btn}</button>
-                <span class='spinner' id='{$prefix}-generate-token-spinner'></span>
-                <div id='{$prefix}-generate-token-feedback'></div>
+            <h3>$gen_title</h3>
+            <div class='$prefix-generate-token-form-wrapper'>
+                <div id='$prefix-generate-token-form-fields'></div>
+                <button type='button' id='$prefix-generate-token-button' class='button button-primary'>$create_btn</button>
+                <span class='spinner' id='$prefix-generate-token-spinner'></span>
+                <div id='$prefix-generate-token-feedback'></div>
             </div>
             <hr>
-            <h3>{$exist_title}</h3>
-            <div id='{$prefix}-tokens-list-wrapper'><p class='pml-loading-text'>{$loading_text}</p></div>
-            <div id='{$prefix}-token-actions-feedback' style='margin-top: 10px;'></div>
+            <h3>$exist_title</h3>
+            <div id='$prefix-tokens-list-wrapper'><p class='pml-loading-text'>$loading_text</p></div>
+            <div id='$prefix-token-actions-feedback' style='margin-top: 10px;'></div>
         EOT;
         echo "</div>";
     }

@@ -64,7 +64,7 @@ class PML_Settings
         wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
 
         // --- Assets for Main Settings Page ---
-        if ( $hook_suffix === $main_settings_hook_suffix )
+        if ( str_ends_with( $hook_suffix, $main_settings_hook_suffix ) )
         {
             wp_enqueue_style(
                 PML_PLUGIN_SLUG . '-settings-page-css',
