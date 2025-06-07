@@ -105,7 +105,7 @@ function serve_file( string $file_path ): void {
     }
     $server = $_SERVER['SERVER_SOFTWARE'] ?? '';
     if ( stripos( $server, 'nginx' ) !== false || stripos( $server, 'litespeed' ) !== false ) {
-        $internal = '';
+        $internal = defined( 'PML_INTERNAL_REDIRECT_PREFIX' ) ? trim( PML_INTERNAL_REDIRECT_PREFIX ) : '';
         if ( $internal ) {
             $upload_dir   = wp_upload_dir();
             $rel_path     = str_replace( trailingslashit( $upload_dir['basedir'] ), '', $file_path );

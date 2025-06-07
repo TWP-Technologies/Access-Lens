@@ -36,6 +36,12 @@ define( 'PML_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PML_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 const PML_SELECT2_VERSION  = '4.0.13';
 
+// Prefix path for Nginx or LiteSpeed internal redirects.
+// Define this in wp-config.php to enable X-Accel-Redirect or X-LiteSpeed-Location.
+if ( ! defined( 'PML_INTERNAL_REDIRECT_PREFIX' ) ) {
+    define( 'PML_INTERNAL_REDIRECT_PREFIX', '' );
+}
+
 $pml_generated_links_cache = [];
 
 /**
