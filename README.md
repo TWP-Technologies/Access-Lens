@@ -109,7 +109,7 @@ Place these rules *before* the main WordPress block:
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} -s
-    RewriteRule ^wp-content/uploads/(.*)$ index.php?pml_media_request=$1 [QSA,L]
+    RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/access-lens/pml-handler.php?pml_media_request=$1 [QSA,L]
 </IfModule>
 # END Protected Media Links
 ```
@@ -121,10 +121,18 @@ Add this `location` block inside your `server` block. It should come before the 
 location ~ ^/wp-content/uploads/(.*)$ {
     try_files $uri =404; # Serve file if it exists, otherwise pass to WordPress
     if (!-e $request_filename) {
-        rewrite ^/wp-content/uploads/(.*)$ /index.php?pml_media_request=$1 last;
+        rewrite ^/wp-content/uploads/(.*)$ /wp-content/plugins/access-lens/pml-handler.php?pml_media_request=$1 last;
     }
 }
 ```
+
+If you have an Nginx `internal` location or a LiteSpeed equivalent, define a constant in `wp-config.php` so the handler can offload file delivery:
+
+```php
+define( 'PML_INTERNAL_REDIRECT_PREFIX', '/pml-secure-files/' );
+```
+
+Set the value to your internal location path. The handler will then emit `X-Accel-Redirect` or `X-LiteSpeed-Location` headers.
 </details>
 
 ## 🔭 Scope: What This Plugin Is & Isn't
