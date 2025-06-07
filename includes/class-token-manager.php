@@ -16,8 +16,17 @@ if ( !defined( 'ABSPATH' ) )
  * PML_Token_Manager Class.
  * Handles generation, storage, validation, and cleanup of access tokens.
  */
+require_once __DIR__ . '/pml-headless-helpers.php';
+
 class PML_Token_Manager
 {
+
+    /**
+     * WordPress database instance.
+     *
+     * @var wpdb|null
+     */
+    private static ?wpdb $wpdb = null;
 
     /**
      * Database table name for tokens.
@@ -28,16 +37,40 @@ class PML_Token_Manager
     public static string $table_name = '';
 
     /**
+     * Constructor to inject the database dependency.
+     *
+     * @param wpdb $wpdb_instance WordPress database object.
+     */
+    public function __construct( wpdb $wpdb_instance )
+    {
+        self::$wpdb = $wpdb_instance;
+        if ( empty( self::$table_name ) )
+        {
+            self::$table_name = $wpdb_instance->prefix . PML_PREFIX . '_access_tokens';
+        }
+    }
+
+    /**
      * Initializes the token manager, primarily setting the table name.
      * This method should be called once, e.g., during plugin initialization.
      */
     public static function init()
     {
-        global $wpdb;
+        $wpdb = self::$wpdb ?? $GLOBALS['wpdb'];
         if ( empty( self::$table_name ) )
         { // Ensure it's set only once.
             self::$table_name = $wpdb->prefix . PML_PREFIX . '_access_tokens';
         }
+    }
+
+    /**
+     * Helper to get the database instance.
+     *
+     * @return wpdb Database object.
+     */
+    private static function db(): wpdb
+    {
+        return self::$wpdb ?? $GLOBALS['wpdb'];
     }
 
     /**
@@ -52,8 +85,10 @@ class PML_Token_Manager
     public static function generate_token_data( int $attachment_id, array $args = [] ): array
     {
         $attachment_id = absint( $attachment_id );
+        $auth          = class_exists( 'PML_Headless_Auth' ) ? new PML_Headless_Auth( self::db() ) : null;
+        $current_user  = $auth ? $auth->get_current_user() : null;
         $defaults      = [
-            'user_id'            => get_current_user_id(), // 0 if not logged in
+            'user_id'            => $current_user ? $current_user->id : 0,
             'user_email'         => null,
             'ip_address'         => isset( $_SERVER[ 'REMOTE_ADDR' ] ) ? sanitize_text_field( wp_unslash( $_SERVER[ 'REMOTE_ADDR' ] ) ) : null,
             'expires_in_seconds' => null, // Will be determined by settings if null
@@ -97,14 +132,15 @@ class PML_Token_Manager
             $expires_in_seconds_to_use = $args[ 'expires_in_seconds' ];
             if ( is_null( $expires_in_seconds_to_use ) )
             {
-                $expiry_override = get_post_meta( $attachment_id, '_' . PML_PREFIX . '_token_expiry', true );
+                $meta            = pml_headless_get_pml_meta( $attachment_id, self::db() );
+                $expiry_override = $meta['pml_token_expiry'] ?? '';
                 if ( '' !== $expiry_override && is_numeric( $expiry_override ) )
                 {
                     $expires_in_seconds_to_use = (int)$expiry_override;
                 }
                 else
                 {
-                    $expires_in_seconds_to_use = (int)get_option( PML_PREFIX . '_settings_default_token_expiry', 24 * HOUR_IN_SECONDS );
+                    $expires_in_seconds_to_use = (int) pml_headless_get_option( PML_PREFIX . '_settings_default_token_expiry', 24 * HOUR_IN_SECONDS, self::db() );
                 }
             }
 
@@ -118,14 +154,15 @@ class PML_Token_Manager
         $max_uses_to_use = $args[ 'max_uses' ];
         if ( is_null( $max_uses_to_use ) )
         {
-            $max_uses_override = get_post_meta( $attachment_id, '_' . PML_PREFIX . '_token_max_uses', true );
+            $meta             = $meta ?? pml_headless_get_pml_meta( $attachment_id, self::db() );
+            $max_uses_override = $meta['pml_token_max_uses'] ?? '';
             if ( '' !== $max_uses_override && is_numeric( $max_uses_override ) )
             {
                 $max_uses_to_use = (int)$max_uses_override;
             }
             else
             {
-                $max_uses_to_use = (int)get_option( PML_PREFIX . '_settings_default_token_max_uses', 1 );
+                $max_uses_to_use = (int) pml_headless_get_option( PML_PREFIX . '_settings_default_token_max_uses', 1, self::db() );
             }
         }
 
@@ -156,7 +193,7 @@ class PML_Token_Manager
      */
     public static function store_token( array $token_data )
     {
-        global $wpdb;
+        $wpdb = self::db();
         if ( empty( self::$table_name ) )
         {
             self::init();
@@ -192,7 +229,8 @@ class PML_Token_Manager
     public static function generate_access_url( int $attachment_id, array $token_args = [] )
     {
         $attachment_id = absint( $attachment_id );
-        if ( !$attachment_id || 'attachment' !== get_post_type( $attachment_id ) )
+        $post_type     = self::db()->get_var( self::db()->prepare( "SELECT post_type FROM " . self::db()->posts . " WHERE ID = %d", $attachment_id ) );
+        if ( !$attachment_id || 'attachment' !== $post_type )
         {
             error_log( PML_PLUGIN_NAME . ': Attempted to generate access URL for invalid attachment ID: ' . $attachment_id );
             return false;
@@ -207,8 +245,21 @@ class PML_Token_Manager
             return false;
         }
 
-        $file_url = wp_get_attachment_url( $attachment_id );
-        if ( !$file_url )
+        $file_url = null;
+        if ( function_exists( 'wp_get_attachment_url' ) )
+        {
+            $file_url = wp_get_attachment_url( $attachment_id );
+        }
+        if ( ! $file_url )
+        {
+            $relative = self::db()->get_var( self::db()->prepare( "SELECT meta_value FROM " . self::db()->postmeta . " WHERE post_id = %d AND meta_key = '_wp_attached_file'", $attachment_id ) );
+            if ( $relative )
+            {
+                $uploads  = wp_upload_dir();
+                $file_url = trailingslashit( $uploads['baseurl'] ) . ltrim( $relative, '/' );
+            }
+        }
+        if ( ! $file_url )
         {
             error_log( PML_PLUGIN_NAME . ': Could not get attachment URL for ID: ' . $attachment_id );
             return false;
@@ -227,7 +278,7 @@ class PML_Token_Manager
      */
     public static function validate_token( string $token_value, int $attachment_id ): string
     {
-        global $wpdb;
+        $wpdb = self::db();
         if ( empty( self::$table_name ) )
         {
             self::init();
@@ -286,7 +337,7 @@ class PML_Token_Manager
      */
     public static function record_token_usage( string $token_value ): bool
     {
-        global $wpdb;
+        $wpdb = self::db();
         if ( empty( self::$table_name ) )
         {
             self::init();
@@ -340,7 +391,7 @@ class PML_Token_Manager
      */
     public static function update_token_fields( string $token_value, array $data_to_update, array $format_to_update ): bool
     {
-        global $wpdb;
+        $wpdb = self::db();
         if ( empty( self::$table_name ) )
         {
             self::init();
@@ -434,7 +485,7 @@ class PML_Token_Manager
      */
     public static function get_token_by_value( string $token_value ): ?object
     {
-        global $wpdb;
+        $wpdb = self::db();
         if ( empty( self::$table_name ) )
         {
             self::init();
@@ -457,7 +508,7 @@ class PML_Token_Manager
      */
     public static function cleanup_tokens()
     {
-        global $wpdb;
+        $wpdb = self::db();
         if ( empty( self::$table_name ) )
         {
             self::init();
@@ -476,10 +527,10 @@ class PML_Token_Manager
             ),
         );
 
-        $delete_old_tokens_enabled = (bool)get_option( PML_PREFIX . '_settings_cleanup_delete_old_tokens', false );
+        $delete_old_tokens_enabled = (bool) pml_headless_get_option( PML_PREFIX . '_settings_cleanup_delete_old_tokens', false, $wpdb );
         if ( $delete_old_tokens_enabled )
         {
-            $age_months = (int)get_option( PML_PREFIX . '_settings_cleanup_delete_age_months', 6 );
+            $age_months = (int) pml_headless_get_option( PML_PREFIX . '_settings_cleanup_delete_age_months', 6, $wpdb );
             if ( $age_months > 0 )
             {
                 $delete_threshold_date = gmdate( 'Y-m-d H:i:s', strtotime( "-$age_months months", strtotime( $current_utc_time ) ) );
@@ -504,7 +555,7 @@ class PML_Token_Manager
      */
     public static function cleanup_tokens_for_attachment( int $attachment_id )
     {
-        global $wpdb;
+        $wpdb = self::db();
         if ( !$attachment_id )
         {
             return;
