@@ -16,7 +16,7 @@ require_once __DIR__ . '/../pml-headless-helpers.php';
 /**
  * PML_Bot_Detector Class.
  * Utility class for detecting verified search engine bots.
- * Includes caching for DNS lookups to improve performance.
+ * DNS lookup results are cached using a lightweight headless cache for speed.
  */
 class PML_Bot_Detector
 {
@@ -87,17 +87,17 @@ class PML_Bot_Detector
         $fdns_cache_key_prefix = PML_PREFIX . '_fdns_cache_'; // Hostname will be appended.
 
         // 1. Reverse DNS Lookup (rDNS)
-        $hostname = get_transient( $rdns_cache_key );
+        $hostname = pml_headless_get_cache( $rdns_cache_key, $this->wpdb );
         if ( false === $hostname ) // Not in cache or expired
         {
             $hostname = gethostbyaddr( $ip_address ); // This can be slow.
             if ( false === $hostname || $hostname === $ip_address )
             {
                 // Cache negative result to avoid repeated failed lookups for a short period.
-                set_transient( $rdns_cache_key, 'invalid_host', $dns_cache_ttl / 4 ); // Cache failure for 1/4 of TTL.
+                pml_headless_set_cache( $rdns_cache_key, 'invalid_host', $dns_cache_ttl / 4, $this->wpdb );
                 return false;
             }
-            set_transient( $rdns_cache_key, $hostname, $dns_cache_ttl );
+            pml_headless_set_cache( $rdns_cache_key, $hostname, $dns_cache_ttl, $this->wpdb );
         }
         elseif ( 'invalid_host' === $hostname ) // Cached negative result
         {
@@ -133,7 +133,7 @@ class PML_Bot_Detector
 
         // 2. Forward DNS Lookup (fDNS) for Confirmation
         $fdns_cache_key = $fdns_cache_key_prefix . md5( $hostname );
-        $forward_ips    = get_transient( $fdns_cache_key );
+        $forward_ips    = pml_headless_get_cache( $fdns_cache_key, $this->wpdb );
 
         if ( false === $forward_ips ) // Not in cache or expired
         {
@@ -141,10 +141,10 @@ class PML_Bot_Detector
             if ( !is_array( $forward_ips ) || empty( $forward_ips ) )
             {
                 // Cache negative result (empty array for failure).
-                set_transient( $fdns_cache_key, [], $dns_cache_ttl / 4 );
+                pml_headless_set_cache( $fdns_cache_key, [], $dns_cache_ttl / 4, $this->wpdb );
                 return false;
             }
-            set_transient( $fdns_cache_key, $forward_ips, $dns_cache_ttl );
+            pml_headless_set_cache( $fdns_cache_key, $forward_ips, $dns_cache_ttl, $this->wpdb );
         }
         elseif ( empty( $forward_ips ) && is_array( $forward_ips ) ) // Cached negative result (empty array)
         {

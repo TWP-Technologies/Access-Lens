@@ -100,3 +100,70 @@ function pml_headless_get_attachment_id_from_path( string $relative_path, wpdb $
     $cache[ $relative_path ] = $id;
     return $id;
 }
+
+/**
+ * Retrieves a cached value from the options table.
+ * Returns false if the value does not exist or is expired.
+ *
+ * @param string $cache_key Cache key.
+ * @param wpdb   $wpdb      WordPress database object.
+ *
+ * @return mixed|false Cached value or false when not found/expired.
+ */
+function pml_headless_get_cache( string $cache_key, wpdb $wpdb )
+{
+    static $cache = [];
+    if ( array_key_exists( $cache_key, $cache ) )
+    {
+        return $cache[ $cache_key ];
+    }
+
+    $sql  = $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", $cache_key );
+    $raw  = $wpdb->get_var( $sql );
+
+    if ( is_null( $raw ) )
+    {
+        $cache[ $cache_key ] = false;
+        return false;
+    }
+
+    $data = maybe_unserialize( $raw );
+    if ( ! is_array( $data ) || ! isset( $data['value'], $data['expires_at'] ) )
+    {
+        $cache[ $cache_key ] = false;
+        return false;
+    }
+
+    if ( (int) $data['expires_at'] < time() )
+    {
+        $wpdb->delete( $wpdb->options, [ 'option_name' => $cache_key ] );
+        $cache[ $cache_key ] = false;
+        return false;
+    }
+
+    $cache[ $cache_key ] = $data['value'];
+    return $data['value'];
+}
+
+/**
+ * Stores a cached value in the options table.
+ *
+ * @param string $cache_key  Cache key.
+ * @param mixed  $value      Value to store.
+ * @param int    $expiration Expiration in seconds.
+ * @param wpdb   $wpdb       WordPress database object.
+ */
+function pml_headless_set_cache( string $cache_key, $value, int $expiration, wpdb $wpdb ): void
+{
+    $expires_at = time() + max( 0, $expiration );
+    $data       = maybe_serialize( [ 'value' => $value, 'expires_at' => $expires_at ] );
+
+    $wpdb->query(
+        $wpdb->prepare(
+            "REPLACE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
+            $cache_key,
+            $data
+        )
+    );
+}
+
