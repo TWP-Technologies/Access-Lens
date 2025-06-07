@@ -150,6 +150,11 @@ class PML_Headless_Auth
             return false;
         }
 
+        // Ensure the individual session token itself has not expired.
+        if ( empty( $sessions[ $verifier ]['expiration'] ) || $sessions[ $verifier ]['expiration'] < time() ) {
+            return false;
+        }
+
         return true;
     }
 
