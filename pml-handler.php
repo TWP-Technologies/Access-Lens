@@ -44,6 +44,9 @@ require_once __DIR__ . '/includes/class-pml-headless-auth.php';
 require_once __DIR__ . '/includes/class-token-manager.php';
 require_once __DIR__ . '/includes/utilities/bot-detector.php';
 
+$token_manager = new PML_Token_Manager( $wpdb );
+$bot_detector  = new PML_Bot_Detector( $wpdb );
+
 // --- Phase 2: Input Sanitization & File Validation ---
 $request_raw = isset( $_GET['pml_media_request'] ) ? $_GET['pml_media_request'] : '';
 $access_token = isset( $_GET['access_token'] ) ? sanitize_text_field( $_GET['access_token'] ) : null;
@@ -76,12 +79,12 @@ if ( empty( $pml_meta['pml_is_protected'] ) ) {
 }
 
 if ( $access_token ) {
-    $token_status = PML_Token_Manager::validate_token( $access_token, $attachment_id );
-    if ( 'valid' === $token_status && PML_Token_Manager::record_token_usage( $access_token ) ) {
+    $token_status = $token_manager->validate_token( $access_token, $attachment_id );
+    if ( 'valid' === $token_status && $token_manager->record_token_usage( $access_token ) ) {
         serve_file( $real_file );
     }
     if ( in_array( $token_status, [ 'expired', 'used_limit_reached' ], true ) ) {
-        PML_Token_Manager::update_token_fields( $access_token, [ 'status' => $token_status ], [ '%s' ] );
+        $token_manager->update_token_fields( $access_token, [ 'status' => $token_status ], [ '%s' ] );
     }
 }
 
@@ -91,8 +94,8 @@ if ( $current_user && is_access_granted_by_user_role( $current_user, $pml_meta, 
     serve_file( $real_file );
 }
 
-$bot = new PML_Bot_Detector();
-if ( $bot::is_verified_bot() ) {
+$bot = $bot_detector;
+if ( $bot->is_verified_bot() ) {
     serve_file( $real_file );
 }
 
