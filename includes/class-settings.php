@@ -1051,7 +1051,7 @@ class PML_Settings
                 ) . '</p>';
             echo '<pre class="pml-code-block"><code>';
             echo esc_html( "RewriteCond %{REQUEST_FILENAME} -f\n" );
-            echo esc_html( "RewriteRule ^wp-content/uploads/(.*)$ index.php?" . PML_PREFIX . "_media_request=$1 [QSA,L]" );
+            echo esc_html( "RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/" . PML_PLUGIN_SLUG . "/pml-handler.php?" . PML_PREFIX . "_media_request=$1 [QSA,L]" );
             echo '</code></pre>';
             if ( class_exists( 'PML_Install' ) && !PML_Install::are_htaccess_rules_present() )
             {
@@ -1083,7 +1083,7 @@ class PML_Settings
             echo esc_html( "}\n\n" );
             echo esc_html( "location @pml_protected_media {\n" );
             echo esc_html(
-                "    rewrite ^/wp-content/uploads/(.*)$ /index.php?" . PML_PREFIX . "_media_request=\$1&access_token=\$arg_access_token last;\n",
+                "    rewrite ^/wp-content/uploads/(.*)$ /wp-content/plugins/" . PML_PLUGIN_SLUG . "/pml-handler.php?" . PML_PREFIX . "_media_request=\$1&access_token=\$arg_access_token last;\n",
             );
             echo esc_html( "}" );
             echo '</code></pre>';
