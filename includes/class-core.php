@@ -32,7 +32,6 @@ final class PML_Core
 
     private function init_hooks()
     {
-        add_filter( 'query_vars', [ $this, 'register_query_vars' ] );
 
         // Hook for admin notices from PML_User_List_Actions
         if ( class_exists( 'PML_User_List_Actions' ) && method_exists( 'PML_User_List_Actions', 'display_user_list_admin_notices' ) )
@@ -59,11 +58,6 @@ final class PML_Core
 
     private function load_components()
     {
-        // File request handler
-        if ( class_exists( 'PML_File_Handler' ) )
-        {
-            new PML_File_Handler();
-        }
 
         // Shortcodes page
         if ( class_exists( 'PML_Shortcodes' ) )
@@ -102,13 +96,6 @@ final class PML_Core
         {
             new PML_Media_Library_Integration();
         }
-    }
-
-    public function register_query_vars( array $vars ): array
-    {
-        $vars[] = PML_PREFIX . '_media_request';
-        $vars[] = 'access_token';
-        return $vars;
     }
 
     /**
