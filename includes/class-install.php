@@ -302,7 +302,7 @@ class PML_Install
                 'RewriteEngine On',
                 'RewriteCond %{REQUEST_FILENAME} -f',
                 'RewriteCond %{REQUEST_URI} \.(' . $extensions_regex . ')$ [NC]',
-                'RewriteRule ^wp-content/uploads/(.*)$ index.php?' . PML_PREFIX . '_media_request=$1 [QSA,L]',
+                'RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?pml_media_request=$1 [QSA,L]',
             ];
 
             // Build the new block content with markers

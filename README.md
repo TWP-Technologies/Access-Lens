@@ -45,7 +45,7 @@ This plugin gives you full control over who can access your premium content, pri
 <summary>Click to view installation instructions</summary>
 
 1.  Download the plugin `.zip` file and upload it through the **Plugins > Add New** menu in WordPress.
-2.  Alternatively, upload the `access-lens` folder to the `/wp-content/plugins/` directory.
+2.  Alternatively, upload the `protected-media-links` folder to the `/wp-content/plugins/` directory.
 3.  Activate the plugin through the 'Plugins' menu in your WordPress dashboard.
 4.  Navigate to **Settings > Access Lens** to configure the default settings.
 5.  The plugin will attempt to automatically update your server configuration. If it cannot, it will provide you with the necessary code to add manually. See the FAQ for server-specific instructions.
@@ -109,7 +109,7 @@ Place these rules *before* the main WordPress block:
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} -s
-    RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/access-lens/pml-handler.php?pml_media_request=$1 [QSA,L]
+    RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/protected-media-links/pml-handler.php?pml_media_request=$1 [QSA,L]
 </IfModule>
 # END Protected Media Links
 ```
@@ -121,7 +121,7 @@ Add this `location` block inside your `server` block. It should come before the 
 location ~ ^/wp-content/uploads/(.*)$ {
     try_files $uri =404; # Serve file if it exists, otherwise pass to WordPress
     if (!-e $request_filename) {
-        rewrite ^/wp-content/uploads/(.*)$ /wp-content/plugins/access-lens/pml-handler.php?pml_media_request=$1 last;
+        rewrite ^/wp-content/uploads/(.*)$ /wp-content/plugins/protected-media-links/pml-handler.php?pml_media_request=$1 last;
     }
 }
 ```
