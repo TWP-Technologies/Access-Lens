@@ -109,9 +109,8 @@ class PML_Bot_Detector
             PML_PREFIX . '_settings_verified_bot_domains',
             implode(
                 "\n",
-                [ '.googlebot.com', '.google.com', '.search.msn.com', '.crawl.yahoo.net', '.baidu.com', '.yandex.com', '.applebot.apple.com' ],
+                [ '.googlebot.com', '.google.com', '.search.msn.com', '.crawl.yahoo.net', '.baidu.com', '.yandex.com', '.applebot.apple.com' ]
             ),
-        ,
             $this->wpdb
         ); // Default list
         $verified_domains_array = !empty( $verified_domains_raw ) ? array_map( 'trim', explode( "\n", $verified_domains_raw ) ) : [];
