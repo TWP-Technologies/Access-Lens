@@ -201,3 +201,60 @@ function pml_headless_get_upload_dir( wpdb $wpdb ): array
     ];
 }
 
+/**
+ * Defines critical WordPress directory and URL constants if not already defined.
+ * This function is an adaptation of wp_plugin_directory_constants() for a
+ * headless/SHORTINIT environment. It relies on pml_headless_get_option for 'siteurl'
+ * and expects ABSPATH to be defined.
+ *
+ * @param wpdb $wpdb WordPress database object.
+ */
+function pml_headless_define_constants( wpdb $wpdb ) {
+    // Define WP_CONTENT_URL if not already defined.
+    // This constant conventionally does not have a trailing slash.
+    if ( ! defined( 'WP_CONTENT_URL' ) ) {
+        $siteurl = pml_headless_get_option( 'siteurl', '', $wpdb );
+        if ( ! empty( $siteurl ) ) {
+            define( 'WP_CONTENT_URL', rtrim( $siteurl, '/' ) . '/wp-content' );
+        }
+    }
+
+    // Define WP_CONTENT_DIR if not already defined.
+    // This constant conventionally does not have a trailing slash.
+    // It's highly likely to be defined in wp-config.php if customized.
+    // This provides a fallback based on ABSPATH, assuming a standard structure.
+    if ( ! defined( 'WP_CONTENT_DIR' ) ) {
+        if ( defined( 'ABSPATH' ) ) {
+            define( 'WP_CONTENT_DIR', rtrim( ABSPATH, '/\\' ) . '/wp-content' );
+        }
+    }
+
+    // Define plugin and mu-plugin directories and URLs if their base constants are set.
+    // These constants also conventionally do not have trailing slashes.
+    if ( defined( 'WP_CONTENT_DIR' ) ) {
+        if ( ! defined( 'WP_PLUGIN_DIR' ) ) {
+            define( 'WP_PLUGIN_DIR', rtrim( WP_CONTENT_DIR, '/\\' ) . '/plugins' );
+        }
+        if ( ! defined( 'WPMU_PLUGIN_DIR' ) ) {
+            define( 'WPMU_PLUGIN_DIR', rtrim( WP_CONTENT_DIR, '/\\' ) . '/mu-plugins' );
+        }
+    }
+
+    if ( defined( 'WP_CONTENT_URL' ) ) {
+        if ( ! defined( 'WP_PLUGIN_URL' ) ) {
+            define( 'WP_PLUGIN_URL', rtrim( WP_CONTENT_URL, '/' ) . '/plugins' );
+        }
+        if ( ! defined( 'WPMU_PLUGIN_URL' ) ) {
+            define( 'WPMU_PLUGIN_URL', rtrim( WP_CONTENT_URL, '/' ) . '/mu-plugins' );
+        }
+    }
+
+    // Define deprecated relative path constants.
+    // These are string literals, by convention relative to ABSPATH.
+    if ( ! defined( 'PLUGINDIR' ) ) {
+        define( 'PLUGINDIR', 'wp-content/plugins' );
+    }
+    if ( ! defined( 'MUPLUGINDIR' ) ) {
+        define( 'MUPLUGINDIR', 'wp-content/mu-plugins' );
+    }
+}
