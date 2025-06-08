@@ -133,11 +133,11 @@ class PML_Install
             if ( empty( $directories ) ) {
                 $add = false;
             } else {
+                $rules[] = 'RewriteEngine On';
                 foreach ( $directories as $dir => $extensions ) {
                     $extensions_regex = implode( '|', $extensions );
                     $dir_path         = '' === $dir ? '' : trailingslashit( $dir );
 
-                    $rules[] = 'RewriteEngine On';
                     $rules[] = 'RewriteCond %{REQUEST_FILENAME} -f';
                     $rules[] = 'RewriteCond %{REQUEST_URI} ^/wp-content/uploads/' . $dir_path . '.*\.(' . $extensions_regex . ')$ [NC]';
                     $rules[] = 'RewriteRule ^wp-content/uploads/' . $dir_path . '(.*)$ wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?pml_media_request=$1 [QSA,L]';
