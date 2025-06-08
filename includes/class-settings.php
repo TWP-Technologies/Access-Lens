@@ -1050,13 +1050,14 @@ class PML_Settings
                     PML_TEXT_DOMAIN,
                 ) . '</p>';
             echo '<pre class="pml-code-block"><code>';
-            echo esc_html( "RewriteCond %{REQUEST_FILENAME} -f\n" );
-            echo esc_html( "RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/" . PML_PLUGIN_SLUG . "/pml-handler.php?" . PML_PREFIX . "_media_request=$1 [QSA,L]" );
+            if ( class_exists( 'PML_Install' ) ) {
+                echo esc_html( PML_Install::regenerate_htaccess_rules() );
+            }
             echo '</code></pre>';
             if ( class_exists( 'PML_Install' ) && !PML_Install::are_htaccess_rules_present() )
             {
                 echo '<p class="pml-warning">' . esc_html__(
-                        'Warning: The required .htaccess rules may not be present or automatically added. Please ensure your .htaccess file is writable by WordPress or add the rules manually.',
+                        'Warning: The required .htaccess rules may not be present. The rules shown above are generated dynamically; add them manually if needed.',
                         PML_TEXT_DOMAIN,
                     ) . '</p>';
             }
@@ -1073,19 +1074,9 @@ class PML_Settings
                     PML_TEXT_DOMAIN,
                 ) . '</p>';
             echo '<pre class="pml-code-block"><code>';
-            echo esc_html(
-                "location ~ ^/wp-content/uploads/(.*\.(?:pdf|zip|doc|docx|xls|xlsx|ppt|pptx|mp3|mp4|mov|txt|csv|jpg|jpeg|png|gif|webp))$ {\n",
-            );
-            echo esc_html( "    if (!-f \$request_filename) {\n" );
-            echo esc_html( "        return 404;\n" );
-            echo esc_html( "    }\n" );
-            echo esc_html( "    try_files \$uri @pml_protected_media;\n" );
-            echo esc_html( "}\n\n" );
-            echo esc_html( "location @pml_protected_media {\n" );
-            echo esc_html(
-                "    rewrite ^/wp-content/uploads/(.*)$ /wp-content/plugins/" . PML_PLUGIN_SLUG . "/pml-handler.php?" . PML_PREFIX . "_media_request=\$1&access_token=\$arg_access_token last;\n",
-            );
-            echo esc_html( "}" );
+            if ( class_exists( 'PML_Install' ) ) {
+                echo esc_html( PML_Install::regenerate_nginx_rules() );
+            }
             echo '</code></pre>';
             echo '<p>' .
                  esc_html__( 'After adding these rules, you must reload your Nginx configuration (e.g., sudo nginx -s reload).', PML_TEXT_DOMAIN ) .
@@ -1177,7 +1168,7 @@ class PML_Settings
                     printf(
                         wp_kses(
                             __(
-                                'For file protection to work correctly on your <strong>Apache server</strong>, specific rules need to be in your %2$s file. The plugin attempted to add these automatically, but it may have failed or the rules might be missing. Please review the <a href="%1$s">server configuration instructions</a> and ensure your %2$s file is writable by WordPress or add the rules manually.',
+                                'For file protection to work correctly on your <strong>Apache server</strong>, dynamic rules must be present in your %2$s file. If automatic insertion failed, visit the <a href="%1$s">server configuration instructions</a> to copy the generated rules and add them manually.',
                                 PML_TEXT_DOMAIN,
                             ),
                             [
@@ -1210,7 +1201,7 @@ class PML_Settings
                     printf(
                         wp_kses(
                             __(
-                                'You appear to be using an <strong>Nginx server</strong>. For file protection to work, you must manually add specific rules to your Nginx configuration. Please see the <a href="%1$s">server configuration instructions</a> for details.',
+                                'You appear to be using an <strong>Nginx server</strong>. This plugin generates a configuration snippet you must add to your Nginx config. See the <a href="%1$s">server configuration instructions</a> to copy the rules.',
                                 PML_TEXT_DOMAIN,
                             ),
                             [
