@@ -1073,11 +1073,11 @@ class PML_Settings
                     'Add the following within your server block. You may need to adjust it based on your specific Nginx setup (e.g., if WordPress is in a subdirectory or your PHP-FPM setup differs).',
                     PML_TEXT_DOMAIN,
                 ) . '</p>';
-            echo '<pre class="pml-code-block"><code>';
+            $nginx_rules = '';
             if ( class_exists( 'PML_Install' ) ) {
-                echo esc_html( PML_Install::regenerate_nginx_rules() );
+                $nginx_rules = PML_Install::regenerate_nginx_rules();
             }
-            echo '</code></pre>';
+            echo '<pre class="pml-code-block">' . esc_html( $nginx_rules ) . '</pre>';
             echo '<p>' .
                  esc_html__( 'After adding these rules, you must reload your Nginx configuration (e.g., sudo nginx -s reload).', PML_TEXT_DOMAIN ) .
                  '</p>';
