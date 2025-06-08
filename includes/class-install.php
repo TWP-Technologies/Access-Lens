@@ -475,6 +475,15 @@ class PML_Install
     }
 
     /**
+     * Removes and re-adds the plugin's htaccess rules.
+     */
+    public static function regenerate_htaccess_rules(): bool
+    {
+        self::manage_htaccess_rules( false );
+        return self::manage_htaccess_rules();
+    }
+
+    /**
      * Runs database upgrade routines.
      * This should be hooked to 'plugins_loaded' or similar early action.
      */
