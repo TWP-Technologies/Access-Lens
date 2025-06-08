@@ -52,6 +52,8 @@ class PML_Install
         self::create_database_table();
         self::run_database_upgrades();
         self::set_default_options();
+
+        // Ensure required Apache rules are present
         self::regenerate_htaccess_rules();
 
         $cleanup_enabled = get_option( PML_PREFIX . '_settings_cleanup_tokens_enabled', true ); // Default to true if not set
@@ -250,6 +252,7 @@ class PML_Install
     }
     public static function deactivate()
     {
+        // Remove Apache rules when the plugin is deactivated
         self::regenerate_htaccess_rules( false );
         wp_clear_scheduled_hook( PML_PREFIX . '_daily_token_cleanup_hook' );
         flush_rewrite_rules();
@@ -288,6 +291,7 @@ class PML_Install
             delete_option( $option_name );
         }
 
+        self::regenerate_htaccess_rules( false );
         wp_clear_scheduled_hook( PML_PREFIX . '_daily_token_cleanup_hook' );
         flush_rewrite_rules();
     }
@@ -455,9 +459,19 @@ class PML_Install
     }
 
     /**
-     * Generates the Nginx rules block used for manual configuration.
+     * Wrapper for manage_htaccess_rules().
+     * Regenerates the plugin's Apache rules when activating or deactivating.
+     *
+     * @param bool $add True to add rules, false to remove.
+     *
+     * @return bool True on success, false on failure or if not applicable.
      */
-    public static function regenerate_nginx_rules(): string
+    public static function regenerate_htaccess_rules( bool $add = true ): bool
+    {
+        return self::manage_htaccess_rules( $add );
+    }
+
+    public static function are_htaccess_rules_present(): bool
     {
         $extensions_regex = implode( '|', self::get_protected_extensions() );
 
