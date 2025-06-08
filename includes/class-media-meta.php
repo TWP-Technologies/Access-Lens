@@ -446,6 +446,10 @@ class PML_Media_Meta
         // These fields are submitted directly with PML_PREFIX names.
         $is_protected_value = isset( $_POST[ PML_PREFIX . '_is_protected' ] ) ? '1' : '0';
         update_post_meta( $post_id, '_' . PML_PREFIX . '_is_protected', $is_protected_value );
+        if ( method_exists( 'PML_Install', 'regenerate_htaccess_rules' ) )
+        {
+            PML_Install::regenerate_htaccess_rules();
+        }
 
         $redirect_url_value = isset( $_POST[ PML_PREFIX . '_redirect_url' ] ) ? esc_url_raw( wp_unslash( $_POST[ PML_PREFIX . '_redirect_url' ] ) )
             : '';
