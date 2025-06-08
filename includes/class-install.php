@@ -357,6 +357,101 @@ class PML_Install
     }
 
     /**
+     * Returns the list of file extensions secured by the plugin.
+     */
+    public static function get_protected_extensions(): array
+    {
+        return [
+            // document and media file extensions
+            'pdf',
+            'doc',
+            'docx',
+            'ppt',
+            'pptx',
+            'pps',
+            'ppsx',
+            'odt',
+            'xls',
+            'xlsx',
+            'csv',
+            'txt',
+            'rtf',
+            // archive and image file extensions
+            'zip',
+            'rar',
+            '7z',
+            'tar',
+            'gz',
+            // image and audio/video file extensions
+            'jpg',
+            'jpeg',
+            'jpe',
+            'png',
+            'gif',
+            'webp',
+            'bmp',
+            'tif',
+            'tiff',
+            'svg',
+            // audio and video file extensions
+            'mp3',
+            'wav',
+            'ogg',
+            'm4a',
+            // video file extensions
+            'mp4',
+            'mov',
+            'wmv',
+            'avi',
+            'mpg',
+            'mpeg',
+            'm4v',
+            'webm',
+        ];
+    }
+
+    /**
+     * Generates the .htaccess rules block without writing to disk.
+     */
+    public static function regenerate_htaccess_rules(): string
+    {
+        $extensions_regex = implode( '|', self::get_protected_extensions() );
+
+        $rules = [
+            'RewriteEngine On',
+            'RewriteCond %{REQUEST_FILENAME} -f',
+            'RewriteCond %{REQUEST_URI} \\.(' . $extensions_regex . ')$ [NC]',
+            'RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?pml_media_request=$1 [QSA,L]',
+        ];
+
+        $pml_block  = '# BEGIN ' . PML_PLUGIN_NAME . "\n";
+        $pml_block .= implode( "\n", $rules ) . "\n";
+        $pml_block .= '# END ' . PML_PLUGIN_NAME;
+
+        return $pml_block;
+    }
+
+    /**
+     * Generates the Nginx rules block used for manual configuration.
+     */
+    public static function regenerate_nginx_rules(): string
+    {
+        $extensions_regex = implode( '|', self::get_protected_extensions() );
+
+        $block  = 'location ~ ^/wp-content/uploads/(.*\\.(' . $extensions_regex . '))$ {' . "\n";
+        $block .= "    if (!-f \$request_filename) {\n";
+        $block .= "        return 404;\n";
+        $block .= "    }\n";
+        $block .= "    try_files \$uri @pml_protected_media;\n";
+        $block .= "}\n\n";
+        $block .= 'location @pml_protected_media {' . "\n";
+        $block .= '    rewrite ^/wp-content/uploads/(.*)$ /wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?' . PML_PREFIX . '_media_request=$1&access_token=$arg_access_token last;' . "\n";
+        $block .= '}';
+
+        return $block;
+    }
+
+    /**
      * Runs database upgrade routines.
      * This should be hooked to 'plugins_loaded' or similar early action.
      */
