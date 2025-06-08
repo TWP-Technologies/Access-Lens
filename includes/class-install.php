@@ -201,6 +201,14 @@ class PML_Install
     }
 
     /**
+     * Returns the Nginx configuration rules as a single string.
+     */
+    public static function regenerate_nginx_rules(): string
+    {
+        return implode( "\n", self::get_nginx_config_snippets() );
+    }
+
+    /**
      * Collects directories and extensions for all protected attachments.
      *
      * @return array<string, array<int, string>> Map of directory paths to extensions.
@@ -384,6 +392,23 @@ class PML_Install
     }
 
     /**
+     * Returns the Apache rewrite rules without writing them to disk.
+     */
+    public static function get_htaccess_rules_snippet(): string
+    {
+        $extensions_regex = implode( '|', self::get_protected_extensions() );
+
+        $rules = [
+            'RewriteEngine On',
+            'RewriteCond %{REQUEST_FILENAME} -f',
+            'RewriteCond %{REQUEST_URI} \\.(' . $extensions_regex . ')$ [NC]',
+            'RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?pml_media_request=$1 [QSA,L]',
+        ];
+
+        return '# BEGIN ' . PML_PLUGIN_NAME . "\n" . implode( "\n", $rules ) . "\n# END " . PML_PLUGIN_NAME;
+    }
+
+    /**
      * Returns the list of file extensions secured by the plugin.
      */
     public static function get_protected_extensions(): array
@@ -437,65 +462,6 @@ class PML_Install
         ];
     }
 
-    /**
-     * Generates the .htaccess rules block without writing to disk.
-     */
-    public static function regenerate_htaccess_rules(): string
-    {
-        $extensions_regex = implode( '|', self::get_protected_extensions() );
-
-        $rules = [
-            'RewriteEngine On',
-            'RewriteCond %{REQUEST_FILENAME} -f',
-            'RewriteCond %{REQUEST_URI} \\.(' . $extensions_regex . ')$ [NC]',
-            'RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?pml_media_request=$1 [QSA,L]',
-        ];
-
-        $pml_block  = '# BEGIN ' . PML_PLUGIN_NAME . "\n";
-        $pml_block .= implode( "\n", $rules ) . "\n";
-        $pml_block .= '# END ' . PML_PLUGIN_NAME;
-
-        return $pml_block;
-    }
-
-    /**
-     * Wrapper for manage_htaccess_rules().
-     * Regenerates the plugin's Apache rules when activating or deactivating.
-     *
-     * @param bool $add True to add rules, false to remove.
-     *
-     * @return bool True on success, false on failure or if not applicable.
-     */
-    public static function regenerate_htaccess_rules( bool $add = true ): bool
-    {
-        return self::manage_htaccess_rules( $add );
-    }
-
-    public static function are_htaccess_rules_present(): bool
-    {
-        $extensions_regex = implode( '|', self::get_protected_extensions() );
-
-        $block  = 'location ~ ^/wp-content/uploads/(.*\\.(' . $extensions_regex . '))$ {' . "\n";
-        $block .= "    if (!-f \$request_filename) {\n";
-        $block .= "        return 404;\n";
-        $block .= "    }\n";
-        $block .= "    try_files \$uri @pml_protected_media;\n";
-        $block .= "}\n\n";
-        $block .= 'location @pml_protected_media {' . "\n";
-        $block .= '    rewrite ^/wp-content/uploads/(.*)$ /wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?' . PML_PREFIX . '_media_request=$1&access_token=$arg_access_token last;' . "\n";
-        $block .= '}';
-
-        return $block;
-    }
-
-    /**
-     * Removes and re-adds the plugin's htaccess rules.
-     */
-    public static function regenerate_htaccess_rules(): bool
-    {
-        self::manage_htaccess_rules( false );
-        return self::manage_htaccess_rules();
-    }
 
     /**
      * Runs database upgrade routines.

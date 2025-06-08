@@ -1051,7 +1051,7 @@ class PML_Settings
                 ) . '</p>';
             echo '<pre class="pml-code-block"><code>';
             if ( class_exists( 'PML_Install' ) ) {
-                echo esc_html( PML_Install::regenerate_htaccess_rules() );
+                echo esc_html( PML_Install::get_htaccess_rules_snippet() );
             }
             echo '</code></pre>';
             if ( class_exists( 'PML_Install' ) && !PML_Install::are_htaccess_rules_present() )
