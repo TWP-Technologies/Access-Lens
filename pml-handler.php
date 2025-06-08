@@ -3,6 +3,7 @@
 // Bypasses full WordPress load for faster protected file serving.
 
 // --- Phase 1: Minimal Bootstrap ---
+require_once dirname( __FILE__ ) . '/pml-constants.php';
 define( 'SHORTINIT', true );
 
 // Locate wp-config.php from typical plugin directory structures.
@@ -54,7 +55,7 @@ $access_token = isset( $_GET['access_token'] ) ? sanitize_text_field( $_GET['acc
 $path_segments = array_map( 'sanitize_file_name', explode( '/', $request_raw ) );
 $relative_path = implode( '/', array_filter( $path_segments ) );
 
-$upload_dir = wp_upload_dir();
+$upload_dir = pml_headless_get_upload_dir( $wpdb );
 $full_path  = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
 
 $real_base = realpath( $upload_dir['basedir'] );
@@ -68,20 +69,20 @@ $attachment_id = pml_headless_get_attachment_id_from_path( $relative_path, $wpdb
 if ( ! $attachment_id ) {
     $handle_unmanaged = pml_headless_get_option( PML_PREFIX . '_settings_handle_unmanaged_files', 'serve_publicly', $wpdb );
     if ( 'serve_publicly' === $handle_unmanaged ) {
-        serve_file( $real_file );
+        serve_file( $real_file, 'Unmanaged Public File' );
     }
     deny_access( null, 'unmanaged_restricted' );
 }
 
 $pml_meta = pml_headless_get_pml_meta( $attachment_id, $wpdb );
 if ( empty( $pml_meta['pml_is_protected'] ) ) {
-    serve_file( $real_file );
+    serve_file( $real_file, 'Unmanaged Public File' );
 }
 
 if ( $access_token ) {
     $token_status = $token_manager->validate_token( $access_token, $attachment_id );
     if ( 'valid' === $token_status && $token_manager->record_token_usage( $access_token ) ) {
-        serve_file( $real_file );
+        serve_file( $real_file, 'Valid Token' );
     }
     if ( in_array( $token_status, [ 'expired', 'used_limit_reached' ], true ) ) {
         $token_manager->update_token_fields( $access_token, [ 'status' => $token_status ], [ '%s' ] );
@@ -91,18 +92,34 @@ if ( $access_token ) {
 $auth        = new PML_Headless_Auth( $wpdb );
 $current_user = $auth->get_current_user();
 if ( $current_user && is_access_granted_by_user_role( $current_user, $pml_meta, $wpdb ) ) {
-    serve_file( $real_file );
+    serve_file( $real_file, 'Access Granted by User/Role Rule' );
 }
 
 $bot = $bot_detector;
 if ( $bot->is_verified_bot() ) {
-    serve_file( $real_file );
+    serve_file( $real_file, 'Verified Bot' );
 }
 
 deny_access( $pml_meta, 'restricted_default' );
 
 // --- Helper Functions ---
-function serve_file( string $file_path ): void {
+function serve_file( string $file_path, string $reason = 'Unknown' ): void {
+    // Log successful access for debugging and auditing purposes.
+    $log_message = sprintf(
+        "[PML Access Granted] Served '%s' to IP %s. Reason: %s",
+        basename( $file_path ),
+        $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN',
+        $reason
+    );
+    error_log( $log_message );
+
+    // Add security and cache-control headers to prevent caching of tokenized links.
+    // This is critical for enforcing use limits and expiry.
+    header( 'Cache-Control: no-store, no-cache, must-revalidate, max-age=0' );
+    header( 'Pragma: no-cache' );
+    header( 'Expires: Wed, 11 Jan 1984 05:00:00 GMT' );
+    header( 'X-Content-Type-Options: nosniff' );
+    header( 'X-Frame-Options: SAMEORIGIN' );
     if ( ob_get_level() ) {
         @ob_end_clean();
     }
@@ -110,7 +127,7 @@ function serve_file( string $file_path ): void {
     if ( stripos( $server, 'nginx' ) !== false || stripos( $server, 'litespeed' ) !== false ) {
         $internal = defined( 'PML_INTERNAL_REDIRECT_PREFIX' ) ? trim( PML_INTERNAL_REDIRECT_PREFIX ) : '';
         if ( $internal ) {
-            $upload_dir   = wp_upload_dir();
+            $upload_dir   = pml_headless_get_upload_dir( $GLOBALS['wpdb'] );
             $rel_path     = str_replace( trailingslashit( $upload_dir['basedir'] ), '', $file_path );
             $redirect     = trailingslashit( rtrim( $internal, '/' ) ) . $rel_path;
             if ( stripos( $server, 'nginx' ) !== false ) {
@@ -132,7 +149,12 @@ function serve_file( string $file_path ): void {
 }
 
 function deny_access( ?array $pml_meta, string $slug ): void {
-    $default_url = pml_headless_get_option( PML_PREFIX . '_settings_default_redirect_url', home_url( '/' ), $GLOBALS['wpdb'] );
+    // Log denied access for debugging and auditing purposes.
+    $log_message = sprintf( '[PML Access Denied] Denied access for IP %s. Reason Code: %s', $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN', $slug );
+    error_log( $log_message );
+
+    $home_url_fallback = pml_headless_get_option( 'home', '/', $GLOBALS['wpdb'] );
+    $default_url       = pml_headless_get_option( PML_PREFIX . '_settings_default_redirect_url', $home_url_fallback, $GLOBALS['wpdb'] );
     if ( $pml_meta && ! empty( $pml_meta['pml_redirect_url'] ) ) {
         $default_url = $pml_meta['pml_redirect_url'];
     }

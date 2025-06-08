@@ -167,3 +167,37 @@ function pml_headless_set_cache( string $cache_key, $value, int $expiration, wpd
     );
 }
 
+/**
+ * Retrieves upload directory information in a headless context.
+ * This is a lightweight, SHORTINIT-safe replacement for wp_upload_dir().
+ *
+ * @param wpdb $wpdb WordPress database object.
+ * @return array{'basedir': string, 'baseurl': string} Information about the upload directory.
+ */
+function pml_headless_get_upload_dir( wpdb $wpdb ): array
+{
+    $siteurl     = pml_headless_get_option( 'siteurl', '', $wpdb );
+    $upload_path = trim( pml_headless_get_option( 'upload_path', 'wp-content/uploads', $wpdb ) );
+
+    if ( empty( $upload_path ) || 'wp-content/uploads' === $upload_path )
+    {
+        $basedir = WP_CONTENT_DIR . '/uploads';
+        $baseurl = WP_CONTENT_URL . '/uploads';
+    }
+    elseif ( 0 === strpos( $upload_path, ABSPATH ) )
+    {
+        $basedir = $upload_path;
+        $baseurl = str_replace( ABSPATH, $siteurl . '/', $upload_path );
+    }
+    else
+    {
+        $basedir = ABSPATH . $upload_path;
+        $baseurl = $siteurl . '/' . $upload_path;
+    }
+
+    return [
+        'basedir' => $basedir,
+        'baseurl' => $baseurl,
+    ];
+}
+
