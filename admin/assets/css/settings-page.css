@@ -177,7 +177,7 @@
             margin-bottom: 0.6em;
             padding: 6px 8px;
             border-radius: 3px;
-            &:nth-child(odd) { background-color: #f8f9fa; }
+            &:nth-child(odd) { background-color: #dbe5ed; }
             &:nth-child(even) { background-color: #ffffff; }
         }
     }
