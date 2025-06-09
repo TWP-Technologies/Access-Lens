@@ -7,7 +7,7 @@ const PML_TEXT_DOMAIN     = 'protected-media-links';
 const PML_PREFIX          = 'pml';
 const PML_VERSION         = '1.1.0';
 const PML_DB_VERSION      = '1.0.0';
-const PML_MIN_WP_VERSION  = '5.8';
+const PML_MIN_WP_VERSION  = '5.9';
 const PML_MIN_PHP_VERSION = '7.4';
 const PML_PLUGIN_FILE     = __DIR__ . '/protected-media-links.php';
 //define( 'PML_PLUGIN_DIR', pml_plugin_dir_path() ); // defined at the end of this file
