@@ -68,15 +68,34 @@ class PML_Headless_Auth
     /**
      * Parses the logged-in authentication cookie.
      *
-     * @return array|null Parsed cookie elements or null on failure.
+     * This version is modified to check for both secure and non-secure auth cookies,
+     * making it robust regardless of the current request's SSL status. It also
+     * returns the cookie's scheme ('auth', 'secure_auth', or 'logged_in').
+     *
+     * @return array|null Parsed cookie elements including scheme, or null on failure.
      */
     private function parse_auth_cookie(): ?array
     {
-        if ( empty( $_COOKIE[ LOGGED_IN_COOKIE ] ) ) {
+        $cookie = '';
+        $scheme = '';
+
+        // Check for the secure auth cookie first.
+        if ( ! empty( $_COOKIE[ SECURE_AUTH_COOKIE ] ) ) {
+            $cookie = $_COOKIE[ SECURE_AUTH_COOKIE ];
+            $scheme = 'secure_auth';
+        } elseif ( ! empty( $_COOKIE[ AUTH_COOKIE ] ) ) {
+            // Fall back to the non-secure auth cookie.
+            $cookie = $_COOKIE[ AUTH_COOKIE ];
+            $scheme = 'auth';
+        } elseif ( ! empty( $_COOKIE[ LOGGED_IN_COOKIE ] ) ) {
+            // If only the logged-in cookie is present, use it as a fallback.
+            $cookie = $_COOKIE[ LOGGED_IN_COOKIE ];
+            $scheme = 'logged_in';
+        } else {
+            // No authentication cookie was found at all.
             return null;
         }
 
-        $cookie          = $_COOKIE[ LOGGED_IN_COOKIE ];
         $cookie_elements = explode( '|', $cookie );
         if ( count( $cookie_elements ) !== 4 ) {
             return null;
@@ -87,6 +106,7 @@ class PML_Headless_Auth
             'expiration' => (int) $cookie_elements[1],
             'token'      => $cookie_elements[2],
             'hmac'       => $cookie_elements[3],
+            'scheme'     => $scheme,
         ];
     }
 
@@ -95,7 +115,7 @@ class PML_Headless_Auth
      *
      * Replicates wp_validate_auth_cookie() from WordPress core.
      *
-     * @param array $elements Parsed cookie elements.
+     * @param array $elements Parsed cookie elements, including the 'scheme'.
      *
      * @return bool True if valid, false otherwise.
      */
@@ -116,10 +136,19 @@ class PML_Headless_Auth
             return false;
         }
 
-        $pass_frag = substr( $user->user_pass, 8, 4 );
-        $key       = wp_hash( $user->user_login . '|' . $pass_frag . '|' . $elements['expiration'] . '|' . $elements['token'], 'auth' );
+        if ( str_starts_with( $user->user_pass, '$P$' ) || str_starts_with( $user->user_pass, '$2y$' ) ) {
+            // Retain previous behaviour of phpass or vanilla bcrypt hashed passwords.
+            $pass_frag = substr( $user->user_pass, 8, 4 );
+        } else {
+            // Otherwise, use a substring from the end of the hash to avoid dealing with potentially long hash prefixes.
+            $pass_frag = substr( $user->user_pass, -4 );
+        }
+
+        // Generate the key using the username from the cookie and the correct scheme.
+        $key       = wp_hash( $elements['username'] . '|' . $pass_frag . '|' . $elements['expiration'] . '|' . $elements['token'], $elements['scheme'] );
         $algo      = 'sha256';
-        $hash      = hash_hmac( $algo, $user->user_login . '|' . $elements['expiration'] . '|' . $elements['token'], $key );
+        // Generate the final hash using the username from the cookie.
+        $hash      = hash_hmac( $algo, $elements['username'] . '|' . $elements['expiration'] . '|' . $elements['token'], $key );
 
         if ( ! hash_equals( $hash, $elements['hmac'] ) ) {
             return false;
@@ -145,7 +174,7 @@ class PML_Headless_Auth
             return false;
         }
 
-        $verifier = wp_hash( $elements['token'], 'nonce' );
+        $verifier = hash( 'sha256', $elements['token'] );
         if ( ! isset( $sessions[ $verifier ] ) ) {
             return false;
         }
@@ -200,4 +229,3 @@ class PML_Headless_Auth
         ];
     }
 }
-
