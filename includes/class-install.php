@@ -569,7 +569,7 @@ class PML_Install
             return;
         }
 
-        $constants = [
+        $definitions = [
             'ADMIN_COOKIE_PATH' => "define( 'ADMIN_COOKIE_PATH', '/' );",
             'COOKIE_DOMAIN'     => "define( 'COOKIE_DOMAIN', '' );",
             'COOKIEPATH'        => "define( 'COOKIEPATH', '/' );",
@@ -577,9 +577,10 @@ class PML_Install
         ];
 
         $missing = [];
-        foreach ( $constants as $name => $line )
+        foreach ( $definitions as $name => $line )
         {
-            if ( false === preg_match( "/define\s*\(\s*'" . preg_quote( $name, '/' ) . "'/", $contents ) )
+            // Simple string checks to avoid regex overhead.
+            if ( false === strpos( $contents, $name ) )
             {
                 $missing[] = $line;
             }
@@ -598,7 +599,19 @@ class PML_Install
         $snippet .= " */\n";
         $snippet .= implode( "\n", $missing ) . "\n";
 
-        if ( false === @file_put_contents( $wp_config, $snippet, FILE_APPEND ) )
+        // Insert before the 'stop editing' marker when possible.
+        $marker = "/* That's all, stop editing! Happy publishing. */";
+        $pos    = strpos( $contents, $marker );
+        if ( false === $pos )
+        {
+            $contents .= $snippet;
+        }
+        else
+        {
+            $contents = substr( $contents, 0, $pos ) . $snippet . substr( $contents, $pos );
+        }
+
+        if ( false === @file_put_contents( $wp_config, $contents ) )
         {
             error_log( PML_PLUGIN_NAME . ' Activation Error: Failed to write cookie constants to wp-config.php.' );
         }
