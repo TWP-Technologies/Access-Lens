@@ -140,7 +140,12 @@ class PML_Install
 
                     $rules[] = 'RewriteCond %{REQUEST_FILENAME} -f';
                     $rules[] = 'RewriteCond %{REQUEST_URI} ^/wp-content/uploads/' . $dir_path . '.*\.(' . $extensions_regex . ')$ [NC]';
-                    $rules[] = 'RewriteRule ^wp-content/uploads/' . $dir_path . '(.*)$ wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?pml_media_request=$1 [QSA,L]';
+                    $rules[] = sprintf(
+                        "RewriteRule ^wp-content/uploads/%s(.*)\$ wp-content/plugins/%s/pml-handler.php?pml_media_request=%s\$1 [QSA,L]",
+                        $dir_path,
+                        PML_PLUGIN_SLUG,
+                        $dir_path
+                    );
                     $rules[] = '';
                 }
             }
@@ -396,16 +401,31 @@ class PML_Install
      */
     public static function get_htaccess_rules_snippet(): string
     {
-        $extensions_regex = implode( '|', self::get_protected_extensions() );
+        $dirs = self::get_protected_directories();
+        if ( empty( $dirs ) )
+        {
+            return '';
+        }
 
-        $rules = [
-            'RewriteEngine On',
-            'RewriteCond %{REQUEST_FILENAME} -f',
-            'RewriteCond %{REQUEST_URI} \\.(' . $extensions_regex . ')$ [NC]',
-            'RewriteRule ^wp-content/uploads/(.*)$ wp-content/plugins/' . PML_PLUGIN_SLUG . '/pml-handler.php?pml_media_request=$1 [QSA,L]',
-        ];
+        $rules = [ 'RewriteEngine On' ];
+        foreach ( $dirs as $dir => $exts )
+        {
+            $dir_path         = $dir ? trailingslashit( $dir ) : '';
+            $extensions_regex = implode( '|', $exts );
 
-        return '# BEGIN ' . PML_PLUGIN_NAME . "\n" . implode( "\n", $rules ) . "\n# END " . PML_PLUGIN_NAME;
+            $rules[] = 'RewriteCond %{REQUEST_FILENAME} -f';
+            $rules[] = 'RewriteCond %{REQUEST_URI} ^/wp-content/uploads/' . $dir_path . '.*\.(' . $extensions_regex . ')$ [NC]';
+            // Corrected Rule: Pass the full relative path including the directory to the handler.
+            $rules[] = sprintf(
+                "RewriteRule ^wp-content/uploads/%s(.*)\$ wp-content/plugins/%s/pml-handler.php?pml_media_request=%s\$1 [QSA,L]",
+                $dir_path,
+                PML_PLUGIN_SLUG,
+                $dir_path
+            );
+            $rules[] = '';
+        }
+
+        return '# BEGIN ' . PML_PLUGIN_NAME . "\n" . trim( implode( "\n", $rules ) ) . "\n# END " . PML_PLUGIN_NAME;
     }
 
     /**
