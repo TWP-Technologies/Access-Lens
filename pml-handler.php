@@ -47,6 +47,7 @@ require_once __DIR__ . '/includes/utilities/bot-detector.php';
 
 // Define Extra WP constants if not already defined.
 pml_headless_define_constants( $wpdb );
+wp_cookie_constants();
 
 $token_manager = new PML_Token_Manager( $wpdb );
 $bot_detector  = new PML_Bot_Detector( $wpdb );
