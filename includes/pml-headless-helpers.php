@@ -12,6 +12,29 @@ if ( ! defined( 'ABSPATH' ) )
 }
 
 /**
+ * Sanitizes a single path segment without altering case.
+ * Strips directory traversal and disallowed characters.
+ *
+ * @param string $segment Raw path segment.
+ *
+ * @return string Sanitized segment.
+ *
+ * @note can be used as an alternative to sanitize_file_name if needed
+ */
+function pml_headless_clean_segment( string $segment ): string
+{
+    $segment = str_replace( [ "\0", '\\' ], '', $segment );
+    $segment = basename( $segment );
+
+    if ( $segment === '.' || $segment === '..' )
+    {
+        return '';
+    }
+
+    return str_replace( '/', '', preg_replace( '/[^A-Za-z0-9._-]/u', '', $segment ) );
+}
+
+/**
  * Retrieves a WordPress option value with static caching.
  *
  * @param string $option_name The option name.
@@ -256,5 +279,22 @@ function pml_headless_define_constants( wpdb $wpdb ) {
     }
     if ( ! defined( 'MUPLUGINDIR' ) ) {
         define( 'MUPLUGINDIR', 'wp-content/mu-plugins' );
+    }
+}
+
+if ( !function_exists( '__' ) )
+{
+    /**
+     * Dummy translation function for headless context.
+     * This is a placeholder to avoid errors when translation functions are called.
+     *
+     * @param string $text Text to translate.
+     * @param array  $args Optional arguments for translation.
+     *
+     * @return string The original text.
+     */
+    function __( string $text, array $args = [] ): string
+    {
+        return $text;
     }
 }
