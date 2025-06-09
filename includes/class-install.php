@@ -611,6 +611,11 @@ class PML_Install
             $contents = substr( $contents, 0, $pos ) . $snippet . substr( $contents, $pos );
         }
 
+        if ( ! is_writable( $wp_config ) )
+        {
+            error_log( PML_PLUGIN_NAME . ' Activation Error: wp-config.php is not writable. Please check file permissions.' );
+            return;
+        }
         if ( false === @file_put_contents( $wp_config, $contents ) )
         {
             error_log( PML_PLUGIN_NAME . ' Activation Error: Failed to write cookie constants to wp-config.php.' );
