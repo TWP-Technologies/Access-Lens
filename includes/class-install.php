@@ -81,6 +81,9 @@ class PML_Install
         {
             update_option( PML_PREFIX . '_db_version', self::CURRENT_DB_VERSION );
         }
+
+        // Ensure cookie-related constants exist for session validation outside wp-admin.
+        self::ensure_cookie_constants();
     }
 
 
@@ -564,5 +567,78 @@ class PML_Install
             ),
         );
         return !empty( $column );
+    }
+
+    private static function ensure_cookie_constants(): void
+    {
+        $wp_config = ABSPATH . 'wp-config.php';
+        if ( ! file_exists( $wp_config ) )
+        {
+            $wp_config = dirname( ABSPATH ) . '/wp-config.php';
+        }
+        if ( ! file_exists( $wp_config ) )
+        {
+            error_log( PML_PLUGIN_NAME . ' Activation Error: wp-config.php not found to set cookie constants.' );
+            return;
+        }
+
+        $contents = @file_get_contents( $wp_config );
+        if ( false === $contents )
+        {
+            error_log( PML_PLUGIN_NAME . ' Activation Error: Unable to read wp-config.php.' );
+            return;
+        }
+
+        $definitions = [
+            'ADMIN_COOKIE_PATH' => "define( 'ADMIN_COOKIE_PATH', '/' );",
+            'COOKIE_DOMAIN'     => "define( 'COOKIE_DOMAIN', '' );",
+            'COOKIEPATH'        => "define( 'COOKIEPATH', '/' );",
+            'SITECOOKIEPATH'    => "define( 'SITECOOKIEPATH', '/' );",
+        ];
+
+        $missing = [];
+        foreach ( $definitions as $name => $line )
+        {
+            // Simple string checks to avoid regex overhead.
+            if ( false === strpos( $contents, $name ) )
+            {
+                $missing[] = $line;
+            }
+        }
+
+        if ( empty( $missing ) )
+        {
+            return;
+        }
+
+        $snippet  = "\n";
+        $snippet .= "/**\n";
+        $snippet .= " * Set the admin cookie path to the root of the site.\n";
+        $snippet .= " * This is necessary for plugins like Protected Media Links that need to\n";
+        $snippet .= " * validate a user's session from outside the /wp-admin/ directory.\n";
+        $snippet .= " */\n";
+        $snippet .= implode( "\n", $missing ) . "\n";
+
+        // Insert before the 'stop editing' marker when possible.
+        $marker = "/* That's all, stop editing! Happy publishing. */";
+        $pos    = strpos( $contents, $marker );
+        if ( false === $pos )
+        {
+            $contents .= $snippet;
+        }
+        else
+        {
+            $contents = substr( $contents, 0, $pos ) . $snippet . substr( $contents, $pos );
+        }
+
+        if ( ! is_writable( $wp_config ) )
+        {
+            error_log( PML_PLUGIN_NAME . ' Activation Error: wp-config.php is not writable. Please check file permissions.' );
+            return;
+        }
+        if ( false === @file_put_contents( $wp_config, $contents ) )
+        {
+            error_log( PML_PLUGIN_NAME . ' Activation Error: Failed to write cookie constants to wp-config.php.' );
+        }
     }
 }
