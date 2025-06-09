@@ -6,7 +6,7 @@
  */
 
 // Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) )
+if ( !defined( 'ABSPATH' ) )
 {
     exit;
 }
@@ -81,17 +81,17 @@ function pml_headless_get_pml_meta( int $post_id, wpdb $wpdb ): array
     }
 
     $sql      = $wpdb->prepare(
-        "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE %s",
+        "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id = %d AND meta_key LIKE %s",
         $post_id,
-        $wpdb->esc_like( '_pml_' ) . '%'
+        $wpdb->esc_like( '_pml_' ) . '%',
     );
     $metadata = $wpdb->get_results( $sql, ARRAY_A );
 
     $result = [];
     foreach ( $metadata as $row )
     {
-        $key          = substr( $row['meta_key'], 1 );
-        $result[ $key ] = maybe_unserialize( $row['meta_value'] );
+        $key            = substr( $row[ 'meta_key' ], 1 );
+        $result[ $key ] = maybe_unserialize( $row[ 'meta_value' ] );
     }
 
     $cache[ $post_id ] = $result;
@@ -111,14 +111,14 @@ function pml_headless_get_attachment_id_from_path( string $relative_path, wpdb $
     static $cache = [];
     if ( isset( $cache[ $relative_path ] ) )
     {
-        return (int) $cache[ $relative_path ];
+        return (int)$cache[ $relative_path ];
     }
 
-    $sql  = $wpdb->prepare(
-        "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
-        $relative_path
+    $sql = $wpdb->prepare(
+        "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_attached_file' AND meta_value = %s",
+        $relative_path,
     );
-    $id   = (int) $wpdb->get_var( $sql );
+    $id  = (int)$wpdb->get_var( $sql );
 
     $cache[ $relative_path ] = $id;
     return $id;
@@ -141,8 +141,8 @@ function pml_headless_get_cache( string $cache_key, wpdb $wpdb )
         return $cache[ $cache_key ];
     }
 
-    $sql  = $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", $cache_key );
-    $raw  = $wpdb->get_var( $sql );
+    $sql = $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", $cache_key );
+    $raw = $wpdb->get_var( $sql );
 
     if ( is_null( $raw ) )
     {
@@ -151,21 +151,21 @@ function pml_headless_get_cache( string $cache_key, wpdb $wpdb )
     }
 
     $data = maybe_unserialize( $raw );
-    if ( ! is_array( $data ) || ! isset( $data['value'], $data['expires_at'] ) )
+    if ( !is_array( $data ) || !isset( $data[ 'value' ], $data[ 'expires_at' ] ) )
     {
         $cache[ $cache_key ] = false;
         return false;
     }
 
-    if ( (int) $data['expires_at'] < time() )
+    if ( (int)$data[ 'expires_at' ] < time() )
     {
         $wpdb->delete( $wpdb->options, [ 'option_name' => $cache_key ] );
         $cache[ $cache_key ] = false;
         return false;
     }
 
-    $cache[ $cache_key ] = $data['value'];
-    return $data['value'];
+    $cache[ $cache_key ] = $data[ 'value' ];
+    return $data[ 'value' ];
 }
 
 /**
@@ -183,10 +183,10 @@ function pml_headless_set_cache( string $cache_key, $value, int $expiration, wpd
 
     $wpdb->query(
         $wpdb->prepare(
-            "REPLACE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
+            "REPLACE INTO $wpdb->options (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
             $cache_key,
-            $data
-        )
+            $data,
+        ),
     );
 }
 
@@ -195,6 +195,7 @@ function pml_headless_set_cache( string $cache_key, $value, int $expiration, wpd
  * This is a lightweight, SHORTINIT-safe replacement for wp_upload_dir().
  *
  * @param wpdb $wpdb WordPress database object.
+ *
  * @return array{'basedir': string, 'baseurl': string} Information about the upload directory.
  */
 function pml_headless_get_upload_dir( wpdb $wpdb ): array
@@ -232,12 +233,15 @@ function pml_headless_get_upload_dir( wpdb $wpdb ): array
  *
  * @param wpdb $wpdb WordPress database object.
  */
-function pml_headless_define_constants( wpdb $wpdb ) {
+function pml_headless_define_constants( wpdb $wpdb )
+{
     // Define WP_CONTENT_URL if not already defined.
     // This constant conventionally does not have a trailing slash.
-    if ( ! defined( 'WP_CONTENT_URL' ) ) {
+    if ( !defined( 'WP_CONTENT_URL' ) )
+    {
         $siteurl = pml_headless_get_option( 'siteurl', '', $wpdb );
-        if ( ! empty( $siteurl ) ) {
+        if ( !empty( $siteurl ) )
+        {
             define( 'WP_CONTENT_URL', rtrim( $siteurl, '/' ) . '/wp-content' );
         }
     }
@@ -246,38 +250,48 @@ function pml_headless_define_constants( wpdb $wpdb ) {
     // This constant conventionally does not have a trailing slash.
     // It's highly likely to be defined in wp-config.php if customized.
     // This provides a fallback based on ABSPATH, assuming a standard structure.
-    if ( ! defined( 'WP_CONTENT_DIR' ) ) {
-        if ( defined( 'ABSPATH' ) ) {
+    if ( !defined( 'WP_CONTENT_DIR' ) )
+    {
+        if ( defined( 'ABSPATH' ) )
+        {
             define( 'WP_CONTENT_DIR', rtrim( ABSPATH, '/\\' ) . '/wp-content' );
         }
     }
 
     // Define plugin and mu-plugin directories and URLs if their base constants are set.
     // These constants also conventionally do not have trailing slashes.
-    if ( defined( 'WP_CONTENT_DIR' ) ) {
-        if ( ! defined( 'WP_PLUGIN_DIR' ) ) {
+    if ( defined( 'WP_CONTENT_DIR' ) )
+    {
+        if ( !defined( 'WP_PLUGIN_DIR' ) )
+        {
             define( 'WP_PLUGIN_DIR', rtrim( WP_CONTENT_DIR, '/\\' ) . '/plugins' );
         }
-        if ( ! defined( 'WPMU_PLUGIN_DIR' ) ) {
+        if ( !defined( 'WPMU_PLUGIN_DIR' ) )
+        {
             define( 'WPMU_PLUGIN_DIR', rtrim( WP_CONTENT_DIR, '/\\' ) . '/mu-plugins' );
         }
     }
 
-    if ( defined( 'WP_CONTENT_URL' ) ) {
-        if ( ! defined( 'WP_PLUGIN_URL' ) ) {
+    if ( defined( 'WP_CONTENT_URL' ) )
+    {
+        if ( !defined( 'WP_PLUGIN_URL' ) )
+        {
             define( 'WP_PLUGIN_URL', rtrim( WP_CONTENT_URL, '/' ) . '/plugins' );
         }
-        if ( ! defined( 'WPMU_PLUGIN_URL' ) ) {
+        if ( !defined( 'WPMU_PLUGIN_URL' ) )
+        {
             define( 'WPMU_PLUGIN_URL', rtrim( WP_CONTENT_URL, '/' ) . '/mu-plugins' );
         }
     }
 
     // Define deprecated relative path constants.
     // These are string literals, by convention relative to ABSPATH.
-    if ( ! defined( 'PLUGINDIR' ) ) {
+    if ( !defined( 'PLUGINDIR' ) )
+    {
         define( 'PLUGINDIR', 'wp-content/plugins' );
     }
-    if ( ! defined( 'MUPLUGINDIR' ) ) {
+    if ( !defined( 'MUPLUGINDIR' ) )
+    {
         define( 'MUPLUGINDIR', 'wp-content/mu-plugins' );
     }
 }
