@@ -39,6 +39,8 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
     }
 }
 
+require_once __DIR__ . "/includes/pml-headless-sanitization.php";
+
 // Load plugin helpers.
 require_once __DIR__ . '/includes/pml-headless-helpers.php';
 require_once __DIR__ . '/includes/class-pml-headless-auth.php';
@@ -162,7 +164,7 @@ function deny_access( ?array $pml_meta, string $slug ): void {
     if ( $pml_meta && ! empty( $pml_meta['pml_redirect_url'] ) ) {
         $default_url = $pml_meta['pml_redirect_url'];
     }
-    $redirect = $default_url ? $default_url : '/';
+    $redirect = $default_url ? pml_headless_sanitize_location( $default_url ) : '/';
     if ( ! headers_sent() ) {
         header( 'Location: ' . $redirect );
     }
