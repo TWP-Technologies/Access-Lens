@@ -1,8 +1,5 @@
 <?php
-function pml_headless_sanitize_location(string $url): string {
-    $url = filter_var($url, FILTER_SANITIZE_URL);
-    return str_replace(["\r", "\n"], '', $url);
-}
+require_once dirname(__DIR__) . '/includes/pml-headless-sanitization.php';
 
 $input = "https://example.com/path\r\nLocation: https://evil.com";
 $expected = "https://example.com/pathLocation:https://evil.com";
