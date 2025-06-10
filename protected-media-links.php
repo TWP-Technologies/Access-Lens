@@ -12,7 +12,7 @@
  * Text Domain:       protected-media-links
  * Domain Path:       /languages
  * Requires PHP:      7.4
- * Requires WP:       5.8
+ * Requires WP:       5.9
  * @formatter:on
  */
 
