@@ -23,6 +23,7 @@ require_once ABSPATH . WPINC . '/class-wp-error.php';
 require_once ABSPATH . WPINC . '/plugin.php';
 require_once ABSPATH . WPINC . '/wp-db.php';
 require_once ABSPATH . WPINC . '/pluggable.php';
+require_once ABSPATH . WPINC . '/compat.php';
 
 // Instantiate $wpdb when not provided by wp-config.php.
 if ( ! isset( $wpdb ) ) {
