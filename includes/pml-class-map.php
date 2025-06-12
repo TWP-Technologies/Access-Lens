@@ -6,7 +6,7 @@
 return [
 	'PML_Bot_Detector' => __DIR__ . '/utilities/bot-detector.php',
 	'PML_Core' => __DIR__ . '/class-core.php',
-	'PML_File_Handler' => __DIR__ . '/class-file-handler.php',
+	'PML_Headless_Auth' => __DIR__ . '/class-pml-headless-auth.php',
 	'PML_Install' => __DIR__ . '/class-install.php',
 	'PML_Media_Library_Integration' => __DIR__ . '/class-media-library-integration.php',
 	'PML_Media_Meta' => __DIR__ . '/class-media-meta.php',

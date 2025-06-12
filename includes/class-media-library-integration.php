@@ -341,6 +341,10 @@ class PML_Media_Library_Integration
                     $processed_count,
                 ) : sprintf( _n( '%d item unprotected.', '%d items unprotected.', $processed_count, PML_TEXT_DOMAIN ), $processed_count );
                 $redirect_to = add_query_arg( PML_PREFIX . '_bulk_message', rawurlencode( $message ), $redirect_to );
+                if ( method_exists( 'PML_Install', 'regenerate_htaccess_rules' ) )
+                {
+                    PML_Install::regenerate_htaccess_rules();
+                }
             }
         }
         return $redirect_to;
@@ -488,8 +492,14 @@ class PML_Media_Library_Integration
         }
 
         $new_status_value = ( 'protect' === $new_action ) ? '1' : '0';
+        $old_value       = get_post_meta( $attachment_id, '_' . PML_PREFIX . '_is_protected', true );
         update_post_meta( $attachment_id, '_' . PML_PREFIX . '_is_protected', $new_status_value );
+        $status_changed   = (string)$old_value !== $new_status_value;
         $is_protected_bool = ( '1' === $new_status_value );
+        if ( $status_changed && method_exists( 'PML_Install', 'regenerate_htaccess_rules' ) )
+        {
+            PML_Install::regenerate_htaccess_rules();
+        }
 
         wp_send_json_success(
             [

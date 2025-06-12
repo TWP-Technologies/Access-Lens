@@ -45,7 +45,7 @@ This plugin gives you full control over who can access your premium content, pri
 <summary>Click to view installation instructions</summary>
 
 1.  Download the plugin `.zip` file and upload it through the **Plugins > Add New** menu in WordPress.
-2.  Alternatively, upload the `access-lens` folder to the `/wp-content/plugins/` directory.
+2.  Alternatively, upload the `protected-media-links` folder to the `/wp-content/plugins/` directory.
 3.  Activate the plugin through the 'Plugins' menu in your WordPress dashboard.
 4.  Navigate to **Settings > Access Lens** to configure the default settings.
 5.  The plugin will attempt to automatically update your server configuration. If it cannot, it will provide you with the necessary code to add manually. See the FAQ for server-specific instructions.
@@ -99,7 +99,7 @@ The plugin checks for access permissions in a strict, prioritized order. The fir
 <details>
 <summary><strong>How do I configure my server? (Apache/Nginx)</strong></summary>
 
-For the plugin to work, requests to `/wp-content/uploads/` must be routed through WordPress. The plugin attempts to do this automatically for Apache servers. If you need to do it manually, use the following configurations.
+For file protection, requests to `/wp-content/uploads/` must reach WordPress. Access Lens now writes these rewrite rules automatically and regenerates them for each directory that contains protected files. You can view the current snippets on the **Settings > Access Lens** page. If you need to add them manually, use the following examples.
 
 **Apache (`.htaccess` file in your WordPress root)**
 
@@ -108,8 +108,11 @@ Place these rules *before* the main WordPress block:
 # BEGIN Protected Media Links
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} -s
-    RewriteRule ^wp-content/uploads/(.*)$ index.php?pml_media_request=$1 [QSA,L]
+    RewriteCond %{REQUEST_FILENAME} -f
+    # Rule generated for each protected directory
+    RewriteCond %{REQUEST_URI} ^/wp-content/uploads/<directory>/.+\.(<exts>)$ [NC]
+    RewriteRule ^wp-content/uploads/<directory>/(.*)$ wp-content/plugins/protected-media-links/pml-handler.php?pml_media_request=$1 [QSA,L]
+    # Additional directories have similar rules
 </IfModule>
 # END Protected Media Links
 ```
@@ -118,13 +121,22 @@ Place these rules *before* the main WordPress block:
 
 Add this `location` block inside your `server` block. It should come before the general `location /` block.
 ```nginx
-location ~ ^/wp-content/uploads/(.*)$ {
-    try_files $uri =404; # Serve file if it exists, otherwise pass to WordPress
-    if (!-e $request_filename) {
-        rewrite ^/wp-content/uploads/(.*)$ /index.php?pml_media_request=$1 last;
+location ~ ^/wp-content/uploads/<directory>/.+\.(<exts>)$ {
+    if (!-f $request_filename) {
+        return 404;
     }
+    rewrite ^/wp-content/uploads/<directory>/(.*)$ /wp-content/plugins/protected-media-links/pml-handler.php?pml_media_request=$1 last;
+    # Additional location blocks are generated automatically
 }
 ```
+
+If you have an Nginx `internal` location or a LiteSpeed equivalent, define a constant in `wp-config.php` so the handler can offload file delivery:
+
+```php
+define( 'PML_INTERNAL_REDIRECT_PREFIX', '/pml-secure-files/' );
+```
+
+Set the value to your internal location path. The handler will then emit `X-Accel-Redirect` or `X-LiteSpeed-Location` headers.
 </details>
 
 ## 🔭 Scope: What This Plugin Is & Isn't
