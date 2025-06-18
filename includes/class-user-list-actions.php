@@ -2,7 +2,7 @@
 /**
  * Handles actions related to global user allow/deny lists from the WP Users page.
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 
 // Exit if accessed directly.

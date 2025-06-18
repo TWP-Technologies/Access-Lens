@@ -2,7 +2,7 @@
 /**
  * Handles plugin shortcodes.
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 
 // Exit if accessed directly.

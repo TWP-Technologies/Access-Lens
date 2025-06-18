@@ -2,7 +2,7 @@
 /**
  * Plugin Settings Page
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 // Exit if accessed directly.
 if ( !defined( 'ABSPATH' ) )
@@ -136,7 +136,7 @@ class PML_Settings
         // create the top-level menu page.
         add_menu_page(
             PML_PLUGIN_NAME,
-            'Protected Media',
+            'Access Lens',
             'manage_options',
             PML_PLUGIN_SLUG,
             [ $this, 'render_settings_page' ],
