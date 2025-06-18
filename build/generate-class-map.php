@@ -10,7 +10,7 @@
  * 2. Ensure PML_PLUGIN_DIR_FOR_BUILD is correctly defined below.
  * 3. Run from the command line: php build/generate-pml-class-map.php
  *
- * @package ProtectedMediaLinksBuild
+ * @package AccessLensBuild
  */
 
 echo "Starting Protected Media Links (PML) class map generation (PHP 7.4 Compatible)...\n";

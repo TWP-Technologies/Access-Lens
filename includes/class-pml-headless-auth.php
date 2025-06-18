@@ -5,7 +5,7 @@
  * Replicates WordPress auth cookie validation without loading
  * the full user API.
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 
 // Exit if accessed directly.

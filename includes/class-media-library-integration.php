@@ -3,7 +3,7 @@
  * Handles integration with WordPress Media Library views (List and Grid)
  * and Gutenberg media modals.
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 
 // Exit if accessed directly.
@@ -91,9 +91,9 @@ class PML_Media_Library_Integration
                                   'search_users_nonce'      => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
                                   'text_error'              => esc_html__( 'An error occurred. Please try again.', PML_TEXT_DOMAIN ),
                                   'text_loading'            => esc_html__( 'Loading...', PML_TEXT_DOMAIN ),
-                                  'text_manage_pml'         => esc_html__( 'Manage PML', PML_TEXT_DOMAIN ),
+                                  'text_manage_pml'         => esc_html__( 'Manage Access Lens', PML_TEXT_DOMAIN ),
                                   'text_protected'          => esc_html__( 'Protected', PML_TEXT_DOMAIN ),
-                                  'text_quick_edit_pml'     => esc_html__( 'Quick Edit PML', PML_TEXT_DOMAIN ),
+                                  'text_quick_edit_pml'     => esc_html__( 'Access Lens Quick Edit', PML_TEXT_DOMAIN ),
                                   'text_toggle_protect'     => esc_html__( 'Protect', PML_TEXT_DOMAIN ),
                                   'text_toggle_unprotect'   => esc_html__( 'Unprotect', PML_TEXT_DOMAIN ),
                                   'text_unprotected'        => esc_html__( 'Unprotected', PML_TEXT_DOMAIN ),
@@ -258,14 +258,14 @@ class PML_Media_Library_Integration
             {
                 if ( !isset( $new_columns[ PML_PREFIX . '_status' ] ) )
                 { // Prevent duplicates on AJAX reloads
-                    $new_columns[ PML_PREFIX . '_status' ] = esc_html__( 'PML Status', PML_TEXT_DOMAIN );
+                    $new_columns[ PML_PREFIX . '_status' ] = esc_html__( 'Access Lens', PML_TEXT_DOMAIN );
                     $inserted                              = true;
                 }
             }
         }
         if ( !$inserted && !isset( $new_columns[ PML_PREFIX . '_status' ] ) )
         {
-            $new_columns[ PML_PREFIX . '_status' ] = esc_html__( 'PML Status', PML_TEXT_DOMAIN );
+            $new_columns[ PML_PREFIX . '_status' ] = esc_html__( 'Access Lens', PML_TEXT_DOMAIN );
         }
         return $new_columns;
     }
@@ -298,8 +298,8 @@ class PML_Media_Library_Integration
 
     public function add_pml_bulk_actions( array $bulk_actions ): array
     {
-        $bulk_actions[ PML_PREFIX . '_protect_selected' ]   = esc_html__( 'PML: Protect Selected', PML_TEXT_DOMAIN );
-        $bulk_actions[ PML_PREFIX . '_unprotect_selected' ] = esc_html__( 'PML: Unprotect Selected', PML_TEXT_DOMAIN );
+        $bulk_actions[ PML_PREFIX . '_protect_selected' ]   = esc_html__( 'Access Lens: Protect Selected', PML_TEXT_DOMAIN );
+        $bulk_actions[ PML_PREFIX . '_unprotect_selected' ] = esc_html__( 'Access Lens: Unprotect Selected', PML_TEXT_DOMAIN );
         return $bulk_actions;
     }
 
@@ -359,8 +359,8 @@ class PML_Media_Library_Integration
                 $actions[ PML_PREFIX . '_quick_edit' ] = sprintf(
                     '<a href="#" class="pml-quick-edit-trigger" data-attachment-id="%d" aria-label="%s">%s</a>',
                     esc_attr( $post->ID ),
-                    esc_attr( sprintf( __( 'Quick edit PML settings for %s', PML_TEXT_DOMAIN ), $post->post_title ) ),
-                    esc_html__( 'Quick Edit PML', PML_TEXT_DOMAIN ),
+                    esc_attr( sprintf( __( 'Quick edit Access Lens settings for %s', PML_TEXT_DOMAIN ), $post->post_title ) ),
+                    esc_html__( 'Access Lens Quick Edit', PML_TEXT_DOMAIN ),
                 );
             }
         }

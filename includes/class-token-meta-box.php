@@ -2,7 +2,7 @@
 /**
  * Handles the "PML Access Tokens" meta box on the attachment edit page.
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 
 // Exit if accessed directly.
@@ -58,7 +58,7 @@ class PML_Token_Meta_Box
 
         add_meta_box(
             $this->meta_box_id,
-            esc_html__( 'PML Access Tokens', PML_TEXT_DOMAIN ),
+            esc_html__( 'Access Lens Tokens', PML_TEXT_DOMAIN ),
             [ $this, 'render_meta_box_content' ],
             'attachment',
             'normal',
@@ -132,7 +132,7 @@ class PML_Token_Meta_Box
         {
             $url = sprintf( "%s#%s_media_protection_meta_box", get_edit_post_link( $attachment_id ), $prefix );
             echo "<div class='pml-notice pml-notice-info'>";
-            printf( wp_kses( __( 'This file is not currently protected by PML. To manage access tokens, please <a href="%s">enable protection</a> in the "Media Protection Settings (PML)" meta box first.', PML_TEXT_DOMAIN ), [ 'a' => [ 'href' => [] ] ] ), esc_url( $url ) );
+            printf( wp_kses( __( 'This file is not currently protected by PML. To manage access tokens, please <a href="%s">enable protection</a> in the "Access Lens Settings (PML)" meta box first.', PML_TEXT_DOMAIN ), [ 'a' => [ 'href' => [] ] ] ), esc_url( $url ) );
             echo '</div></div>';
             return;
         }

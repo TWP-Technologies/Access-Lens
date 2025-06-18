@@ -105,7 +105,7 @@ For file protection, requests to `/wp-content/uploads/` must reach WordPress. Ac
 
 Place these rules *before* the main WordPress block:
 ```htaccess
-# BEGIN Protected Media Links
+# BEGIN Access Lens
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} -f
@@ -114,7 +114,7 @@ Place these rules *before* the main WordPress block:
     RewriteRule ^wp-content/uploads/<directory>/(.*)$ wp-content/plugins/protected-media-links/pml-handler.php?pml_media_request=$1 [QSA,L]
     # Additional directories have similar rules
 </IfModule>
-# END Protected Media Links
+# END Access Lens
 ```
 
 **Nginx (`nginx.conf` file)**

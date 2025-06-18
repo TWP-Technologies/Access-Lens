@@ -1,9 +1,9 @@
 <?php
 /**
  * @formatter:off
- * Plugin Name:       Protected Media Links
+ * Plugin Name:       Access Lens
  * Plugin URI:        https://example.com/protected-media-links
- * Description:       Protects media files from direct public access, allowing access for search engine bots, authorized users via unique tokens, and specific user/role exclusions.
+ * Description:       Access Lens secures your media files by restricting direct access and providing shareable, expiring links. Formerly Protected Media Links.
  * Version:           1.1.0
  * Author:            TWP Technologies
  * Author URI:        https://example.com

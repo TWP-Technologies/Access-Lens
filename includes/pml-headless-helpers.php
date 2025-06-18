@@ -2,7 +2,7 @@
 /**
  * Headless helper functions for database access.
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 
 // Exit if accessed directly.

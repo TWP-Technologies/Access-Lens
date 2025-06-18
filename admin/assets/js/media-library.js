@@ -15,7 +15,7 @@ jQuery( document ).ready( function( $ ) // Cannot convert document.ready to arro
     }
 
     const PLUGIN_PREFIX = params.plugin_prefix || 'pml';
-    const PLUGIN_NAME   = params.plugin_name || 'Protected Media Links';
+    const PLUGIN_NAME   = params.plugin_name || 'Access Lens';
     // Arrow function for i18n fallback is fine
     const i18n          = wp.i18n || { __: s => s, _n: (s1, s2, n) => (n > 1 ? s2 : s1), sprintf: (fmt, ...args) => fmt.replace(/%([sd%])/g, (m, p) => (p === '%' ? '%' : args.shift())) };
 
@@ -248,7 +248,7 @@ jQuery( document ).ready( function( $ ) // Cannot convert document.ready to arro
         const attachmentTitle = $( this ).closest( 'tr' ).find( '.title .row-title' ).text() ||
                                 $( this ).closest( '.attachment-preview' ).find( '.title' ).text() || 'Item';
 
-        $modalTitle.text( i18n.sprintf( i18n.__( 'Quick Edit PML: %s', 'protected-media-links' ), attachmentTitle ) );
+        $modalTitle.text( i18n.sprintf( i18n.__( 'Quick Edit Access Lens: %s', 'protected-media-links' ), attachmentTitle ) );
         $modalBody.html( `<p class="pml-loading-indicator"><span class="spinner is-active"></span> ${params.text_loading}</p>` );
         $pmlQuickEditModal.addClass( 'is-visible' );
 
@@ -303,7 +303,7 @@ jQuery( document ).ready( function( $ ) // Cannot convert document.ready to arro
                         const $pmlSection = $(`
                             <div class="pml-grid-settings-section">
                                 <div class="pml-grid-status-toggle">
-                                    <label class="name">${params.plugin_name || 'PML'} Status</label>
+                                    <label class="name">${params.plugin_name || 'Access Lens'} Status</label>
                                     <span class="pml-status-text-grid"></span>
                                     <button type="button" class="button button-small pml-toggle-protection-grid" data-attachment-id="${attachmentId}">
                                     </button>

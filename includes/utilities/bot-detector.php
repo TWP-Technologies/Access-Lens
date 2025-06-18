@@ -2,7 +2,7 @@
 /**
  * Bot Detection Utility
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 
 // Exit if accessed directly.
