@@ -8,7 +8,7 @@
  * Author:            TWP Technologies
  * Author URI:        https://twp.tech/
  * License:           GPL-3.0
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       protected-media-links
  * Domain Path:       /languages
  * Requires PHP:      7.4
