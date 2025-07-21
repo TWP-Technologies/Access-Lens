@@ -2,7 +2,7 @@
 /**
  * Media Library Meta Box for Protection Settings
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 // Exit if accessed directly.
 if ( !defined( 'ABSPATH' ) )
@@ -93,7 +93,7 @@ class PML_Media_Meta
     {
         add_meta_box(
             $this->meta_box_id,
-            esc_html__( 'Media Protection Settings (PML)', PML_TEXT_DOMAIN ),
+            esc_html__( 'Access Lens Settings (PML)', PML_TEXT_DOMAIN ),
             [ $this, 'render_full_meta_box_content' ],
             'attachment',
             'normal',

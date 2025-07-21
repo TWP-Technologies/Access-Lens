@@ -3,7 +3,7 @@
  * Token Management for Protected Media
  * Version: 1.2.0 (Feature: Token Management on Media Edit Page)
  *
- * @package ProtectedMediaLinks
+ * @package AccessLens
  */
 
 // Exit if accessed directly.

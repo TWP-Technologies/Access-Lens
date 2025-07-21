@@ -1,7 +1,7 @@
 <?php
 // Shared plugin constants for Access Lens.
 
-const PML_PLUGIN_NAME     = 'Protected Media Links';
+const PML_PLUGIN_NAME     = 'Access Lens';
 const PML_PLUGIN_SLUG     = 'protected-media-links';
 const PML_TEXT_DOMAIN     = 'protected-media-links';
 const PML_PREFIX          = 'pml';
