@@ -126,7 +126,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
 /**
- * Protected Media Links - Gutenberg Media Modal Integration
+ * Access Lens - Gutenberg Media Modal Integration
  *
  * Integrates PML Quick Edit settings into the Gutenberg media modal's
  * attachment details sidebar using a React component.
@@ -289,7 +289,7 @@ const PMLAttachmentSettings = ({
       className: "pml-grid-status-toggle",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
         className: "name",
-        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Protected Media Links Status', 'protected-media-links')
+        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Access Lens Status', 'protected-media-links')
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
         className: `pml-status-text-grid ${isProtected ? 'is-protected' : 'is-unprotected'}`,
         children: isProtected ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Protected', 'protected-media-links') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Unprotected', 'protected-media-links')

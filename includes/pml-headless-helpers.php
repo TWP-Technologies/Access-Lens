@@ -65,7 +65,7 @@ function pml_headless_get_option( string $option_name, $default, wpdb $wpdb )
 }
 
 /**
- * Retrieves all Protected Media Links metadata for a post.
+ * Retrieves all Access Lens metadata for a post.
  *
  * @param int  $post_id Post ID.
  * @param wpdb $wpdb    WordPress database object.

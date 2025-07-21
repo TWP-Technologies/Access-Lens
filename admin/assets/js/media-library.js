@@ -1,5 +1,5 @@
 /**
- * Protected Media Links - Media Library JavaScript
+ * Access Lens - Media Library JavaScript
  * Handles UI enhancements and interactions specific to the Media Library views (List & Grid).
  */
 jQuery( document ).ready( function( $ ) // Cannot convert document.ready to arrow function if it uses `this` internally, $ is passed as arg

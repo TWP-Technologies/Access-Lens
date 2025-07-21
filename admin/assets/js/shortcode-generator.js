@@ -1,5 +1,5 @@
 /**
- * Protected Media Links - Shortcode Generator JavaScript
+ * Access Lens - Shortcode Generator JavaScript
  *
  * Handles UI interactions for the interactive shortcode generator page.
  */

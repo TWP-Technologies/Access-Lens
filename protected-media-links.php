@@ -1,13 +1,13 @@
 <?php
 /**
  * @formatter:off
- * Plugin Name:       Protected Media Links
- * Plugin URI:        https://example.com/protected-media-links
+ * Plugin Name:       Access Lens - Protected Media Links
+ * Plugin URI:        https://twp.tech/services/
  * Description:       Protects media files from direct public access, allowing access for search engine bots, authorized users via unique tokens, and specific user/role exclusions.
  * Version:           1.1.0
  * Author:            TWP Technologies
- * Author URI:        https://example.com
- * License:           GPL-2.0-or-later
+ * Author URI:        https://twp.tech/
+ * License:           GPL-3.0
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       protected-media-links
  * Domain Path:       /languages
