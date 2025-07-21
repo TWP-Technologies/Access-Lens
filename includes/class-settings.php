@@ -1046,7 +1046,7 @@ class PML_Settings
                 ) . '</p>';
             echo '<h5>' . esc_html__( 'Required .htaccess Rules (for reference):', PML_TEXT_DOMAIN ) . '</h5>';
             echo '<p>' . esc_html__(
-                    'These rules should be placed inside the # BEGIN Protected Media Links ... # END Protected Media Links markers in your .htaccess file, before the standard WordPress rules.',
+                    'These rules should be placed inside the # BEGIN Access Lens ... # END Access Lens markers in your .htaccess file, before the standard WordPress rules.',
                     PML_TEXT_DOMAIN,
                 ) . '</p>';
             echo '<pre class="pml-code-block"><code>';

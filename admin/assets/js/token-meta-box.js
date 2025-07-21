@@ -1,5 +1,5 @@
 /**
- * Protected Media Links - Token Management Meta Box JavaScript
+ * Access Lens - Token Management Meta Box JavaScript
  * Handles UI interactions for the PML Access Tokens meta box on the attachment edit page.
  */
 jQuery( document ).ready( function( $ )

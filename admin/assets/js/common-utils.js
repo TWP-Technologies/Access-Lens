@@ -1,5 +1,5 @@
 /**
- * Protected Media Links - Admin Common Utilities JavaScript
+ * Access Lens - Admin Common Utilities JavaScript
  *
  * Contains utility functions shared across different admin screens.
  */
@@ -24,7 +24,7 @@ const PML_Admin_Utils = ( function( $ )
             '<span class="screen-reader-text">' +
             ( wp.i18n && wp.i18n.__ ? wp.i18n.__( 'Dismiss this notice.' ) : 'Dismiss this notice.' ) + '</span>' +
             '</button>' +
-            '</div>',
+            '</div>'
         );
 
         if ( $container && $container.length )

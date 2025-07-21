@@ -1,5 +1,5 @@
 /**
- * Protected Media Links - Gutenberg Media Modal Integration
+ * Access Lens - Gutenberg Media Modal Integration
  * Version: 1.2.5
  *
  * Integrates PML Quick Edit settings into the Gutenberg media modal's
@@ -139,7 +139,7 @@ const PMLAttachmentSettings = ({ attachment }) => {
             {successMessage && <Notice status="success" isDismissible={false} onRemove={() => setSuccessMessage('')}>{successMessage}</Notice>}
 
             <div className="pml-grid-status-toggle">
-                <label className="name">{__('Protected Media Links Status', 'protected-media-links')}</label>
+                <label className="name">{__('Access Lens Status', 'protected-media-links')}</label>
                 <span className={`pml-status-text-grid ${isProtected ? 'is-protected' : 'is-unprotected'}`}>
                     {isProtected ? __('Protected', 'protected-media-links') : __('Unprotected', 'protected-media-links')}
                 </span>

@@ -1,7 +1,7 @@
 {
-    "name": "protected-media-links",
+    "name": "access-lens",
     "version": "1.2.0",
-    "description": "Build process for Protected Media Links.",
+    "description": "Build process for Access Lens.",
     "private": true,
     "scripts": {
         "build": "wp-scripts build build/gutenberg-integration-react/gutenberg-integration.jsx --output-path=admin/assets/js/gutenberg-integration-react/",

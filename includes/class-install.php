@@ -40,7 +40,7 @@ class PML_Install
                         echo sprintf(
                             "<div class=\"notice notice-error\"><p>%s</p></div>",
                             esc_html__(
-                                'Protected Media Links: Token Manager initialization failed. Please check the plugin files.',
+                                'Access Lens: Token Manager initialization failed. Please check the plugin files.',
                                 'protected-media-links',
                             ),
                         );
@@ -127,7 +127,7 @@ class PML_Install
         }
 
         $htaccess_content = str_replace( "\r\n", "\n", $htaccess_content );
-        $htaccess_content = preg_replace( "/# BEGIN Protected Media Links(.*?)# END Protected Media Links\s*/is", '', $htaccess_content );
+        $htaccess_content = preg_replace( "/# BEGIN (?:Protected Media Links|Access Lens)(.*?)# END (?:Protected Media Links|Access Lens)\s*/is", '', $htaccess_content );
         $htaccess_content = trim( $htaccess_content );
 
         $rules = [];
@@ -614,7 +614,7 @@ class PML_Install
         $snippet  = "\n";
         $snippet .= "/**\n";
         $snippet .= " * Set the admin cookie path to the root of the site.\n";
-        $snippet .= " * This is necessary for plugins like Protected Media Links that need to\n";
+        $snippet .= " * This is necessary for plugins like Access Lens that need to\n";
         $snippet .= " * validate a user's session from outside the /wp-admin/ directory.\n";
         $snippet .= " */\n";
         $snippet .= implode( "\n", $missing ) . "\n";

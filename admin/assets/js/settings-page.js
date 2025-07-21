@@ -1,5 +1,5 @@
 /**
- * Protected Media Links - Settings Page JavaScript
+ * Access Lens - Settings Page JavaScript
  *
  * Handles UI enhancements and interactions specific to the PML settings page.
  */
