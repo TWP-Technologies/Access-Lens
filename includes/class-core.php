@@ -96,6 +96,12 @@ final class PML_Core
         {
             new PML_Media_Library_Integration();
         }
+
+        // Contact widget loader for support
+        if ( class_exists( 'PML_Contact_Widget' ) && is_admin() )
+        {
+            new PML_Contact_Widget();
+        }
     }
 
     /**
