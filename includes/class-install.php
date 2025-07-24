@@ -41,7 +41,7 @@ class PML_Install
                             "<div class=\"notice notice-error\"><p>%s</p></div>",
                             esc_html__(
                                 'Access Lens: Token Manager initialization failed. Please check the plugin files.',
-                                'protected-media-links',
+                                PML_TEXT_DOMAIN,
                             ),
                         );
                     },
@@ -106,7 +106,7 @@ class PML_Install
         $marker_name   = PML_PLUGIN_NAME;
 
         if ( ! file_exists( $htaccess_file ) ) {
-            if ( ! is_writable( get_home_path() ) ) {
+            if ( ! wp_is_writable( get_home_path() ) ) {
                 error_log( PML_PLUGIN_NAME . ' Htaccess Error: Cannot create .htaccess, home path not writable.' );
                 return false;
             }
@@ -114,7 +114,7 @@ class PML_Install
                 error_log( PML_PLUGIN_NAME . ' Htaccess Error: Failed to create empty .htaccess file.' );
                 return false;
             }
-        } elseif ( ! is_writable( $htaccess_file ) ) {
+        } elseif ( ! wp_is_writable( $htaccess_file ) ) {
             error_log( PML_PLUGIN_NAME . ' Htaccess Error: .htaccess file is not writable at ' . $htaccess_file );
             set_transient( PML_PREFIX . '_admin_notice_htaccess_writable', true, MINUTE_IN_SECONDS * 5 );
             return false;
@@ -631,7 +631,7 @@ class PML_Install
             $contents = substr( $contents, 0, $pos ) . $snippet . substr( $contents, $pos );
         }
 
-        if ( ! is_writable( $wp_config ) )
+        if ( ! wp_is_writable( $wp_config ) )
         {
             error_log( PML_PLUGIN_NAME . ' Activation Error: wp-config.php is not writable. Please check file permissions.' );
             return;
