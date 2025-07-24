@@ -1,0 +1,174 @@
+# Copyright (C) 2025 TWP Technologies
+# This file is distributed under the GPL-3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: Access Lens - Protected Media Links 1.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/Protect Media Files\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-07-24T23:11:56+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: protected-media-links\n"
+
+#. Plugin Name of the plugin
+#: protected-media-links.php
+msgid "Access Lens - Protected Media Links"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: protected-media-links.php
+msgid "https://twp.tech/services/"
+msgstr ""
+
+#. Description of the plugin
+#: protected-media-links.php
+msgid "Protects media files from direct public access, allowing access for search engine bots, authorized users via unique tokens, and specific user/role exclusions."
+msgstr ""
+
+#. Author of the plugin
+#: protected-media-links.php
+msgid "TWP Technologies"
+msgstr ""
+
+#. Author URI of the plugin
+#: protected-media-links.php
+msgid "https://twp.tech/"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:226
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:95
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:148
+msgid "Protection status updated."
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:257
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:119
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:172
+msgid "Overrides saved."
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:273
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:131
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:184
+msgid "Loading PML settings..."
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:292
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:142
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:195
+msgid "Access Lens Status"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:295
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:144
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:197
+msgid "Protected"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:295
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:144
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:197
+msgid "Unprotected"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:304
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:153
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:206
+msgid "Unprotect"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:304
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:153
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:206
+msgid "Protect"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:313
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:165
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:218
+msgid "Manage PML"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:322
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:173
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:226
+msgid "Unauthorized Redirect URL Override"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:325
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:176
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:229
+msgid "Global default"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:326
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:177
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:230
+msgid "Leave blank to use global default."
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:333
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:184
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:237
+msgid "Bot Access Override"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:337
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:188
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:241
+msgid "Override global bot access setting for this file."
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:347
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:199
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:252
+msgid "Saving..."
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:347
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:199
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:252
+msgid "Save Overrides"
+msgstr ""
+
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:358
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:208
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:261
+msgid "Advanced Settings (User/Role Lists, Token Params)..."
+msgstr ""
+
+#. translators: 1: User Allow count, 2: User Deny count, 3: Role Allow count, 4: Role Deny count
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:366
+#: build/gutenberg-integration-react/gutenberg-integration.jsx:216
+#: admin/assets/js/gutenberg-integration-react/gutenberg-integration.jsx.js:269
+#, js-format
+msgid "Current lists: User Allow (%1$d), User Deny (%2$d), Role Allow (%3$d), Role Deny (%4$d)."
+msgstr ""
+
+#: admin/assets/js/media-library.js:251
+#, js-format
+msgid "Quick Edit Access Lens: %s"
+msgstr ""
+
+#: admin/assets/js/media-library.js:443
+msgid "Save Additional"
+msgstr ""
+
+#: admin/assets/js/media-library.js:488
+msgid "Saved!"
+msgstr ""
+
+#: admin/assets/js/settings-page.js:240
+#, js-format
+msgid "%d default entry added."
+msgid_plural "%d default entries added."
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/assets/js/settings-page.js:255
+msgid "All default entries are already present."
+msgstr ""
