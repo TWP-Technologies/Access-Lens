@@ -144,14 +144,17 @@ final class PML_Core
         $parts = [];
         if ( $days > 0 )
         {
+            /* translators: %d: Number of days */
             $parts[] = sprintf( _n( '%d day', '%d days', $days, PML_TEXT_DOMAIN ), $days );
         }
         if ( $hours > 0 )
         {
+            /* translators: %d: Number of hours */
             $parts[] = sprintf( _n( '%d hour', '%d hours', $hours, PML_TEXT_DOMAIN ), $hours );
         }
         if ( $minutes > 0 )
         {
+            /* translators: %d: Number of minutes */
             $parts[] = sprintf( _n( '%d minute', '%d minutes', $minutes, PML_TEXT_DOMAIN ), $minutes );
         }
 

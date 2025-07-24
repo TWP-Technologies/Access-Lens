@@ -188,6 +188,7 @@ function pml_init_plugin()
                 'admin_notices',
                 function () {
                     echo '<div class="notice notice-error"><p>' . sprintf(
+                            /* translators: %1$s: Plugin name */
                             esc_html__(
                                 '%1$s core class (PML_Core) is missing or could not be autoloaded. The plugin cannot function correctly. Please ensure the class map is up to date or reinstall the plugin.',
                                 PML_TEXT_DOMAIN,
@@ -344,7 +345,8 @@ else
             'admin_notices',
             function () {
                 echo '<div class="notice notice-error"><p>' . sprintf(
-                        esc_html__(
+                    /* translators: %1$s: Plugin name */
+                   esc_html__(
                             '%1$s installation/uninstallation controller class (PML_Install) is missing or could not be autoloaded. The plugin might not (de)activate or uninstall correctly. Please ensure the class map is up to date or reinstall the plugin.',
                             PML_TEXT_DOMAIN,
                         ),
