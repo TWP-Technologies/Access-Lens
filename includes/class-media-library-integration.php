@@ -106,19 +106,8 @@ class PML_Media_Library_Integration
         // Select2 for full attachment edit page (used by media-library.js for meta box)
         if ( $is_attachment_edit_page )
         {
-            wp_enqueue_style(
-                'select2',
-                "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/css/select2.min.css",
-                [],
-                PML_SELECT2_VERSION,
-            );
-            wp_enqueue_script(
-                'select2',
-                "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/js/select2.min.js",
-                [ 'jquery' ],
-                PML_SELECT2_VERSION,
-                true,
-            );
+            wp_enqueue_style( 'select2' );
+            wp_enqueue_script( 'select2' );
             wp_localize_script(
                 PML_PLUGIN_SLUG . '-media-library-js',
                 'pml_admin_params',

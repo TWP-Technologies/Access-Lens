@@ -40,19 +40,8 @@ class PML_Settings
         }
 
         // --- Common Assets for All PML Pages ---
-        wp_enqueue_style(
-            'select2',
-            "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/css/select2.min.css",
-            [],
-            PML_SELECT2_VERSION,
-        );
-        wp_enqueue_script(
-            'select2',
-            "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/js/select2.min.js",
-            [ 'jquery' ],
-            PML_SELECT2_VERSION,
-            true,
-        );
+        wp_enqueue_style( 'select2' );
+        wp_enqueue_script( 'select2' );
         wp_enqueue_style( PML_PLUGIN_SLUG . '-admin-common-css', PML_PLUGIN_URL . 'admin/assets/css/common.css', [ 'dashicons' ], PML_VERSION );
         wp_enqueue_script(
             PML_PLUGIN_SLUG . '-admin-common-utils-js',

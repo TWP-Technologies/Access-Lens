@@ -78,10 +78,10 @@ class PML_Token_Meta_Box
 
         wp_enqueue_style( PML_PLUGIN_SLUG . '-admin-common-css', PML_PLUGIN_URL . 'admin/assets/css/common.css', [ 'dashicons' ], PML_VERSION );
         wp_enqueue_style( PML_PLUGIN_SLUG . '-token-meta-box-css', PML_PLUGIN_URL . 'admin/assets/css/token-meta-box.css', [ PML_PLUGIN_SLUG . '-admin-common-css' ], PML_VERSION );
-        wp_enqueue_style( 'flatpickr', 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css', [], '4.6.13' );
-        wp_enqueue_style( 'select2', "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/css/select2.min.css", [], PML_SELECT2_VERSION );
-        wp_enqueue_script( 'flatpickr', 'https://cdn.jsdelivr.net/npm/flatpickr', [], '4.6.13', true );
-        wp_enqueue_script( 'select2', "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/js/select2.min.js", [ 'jquery' ], PML_SELECT2_VERSION, true );
+        wp_enqueue_style( 'flatpickr' );
+        wp_enqueue_style( 'select2' );
+        wp_enqueue_script( 'flatpickr' );
+        wp_enqueue_script( 'select2' );
         wp_enqueue_script( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_PLUGIN_URL . 'admin/assets/js/common-utils.js', [ 'jquery', 'wp-i18n' ], PML_VERSION, true );
         wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
         wp_enqueue_script( PML_PLUGIN_SLUG . '-token-meta-box-js', PML_PLUGIN_URL . 'admin/assets/js/token-meta-box.js', [ 'jquery', 'wp-util', 'wp-i18n', 'flatpickr', 'select2', PML_PLUGIN_SLUG . '-admin-common-utils-js' ], PML_VERSION, true );
