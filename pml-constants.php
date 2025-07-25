@@ -5,7 +5,6 @@ const PML_PLUGIN_NAME     = 'Access Lens';
 const PML_PLUGIN_SLUG     = 'protected-media-links';
 const PML_PREFIX          = 'pml';
 const PML_VERSION         = '1.1.0';
-const PML_DB_VERSION      = '1.0.0';
 const PML_MIN_WP_VERSION  = '5.9';
 const PML_MIN_PHP_VERSION = '7.4';
 const PML_PLUGIN_FILE     = __DIR__ . '/protected-media-links.php';

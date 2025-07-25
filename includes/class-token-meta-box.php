@@ -126,7 +126,7 @@ class PML_Token_Meta_Box
         $is_protected  = (bool) get_post_meta( $attachment_id, '_' . PML_PREFIX . '_is_protected', true );
         $prefix        = PML_PREFIX;
 
-        echo "<div id='{$prefix}-token-manager-app' class='pml-token-manager-app' data-attachment-id='{$attachment_id}'>";
+        echo "<div id='$prefix-token-manager-app' class='pml-token-manager-app' data-attachment-id='$attachment_id'>";
 
         if ( !$is_protected )
         {
@@ -142,20 +142,18 @@ class PML_Token_Meta_Box
         $exist_title  = esc_html__( 'Existing Tokens', 'access-lens-protected-media-links' );
         $loading_text = esc_html__( 'Loading tokens...', 'access-lens-protected-media-links' );
 
-        echo <<<EOT
-            <h3>$gen_title</h3>
-            <div class='$prefix-generate-token-form-wrapper'>
+        echo "<h3>$gen_title</h3>
+              <div class='$prefix-generate-token-form-wrapper'>
                 <div id='$prefix-generate-token-form-fields'></div>
                 <button type='button' id='$prefix-generate-token-button' class='button button-primary'>$create_btn</button>
                 <span class='spinner' id='$prefix-generate-token-spinner'></span>
                 <div id='$prefix-generate-token-feedback'></div>
-            </div>
-            <hr>
-            <h3>$exist_title</h3>
-            <div id='$prefix-tokens-list-wrapper'><p class='pml-loading-text'>$loading_text</p></div>
-            <div id='$prefix-token-actions-feedback' style='margin-top: 10px;'></div>
-        EOT;
-        echo "</div>";
+              </div>
+              <hr>
+              <h3>$exist_title</h3>
+              <div id='$prefix-tokens-list-wrapper'><p class='pml-loading-text'>$loading_text</p></div>
+              <div id='$prefix-token-actions-feedback' style='margin-top: 10px;'></div>";
+        echo "</div>"; // closes div#{PML_PREFIX}-token-manager-app
     }
 
     public function ajax_fetch_attachment_tokens(): void
