@@ -69,7 +69,7 @@ class PML_Media_Meta
             PML_VERSION,
             true,
         );
-        wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+        wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
         wp_enqueue_script(
             PML_PLUGIN_SLUG . '-media-library-js',
@@ -78,12 +78,12 @@ class PML_Media_Meta
             PML_VERSION,
             true,
         );
-        wp_set_script_translations( PML_PLUGIN_SLUG . '-media-library-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+        wp_set_script_translations( PML_PLUGIN_SLUG . '-media-library-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
         $pml_admin_params_for_select2 = [
             'ajax_url'                => admin_url( 'admin-ajax.php' ),
             'search_users_nonce'      => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
-            'user_select_placeholder' => esc_html__( 'Search for users by name or email...', PML_TEXT_DOMAIN ),
+            'user_select_placeholder' => esc_html__( 'Search for users by name or email...', 'access-lens-protected-media-links' ),
             'plugin_prefix'           => PML_PREFIX,
         ];
         wp_localize_script( PML_PLUGIN_SLUG . '-media-library-js', 'pml_admin_params', $pml_admin_params_for_select2 );
@@ -93,7 +93,7 @@ class PML_Media_Meta
     {
         add_meta_box(
             $this->meta_box_id,
-            esc_html__( 'Access Lens Settings (PML)', PML_TEXT_DOMAIN ),
+            esc_html__( 'Access Lens Settings (PML)', 'access-lens-protected-media-links' ),
             [ $this, 'render_full_meta_box_content' ],
             'attachment',
             'normal',
@@ -113,12 +113,12 @@ class PML_Media_Meta
 
         echo '<hr class="pml-meta-hr">';
         echo '<div class="pml-tip-wrapper" style="display: flex; align-items: center; gap: 4px;">';
-        echo '<h4>' . esc_html__( 'Advanced Access Control (Overridden by Global)', PML_TEXT_DOMAIN ) . '</h4>';
+        echo '<h4>' . esc_html__( 'Advanced Access Control (Overridden by Global)', 'access-lens-protected-media-links' ) . '</h4>';
         // take to global settings priorities tip
         echo '<span></span><a href="' .
              esc_url( admin_url( 'admin.php?page=' . PML_PLUGIN_SLUG . '&open-priorities-tip=1' ) ) .
              '" target="_blank" rel="noopener noreferrer">' .
-             esc_html__( 'Learn about Global Priorities', PML_TEXT_DOMAIN ) .
+             esc_html__( 'Learn about Global Priorities', 'access-lens-protected-media-links' ) .
              '</a>';
         echo '</div>';
         // Per-file User Lists
@@ -130,13 +130,13 @@ class PML_Media_Meta
         <div class="pml-meta-field-group">
             <label for="<?php echo esc_attr( PML_PREFIX ); ?>_user_allow_list_select_full"><?php esc_html_e(
                     'Allow Specific Users:',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></label>
             <select id="<?php echo esc_attr( PML_PREFIX ); ?>_user_allow_list_select_full"
                     name="<?php echo esc_attr( PML_PREFIX ); ?>_user_allow_list[]"
                     multiple="multiple"
                     class="pml-user-select-ajax widefat"
-                    data-placeholder="<?php esc_attr_e( 'Search users to allow...', PML_TEXT_DOMAIN ); ?>">
+                    data-placeholder="<?php esc_attr_e( 'Search users to allow...', 'access-lens-protected-media-links' ); ?>">
                 <?php foreach ( $user_allow_list_ids as $user_id ) : $user = get_userdata( $user_id );
                     if ( $user ) : ?>
                         <option value="<?php echo esc_attr( $user_id ); ?>" selected="selected"><?php echo esc_html(
@@ -146,19 +146,19 @@ class PML_Media_Meta
             </select>
             <p class="description pml-field-description"><?php esc_html_e(
                     'These users can access this file; overridden by global user allow/deny lists.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></p>
         </div>
         <div class="pml-meta-field-group">
             <label for="<?php echo esc_attr( PML_PREFIX ); ?>_user_deny_list_select_full"><?php esc_html_e(
                     'Deny Specific Users:',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></label>
             <select id="<?php echo esc_attr( PML_PREFIX ); ?>_user_deny_list_select_full"
                     name="<?php echo esc_attr( PML_PREFIX ); ?>_user_deny_list[]"
                     multiple="multiple"
                     class="pml-user-select-ajax widefat"
-                    data-placeholder="<?php esc_attr_e( 'Search users to deny...', PML_TEXT_DOMAIN ); ?>">
+                    data-placeholder="<?php esc_attr_e( 'Search users to deny...', 'access-lens-protected-media-links' ); ?>">
                 <?php foreach ( $user_deny_list_ids as $user_id ) : $user = get_userdata( $user_id );
                     if ( $user ) : ?>
                         <option value="<?php echo esc_attr( $user_id ); ?>" selected="selected"><?php echo esc_html(
@@ -168,7 +168,7 @@ class PML_Media_Meta
             </select>
             <p class="description pml-field-description"><?php esc_html_e(
                     'These users will be denied access; overridden by global user allow/deny lists.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></p>
         </div>
         <?php
@@ -190,13 +190,13 @@ class PML_Media_Meta
         <div class="pml-meta-field-group">
             <label for="<?php echo esc_attr( PML_PREFIX ); ?>_role_allow_list_select_full"><?php esc_html_e(
                     'Allow Specific Roles:',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></label>
             <select id="<?php echo esc_attr( PML_PREFIX ); ?>_role_allow_list_select_full"
                     name="<?php echo esc_attr( PML_PREFIX ); ?>_role_allow_list[]"
                     multiple="multiple"
                     class="pml-role-select-media-meta widefat"
-                    data-placeholder="<?php esc_attr_e( 'Select roles to allow...', PML_TEXT_DOMAIN ); ?>">
+                    data-placeholder="<?php esc_attr_e( 'Select roles to allow...', 'access-lens-protected-media-links' ); ?>">
                 <?php foreach ( $all_roles_editable as $slug => $name ) : ?>
                     <option value="<?php echo esc_attr( $slug ); ?>" <?php selected(
                         in_array( $slug, (array)$role_allow_list, true ),
@@ -205,19 +205,19 @@ class PML_Media_Meta
             </select>
             <p class='description pml-field-description'><?php esc_html_e(
                     'These roles can access this file; overridden by global and per-file user allow/deny lists.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></p>
         </div>
         <div class="pml-meta-field-group">
             <label for="<?php echo esc_attr( PML_PREFIX ); ?>_role_deny_list_select_full"><?php esc_html_e(
                     'Deny Specific Roles:',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></label>
             <select id="<?php echo esc_attr( PML_PREFIX ); ?>_role_deny_list_select_full"
                     name="<?php echo esc_attr( PML_PREFIX ); ?>_role_deny_list[]"
                     multiple="multiple"
                     class="pml-role-select-media-meta widefat"
-                    data-placeholder="<?php esc_attr_e( 'Select roles to deny...', PML_TEXT_DOMAIN ); ?>">
+                    data-placeholder="<?php esc_attr_e( 'Select roles to deny...', 'access-lens-protected-media-links' ); ?>">
                 <?php foreach ( $all_roles_editable as $slug => $name ) : ?>
                     <option value="<?php echo esc_attr( $slug ); ?>" <?php selected(
                         in_array( $slug, (array)$role_deny_list, true ),
@@ -226,7 +226,7 @@ class PML_Media_Meta
             </select>
             <p class='description pml-field-description'><?php esc_html_e(
                     'These roles will be denied access; overridden by global and per-file user allow/deny lists.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></p>
         </div>
         <?php
@@ -244,18 +244,18 @@ class PML_Media_Meta
             error_log( PML_PLUGIN_NAME . ' Error: Could not retrieve token expiry options from PML_Settings for full meta box.' );
         }
         ?>
-        <hr class="pml-meta-hr"><h4><?php esc_html_e( 'Token Parameter Overrides', PML_TEXT_DOMAIN ); ?></h4>
+        <hr class="pml-meta-hr"><h4><?php esc_html_e( 'Token Parameter Overrides', 'access-lens-protected-media-links' ); ?></h4>
         <div class="pml-meta-field-group">
             <label for="<?php echo esc_attr( PML_PREFIX ); ?>_token_expiry_override_full"><?php esc_html_e(
                     'Token Expiry Override:',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></label>
             <select id="<?php echo esc_attr( PML_PREFIX ); ?>_token_expiry_override_full"
                     name="<?php echo esc_attr( PML_PREFIX ); ?>_token_expiry"
                     class="widefat">
                 <option value="" <?php selected( (string)$token_expiry_override, '' ); ?>><?php esc_html_e(
                         'Use Global Setting',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?> (<?php echo esc_html( PML_Core::format_duration( get_option( PML_PREFIX . '_settings_default_token_expiry' ) ) ); ?>)
                 </option>
                 <?php foreach ( $global_token_expiry_options as $value => $label ) : ?>
@@ -269,7 +269,7 @@ class PML_Media_Meta
         <div class="pml-meta-field-group">
             <label for="<?php echo esc_attr( PML_PREFIX ); ?>_token_max_uses_override_full"><?php esc_html_e(
                     'Token Max Uses Override:',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></label>
             <input type="number"
                    id="<?php echo esc_attr( PML_PREFIX ); ?>_token_max_uses_override_full"
@@ -278,12 +278,12 @@ class PML_Media_Meta
                    class="small-text"
                    min="0"
                    step="1"
-                   placeholder="<?php esc_attr_e( 'Global', PML_TEXT_DOMAIN ); ?> (<?php echo esc_attr(
+                   placeholder="<?php esc_attr_e( 'Global', 'access-lens-protected-media-links' ); ?> (<?php echo esc_attr(
                        get_option( PML_PREFIX . '_settings_default_token_max_uses', 1 ),
                    ); ?>)"/>
             <p class="description pml-field-description"><?php esc_html_e(
                     'Enter 0 for unlimited uses. Leave blank to use global default.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ); ?></p>
         </div>
         <?php
@@ -325,11 +325,11 @@ class PML_Media_Meta
                                id="<?php echo esc_attr( PML_PREFIX . '_is_protected' . $id_suffix ); ?>"
                                name="<?php echo esc_attr( $field_name_is_protected ); ?>"
                                value="1" <?php checked( $is_protected, '1' ); ?> />
-                        <?php esc_html_e( 'Protect this file?', PML_TEXT_DOMAIN ); ?>
+                        <?php esc_html_e( 'Protect this file?', 'access-lens-protected-media-links' ); ?>
                     </label>
                     <p class="description pml-field-description"><?php esc_html_e(
                             'Enable protection to restrict direct access based on defined rules.',
-                            PML_TEXT_DOMAIN,
+                            'access-lens-protected-media-links',
                         ); ?></p>
                 </div>
             <?php endif; ?>
@@ -337,20 +337,20 @@ class PML_Media_Meta
             <div class="pml-meta-field-group">
                 <label for="<?php echo esc_attr( PML_PREFIX ); ?>_redirect_url_override<?php echo esc_attr( $id_suffix ); ?>"><?php esc_html_e(
                         'Unauthorized Redirect URL (Override):',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?></label>
                 <input type="url"
                        id="<?php echo esc_attr( PML_PREFIX ); ?>_redirect_url_override<?php echo esc_attr( $id_suffix ); ?>"
                        name="<?php echo esc_attr( $field_name_redirect_url ); ?>"
                        value="<?php echo esc_url( $redirect_url_override ); ?>"
                        class="widefat"
-                       placeholder="<?php esc_attr_e( 'Global default', PML_TEXT_DOMAIN ); ?> (<?php echo esc_url(
+                       placeholder="<?php esc_attr_e( 'Global default', 'access-lens-protected-media-links' ); ?> (<?php echo esc_url(
                            get_option( PML_PREFIX . '_settings_default_redirect_url', home_url( '/' ) ),
                        ); ?>)"/>
                 <?php if ( $is_full_meta_box_context ): ?>
                     <p class="description pml-field-description"><?php esc_html_e(
                             'If unauthorized, redirect to this URL. Leave blank for global default.',
-                            PML_TEXT_DOMAIN,
+                            'access-lens-protected-media-links',
                         ); ?></p>
                 <?php endif; ?>
             </div>
@@ -358,23 +358,23 @@ class PML_Media_Meta
             <div class="pml-meta-field-group">
                 <label for="<?php echo esc_attr( PML_PREFIX ); ?>_allow_bots_override<?php echo esc_attr( $id_suffix ); ?>"><?php esc_html_e(
                         'Bot Access Override:',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?></label>
                 <select id="<?php echo esc_attr( PML_PREFIX ); ?>_allow_bots_override<?php echo esc_attr( $id_suffix ); ?>"
                         name="<?php echo esc_attr( $field_name_allow_bots ); ?>"
                         class="widefat">
                     <option value="" <?php selected( $allow_bots_override, '' ); ?>>
-                        <?php esc_html_e( 'Use Global Setting', PML_TEXT_DOMAIN ); ?>
-                        (<?php echo get_option( PML_PREFIX . '_settings_allow_bots' ) ? esc_html__( 'Currently: Allow Bots', PML_TEXT_DOMAIN )
-                            : esc_html__( 'Currently: Block Bots', PML_TEXT_DOMAIN ); ?>)
+                        <?php esc_html_e( 'Use Global Setting', 'access-lens-protected-media-links' ); ?>
+                        (<?php echo get_option( PML_PREFIX . '_settings_allow_bots' ) ? esc_html__( 'Currently: Allow Bots', 'access-lens-protected-media-links' )
+                            : esc_html__( 'Currently: Block Bots', 'access-lens-protected-media-links' ); ?>)
                     </option>
                     <option value="yes" <?php selected( $allow_bots_override, 'yes' ); ?>><?php esc_html_e(
                             'Yes, Allow Bots for this file',
-                            PML_TEXT_DOMAIN,
+                            'access-lens-protected-media-links',
                         ); ?></option>
                     <option value="no" <?php selected( $allow_bots_override, 'no' ); ?>><?php esc_html_e(
                             'No, Block Bots for this file',
-                            PML_TEXT_DOMAIN,
+                            'access-lens-protected-media-links',
                         ); ?></option>
                 </select>
             </div>
@@ -386,7 +386,7 @@ class PML_Media_Meta
                     <hr class="pml-meta-hr-dashed">
                     <p>
                         <a href="<?php echo esc_url( $full_edit_link ); ?>" target="_blank" rel="noopener noreferrer">
-                            <?php esc_html_e( 'Advanced Settings (User/Role Lists, Token Params)...', PML_TEXT_DOMAIN ); ?>
+                            <?php esc_html_e( 'Advanced Settings (User/Role Lists, Token Params)...', 'access-lens-protected-media-links' ); ?>
                             <span class="dashicons dashicons-external"></span>
                         </a>
                     </p>
@@ -403,7 +403,7 @@ class PML_Media_Meta
                         $role_deny_count  = count( is_array( $role_deny_list_qef ) ? $role_deny_list_qef : [] );
 
                         printf(
-                            esc_html__( 'Current lists: User Allow (%d), User Deny (%d), Role Allow (%d), Role Deny (%d).', PML_TEXT_DOMAIN ),
+                            esc_html__( 'Current lists: User Allow (%d), User Deny (%d), Role Allow (%d), Role Deny (%d).', 'access-lens-protected-media-links' ),
                             $user_allow_count,
                             $user_deny_count,
                             $role_allow_count,

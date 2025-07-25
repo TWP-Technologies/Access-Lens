@@ -57,7 +57,7 @@ function pml_php_version_notice()
             printf(
             /* translators: 1: Plugin Name, 2: Required PHP version, 3: Current PHP version */ esc_html__(
                                                                                                    '%1$s requires PHP version %2$s or higher. Your current version is %3$s. Please update PHP to use this plugin.',
-                                                                                                   PML_TEXT_DOMAIN,
+                                                                                                   'access-lens-protected-media-links',
                                                                                                ),
                                                                                                esc_html( PML_PLUGIN_NAME ),
                                                                                                esc_html( PML_MIN_PHP_VERSION ),
@@ -78,7 +78,7 @@ function pml_wp_version_notice()
             <?php
             printf(
             /* translators: 1: Plugin Name, 2: Required WordPress version */
-                esc_html__( '%1$s requires WordPress version %2$s or higher to function properly. Please update WordPress.', PML_TEXT_DOMAIN ),
+                esc_html__( '%1$s requires WordPress version %2$s or higher to function properly. Please update WordPress.', 'access-lens-protected-media-links' ),
                 esc_html( PML_PLUGIN_NAME ),
                 esc_html( PML_MIN_WP_VERSION ),
             );
@@ -132,7 +132,7 @@ function pml_classmap_autoloader( string $class_name )
                         echo '<strong>' . esc_html( PML_PLUGIN_NAME ) . ' Critical Error:</strong> ';
                         echo esc_html__(
                             'The class map file (includes/pml-class-map.php) is missing. Autoloading will fail. Please regenerate the class map using the build script or reinstall the plugin.',
-                            PML_TEXT_DOMAIN,
+                            'access-lens-protected-media-links',
                         );
                         echo '</p></div>';
                     },
@@ -179,7 +179,7 @@ function pml_init_plugin()
                             /* translators: %1$s: Plugin name */
                             esc_html__(
                                 '%1$s core class (PML_Core) is missing or could not be autoloaded. The plugin cannot function correctly. Please ensure the class map is up to date or reinstall the plugin.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             esc_html( PML_PLUGIN_NAME ),
                         ) . '</p></div>';
@@ -220,7 +220,7 @@ function pml_ajax_search_users()
     // Check user capabilities.
     if ( !current_user_can( 'edit_users' ) )
     {
-        wp_send_json_error( [ 'message' => esc_html__( 'You do not have permission to search users.', PML_TEXT_DOMAIN ) ], 403 );
+        wp_send_json_error( [ 'message' => esc_html__( 'You do not have permission to search users.', 'access-lens-protected-media-links' ) ], 403 );
         return;
     }
 
@@ -276,7 +276,7 @@ function pml_ajax_search_media()
     check_ajax_referer( 'pml_search_media_nonce', '_ajax_nonce' );
     if ( !current_user_can( 'upload_files' ) ) // Capability to view media library
     {
-        wp_send_json_error( [ 'message' => esc_html__( 'Insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+        wp_send_json_error( [ 'message' => esc_html__( 'Insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
     }
 
     $search_term    = isset( $_GET[ 'q' ] ) ? sanitize_text_field( wp_unslash( $_GET[ 'q' ] ) ) : '';
@@ -336,7 +336,7 @@ else
                     /* translators: %1$s: Plugin name */
                    esc_html__(
                             '%1$s installation/uninstallation controller class (PML_Install) is missing or could not be autoloaded. The plugin might not (de)activate or uninstall correctly. Please ensure the class map is up to date or reinstall the plugin.',
-                            PML_TEXT_DOMAIN,
+                            'access-lens-protected-media-links',
                         ),
                         esc_html( PML_PLUGIN_NAME ),
                     ) . '</p></div>';
@@ -368,7 +368,7 @@ function pml_add_settings_link( array $links ): array
     $settings_link = sprintf(
         "<a href=\"%s\">%s</a>",
         admin_url( 'admin.php?page=' . PML_PLUGIN_SLUG ),
-        esc_html__( 'Settings', PML_TEXT_DOMAIN ),
+        esc_html__( 'Settings', 'access-lens-protected-media-links' ),
     );
     array_unshift( $links, $settings_link );
     return $links;

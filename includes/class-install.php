@@ -41,7 +41,7 @@ class PML_Install
                             "<div class=\"notice notice-error\"><p>%s</p></div>",
                             esc_html__(
                                 'Access Lens: Token Manager initialization failed. Please check the plugin files.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                         );
                     },

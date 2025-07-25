@@ -132,7 +132,7 @@ final class PML_Core
     {
         if ( $seconds == 0 )
         {
-            return __( 'No Expiry', PML_TEXT_DOMAIN );
+            return __( 'No Expiry', 'access-lens-protected-media-links' );
         }
 
         $days    = floor( $seconds / DAY_IN_SECONDS );
@@ -145,20 +145,20 @@ final class PML_Core
         if ( $days > 0 )
         {
             /* translators: %d: Number of days */
-            $parts[] = sprintf( _n( '%d day', '%d days', $days, PML_TEXT_DOMAIN ), $days );
+            $parts[] = sprintf( _n( '%d day', '%d days', $days, 'access-lens-protected-media-links' ), $days );
         }
         if ( $hours > 0 )
         {
             /* translators: %d: Number of hours */
-            $parts[] = sprintf( _n( '%d hour', '%d hours', $hours, PML_TEXT_DOMAIN ), $hours );
+            $parts[] = sprintf( _n( '%d hour', '%d hours', $hours, 'access-lens-protected-media-links' ), $hours );
         }
         if ( $minutes > 0 )
         {
             /* translators: %d: Number of minutes */
-            $parts[] = sprintf( _n( '%d minute', '%d minutes', $minutes, PML_TEXT_DOMAIN ), $minutes );
+            $parts[] = sprintf( _n( '%d minute', '%d minutes', $minutes, 'access-lens-protected-media-links' ), $minutes );
         }
 
-        return empty( $parts ) ? __( 'Less than a minute', PML_TEXT_DOMAIN ) : implode( ', ', $parts );
+        return empty( $parts ) ? __( 'Less than a minute', 'access-lens-protected-media-links' ) : implode( ', ', $parts );
     }
 
     private function __clone()

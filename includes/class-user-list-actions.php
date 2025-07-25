@@ -82,7 +82,7 @@ class PML_User_List_Actions
                         $base_url,
                     ),
                 ),
-                esc_html__( 'Add to PML Allow List', PML_TEXT_DOMAIN ),
+                esc_html__( 'Add to PML Allow List', 'access-lens-protected-media-links' ),
             );
         }
 
@@ -100,7 +100,7 @@ class PML_User_List_Actions
                         $base_url,
                     ),
                 ),
-                esc_html__( 'Add to PML Deny List', PML_TEXT_DOMAIN ),
+                esc_html__( 'Add to PML Deny List', 'access-lens-protected-media-links' ),
             );
         }
 
@@ -118,7 +118,7 @@ class PML_User_List_Actions
                         $base_url,
                     ),
                 ),
-                esc_html__( 'Remove from PML Lists', PML_TEXT_DOMAIN ),
+                esc_html__( 'Remove from PML Lists', 'access-lens-protected-media-links' ),
             );
         }
 
@@ -165,11 +165,11 @@ class PML_User_List_Actions
 
         if ( !$user_id || !wp_verify_nonce( $nonce, PML_PREFIX . '_user_list_action_nonce_' . $user_id ) )
         {
-            wp_die( esc_html__( 'Invalid nonce or user ID.', PML_TEXT_DOMAIN ) );
+            wp_die( esc_html__( 'Invalid nonce or user ID.', 'access-lens-protected-media-links' ) );
         }
         if ( !current_user_can( 'manage_options' ) )
         {
-            wp_die( esc_html__( 'You do not have permission to perform this action.', PML_TEXT_DOMAIN ) );
+            wp_die( esc_html__( 'You do not have permission to perform this action.', 'access-lens-protected-media-links' ) );
         }
 
         $option_name = ( 'allow' === $list_type ) ? $this->allow_list_option : $this->deny_list_option;
@@ -249,19 +249,19 @@ class PML_User_List_Actions
         switch ( $message_slug )
         {
             case 'added_to_allow_list':
-                $message = esc_html__( 'User added to the PML Global Allow List.', PML_TEXT_DOMAIN );
+                $message = esc_html__( 'User added to the PML Global Allow List.', 'access-lens-protected-media-links' );
                 break;
             case 'added_to_deny_list':
-                $message = esc_html__( 'User added to the PML Global Deny List.', PML_TEXT_DOMAIN );
+                $message = esc_html__( 'User added to the PML Global Deny List.', 'access-lens-protected-media-links' );
                 break;
             case 'removed_from_allow_list':
-                $message = esc_html__( 'User removed from the PML Global Allow List.', PML_TEXT_DOMAIN );
+                $message = esc_html__( 'User removed from the PML Global Allow List.', 'access-lens-protected-media-links' );
                 break;
             case 'removed_from_deny_list':
-                $message = esc_html__( 'User removed from the PML Global Deny List.', PML_TEXT_DOMAIN );
+                $message = esc_html__( 'User removed from the PML Global Deny List.', 'access-lens-protected-media-links' );
                 break;
             case 'removed_from_lists':
-                $message = esc_html__( 'User removed from all PML Global Lists.', PML_TEXT_DOMAIN );
+                $message = esc_html__( 'User removed from all PML Global Lists.', 'access-lens-protected-media-links' );
                 break;
             default:
                 return; // No valid message slug.
