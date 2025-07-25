@@ -3,7 +3,7 @@ Contributors: twptechnologies
 Donate link: https://twp.tech/
 Tags: media, security, protection, files, downloads, media library, access control, SEO, search engine
 Requires at least: 5.9
-Tested up to: 6.4
+Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 1.1.0
 License: GPLv3 or later
@@ -117,11 +117,37 @@ Set the value to your internal location path. The handler will then emit `X-Acce
 == Changelog ==
 
 = 1.1.0 =
-* Enhanced bot detection with improved DNS verification
-* Added support for per-file custom redirect URLs
-* Improved Gutenberg block integration
-* Performance optimizations for media library integration
-* Fixed compatibility issues with certain server configurations
+## What's Changed
+* Update to latest by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/1
+* Add headless helpers by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/2
+* Add headless session token validation by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/3
+* Implement headless request handler by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/4
+* Inject database objects into headless helpers by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/5
+* Implement headless caching for bot detector by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/6
+* Update htaccess rule to use headless handler by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/7
+* Remove deprecated request setup by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/8
+* Remove legacy file handler by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/9
+* Update handler references in settings by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/10
+* Fix handler bootstrap issues by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/11
+* Dynamic htaccess rule generation by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/12
+* Show dynamic server rules by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/13
+* Update htaccess on protection status change by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/14
+* Update install process for htaccess management by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/15
+* Fix rule regeneration methods by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/16
+* Fix dynamic Nginx rule display by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/17
+* Fix rewrite rule generation by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/18
+* Update server config docs by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/19
+* Update plugin activation to set cookie constants by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/21
+* Sanitize redirect URL in handler by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/22
+* Add sanitization test by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/23
+* Headless php handler by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/20
+* Rebrand "Protected Media Links" to "Access Lens" - Partial by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/24
+* refactor: rename "Protected Media Links" to "Access Lens" by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/25
+* feat: add TWP live chat contact widget to admin pages by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/26
+* feat: add translator comments for all user-facing strings by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/28
+* refactor: improve i18n comments and use `wp_is_writable` by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/29
+
+**Full Changelog**: https://github.com/TWP-Technologies/Access-Lens/commits/v1.1.0
 
 = 1.0.0 =
 * Initial release

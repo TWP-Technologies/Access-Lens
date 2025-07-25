@@ -9,7 +9,7 @@
  * Author URI:        https://twp.tech/
  * License:           GPLv3 or later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       protected-media-links
+ * Text Domain:       access-lens-protected-media-links
  * Domain Path:       /languages
  * Requires PHP:      7.4
  * Requires WP:       5.9
@@ -162,18 +162,6 @@ function pml_classmap_autoloader( string $class_name )
 }
 
 spl_autoload_register( 'pml_classmap_autoloader' );
-
-/** Loads the plugin text domain for translation. */
-function pml_load_textdomain()
-{
-    load_plugin_textdomain(
-        PML_TEXT_DOMAIN,
-        false,
-        dirname( plugin_basename( PML_PLUGIN_FILE ) ) . '/languages/',
-    );
-}
-
-add_action( 'plugins_loaded', 'pml_load_textdomain' );
 
 /** Initializes the plugin. */
 function pml_init_plugin()
