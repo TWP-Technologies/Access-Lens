@@ -62,7 +62,7 @@ class PML_Media_Library_Integration
             PML_VERSION,
             true,
         );
-        wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+        wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
         // Assets for traditional Media Library views
         if ( $is_media_page || $is_attachment_edit_page )
@@ -80,7 +80,7 @@ class PML_Media_Library_Integration
                 PML_VERSION,
                 true,
             );
-            wp_set_script_translations( PML_PLUGIN_SLUG . '-media-library-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+            wp_set_script_translations( PML_PLUGIN_SLUG . '-media-library-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
             $pml_media_params = [ /* Parameters for media-library.js */
                                   'ajax_url'                => admin_url( 'admin-ajax.php' ),
@@ -89,16 +89,16 @@ class PML_Media_Library_Integration
                                   'plugin_prefix'           => PML_PREFIX,
                                   'save_form_nonce'         => wp_create_nonce( PML_PREFIX . '_save_quick_edit_form_nonce' ),
                                   'search_users_nonce'      => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
-                                  'text_error'              => esc_html__( 'An error occurred. Please try again.', PML_TEXT_DOMAIN ),
-                                  'text_loading'            => esc_html__( 'Loading...', PML_TEXT_DOMAIN ),
-                                  'text_manage_pml'         => esc_html__( 'Manage Access Lens', PML_TEXT_DOMAIN ),
-                                  'text_protected'          => esc_html__( 'Protected', PML_TEXT_DOMAIN ),
-                                  'text_quick_edit_pml'     => esc_html__( 'Access Lens Quick Edit', PML_TEXT_DOMAIN ),
-                                  'text_toggle_protect'     => esc_html__( 'Protect', PML_TEXT_DOMAIN ),
-                                  'text_toggle_unprotect'   => esc_html__( 'Unprotect', PML_TEXT_DOMAIN ),
-                                  'text_unprotected'        => esc_html__( 'Unprotected', PML_TEXT_DOMAIN ),
+                                  'text_error'              => esc_html__( 'An error occurred. Please try again.', 'access-lens-protected-media-links' ),
+                                  'text_loading'            => esc_html__( 'Loading...', 'access-lens-protected-media-links' ),
+                                  'text_manage_pml'         => esc_html__( 'Manage Access Lens', 'access-lens-protected-media-links' ),
+                                  'text_protected'          => esc_html__( 'Protected', 'access-lens-protected-media-links' ),
+                                  'text_quick_edit_pml'     => esc_html__( 'Access Lens Quick Edit', 'access-lens-protected-media-links' ),
+                                  'text_toggle_protect'     => esc_html__( 'Protect', 'access-lens-protected-media-links' ),
+                                  'text_toggle_unprotect'   => esc_html__( 'Unprotect', 'access-lens-protected-media-links' ),
+                                  'text_unprotected'        => esc_html__( 'Unprotected', 'access-lens-protected-media-links' ),
                                   'toggle_nonce'            => wp_create_nonce( PML_PREFIX . '_toggle_protection_nonce' ),
-                                  'user_select_placeholder' => esc_html__( 'Search for users by name or email...', PML_TEXT_DOMAIN ),
+                                  'user_select_placeholder' => esc_html__( 'Search for users by name or email...', 'access-lens-protected-media-links' ),
             ];
             wp_localize_script( PML_PLUGIN_SLUG . '-media-library-js', 'pml_media_params', $pml_media_params );
         }
@@ -126,7 +126,7 @@ class PML_Media_Library_Integration
                     // params for select2 in media-library.js
                     'ajax_url'                => admin_url( 'admin-ajax.php' ),
                     'search_users_nonce'      => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
-                    'user_select_placeholder' => esc_html__( 'Search for users by name or email...', PML_TEXT_DOMAIN ),
+                    'user_select_placeholder' => esc_html__( 'Search for users by name or email...', 'access-lens-protected-media-links' ),
                     'plugin_prefix'           => PML_PREFIX,
                 ],
             );
@@ -154,7 +154,7 @@ class PML_Media_Library_Integration
                 true,
             );
 
-            wp_set_script_translations( PML_PLUGIN_SLUG . '-gutenberg-integration-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+            wp_set_script_translations( PML_PLUGIN_SLUG . '-gutenberg-integration-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
             $global_allow_bots_setting   = get_option( PML_PREFIX . '_settings_allow_bots', '1' ) ? 'yes' : 'no';
             $global_default_redirect_url = get_option( PML_PREFIX . '_settings_default_redirect_url', home_url( '/' ) );
@@ -176,25 +176,25 @@ class PML_Media_Library_Integration
                     'toggle_protection_nonce'                 => wp_create_nonce( PML_PREFIX . '_toggle_protection_nonce' ),
                     'save_quick_edit_form_nonce'              => wp_create_nonce( PML_PREFIX . '_save_quick_edit_form_nonce' ),
                     'plugin_prefix'                           => PML_PREFIX,
-                    'text_error'                              => esc_html__( 'An error occurred. Please try again.', PML_TEXT_DOMAIN ),
-                    'text_loading'                            => esc_html__( 'Loading PML settings...', PML_TEXT_DOMAIN ),
-                    'text_saving'                             => esc_html__( 'Saving...', PML_TEXT_DOMAIN ),
-                    'global_redirect_url_placeholder'         => esc_html__( 'Global default', PML_TEXT_DOMAIN ) .
+                    'text_error'                              => esc_html__( 'An error occurred. Please try again.', 'access-lens-protected-media-links' ),
+                    'text_loading'                            => esc_html__( 'Loading PML settings...', 'access-lens-protected-media-links' ),
+                    'text_saving'                             => esc_html__( 'Saving...', 'access-lens-protected-media-links' ),
+                    'global_redirect_url_placeholder'         => esc_html__( 'Global default', 'access-lens-protected-media-links' ) .
                                                                  ' (' .
                                                                  esc_url( $global_default_redirect_url ) .
                                                                  ')',
                     'select_options_bot_access'               => [
                         [
                             'value' => '',
-                            'label' => esc_html__( 'Use Global Setting', PML_TEXT_DOMAIN ) . ' (' . ( $global_allow_bots_setting === 'yes'
-                                    ? esc_html__( 'Allow', PML_TEXT_DOMAIN )
+                            'label' => esc_html__( 'Use Global Setting', 'access-lens-protected-media-links' ) . ' (' . ( $global_allow_bots_setting === 'yes'
+                                    ? esc_html__( 'Allow', 'access-lens-protected-media-links' )
                                     : esc_html__(
                                         'Block',
-                                        PML_TEXT_DOMAIN,
+                                        'access-lens-protected-media-links',
                                     ) ) . ')',
                         ],
-                        [ 'value' => 'yes', 'label' => esc_html__( 'Yes, Allow Bots for this file', PML_TEXT_DOMAIN ) ],
-                        [ 'value' => 'no', 'label' => esc_html__( 'No, Block Bots for this file', PML_TEXT_DOMAIN ) ],
+                        [ 'value' => 'yes', 'label' => esc_html__( 'Yes, Allow Bots for this file', 'access-lens-protected-media-links' ) ],
+                        [ 'value' => 'no', 'label' => esc_html__( 'No, Block Bots for this file', 'access-lens-protected-media-links' ) ],
                     ],
                 ],
             );
@@ -211,7 +211,7 @@ class PML_Media_Library_Integration
 
         if ( !$attachment_id || !current_user_can( 'edit_post', $attachment_id ) || 'attachment' !== get_post_type( $attachment_id ) )
         {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid attachment ID or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid attachment ID or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         $is_protected          = (bool)get_post_meta( $attachment_id, '_' . PML_PREFIX . '_is_protected', true );
@@ -258,14 +258,14 @@ class PML_Media_Library_Integration
             {
                 if ( !isset( $new_columns[ PML_PREFIX . '_status' ] ) )
                 { // Prevent duplicates on AJAX reloads
-                    $new_columns[ PML_PREFIX . '_status' ] = esc_html__( 'Access Lens', PML_TEXT_DOMAIN );
+                    $new_columns[ PML_PREFIX . '_status' ] = esc_html__( 'Access Lens', 'access-lens-protected-media-links' );
                     $inserted                              = true;
                 }
             }
         }
         if ( !$inserted && !isset( $new_columns[ PML_PREFIX . '_status' ] ) )
         {
-            $new_columns[ PML_PREFIX . '_status' ] = esc_html__( 'Access Lens', PML_TEXT_DOMAIN );
+            $new_columns[ PML_PREFIX . '_status' ] = esc_html__( 'Access Lens', 'access-lens-protected-media-links' );
         }
         return $new_columns;
     }
@@ -278,8 +278,8 @@ class PML_Media_Library_Integration
         }
 
         $is_protected  = (bool)get_post_meta( $attachment_id, '_' . PML_PREFIX . '_is_protected', true );
-        $status_text   = $is_protected ? esc_html__( 'Protected', PML_TEXT_DOMAIN ) : esc_html__( 'Unprotected', PML_TEXT_DOMAIN );
-        $toggle_text   = $is_protected ? esc_html__( 'Unprotect', PML_TEXT_DOMAIN ) : esc_html__( 'Protect', PML_TEXT_DOMAIN );
+        $status_text   = $is_protected ? esc_html__( 'Protected', 'access-lens-protected-media-links' ) : esc_html__( 'Unprotected', 'access-lens-protected-media-links' );
+        $toggle_text   = $is_protected ? esc_html__( 'Unprotect', 'access-lens-protected-media-links' ) : esc_html__( 'Protect', 'access-lens-protected-media-links' );
         $toggle_action = $is_protected ? 'unprotect' : 'protect';
         $toggle_icon   = $is_protected ? 'dashicons-unlock' : 'dashicons-lock';
 
@@ -298,8 +298,8 @@ class PML_Media_Library_Integration
 
     public function add_pml_bulk_actions( array $bulk_actions ): array
     {
-        $bulk_actions[ PML_PREFIX . '_protect_selected' ]   = esc_html__( 'Access Lens: Protect Selected', PML_TEXT_DOMAIN );
-        $bulk_actions[ PML_PREFIX . '_unprotect_selected' ] = esc_html__( 'Access Lens: Unprotect Selected', PML_TEXT_DOMAIN );
+        $bulk_actions[ PML_PREFIX . '_protect_selected' ]   = esc_html__( 'Access Lens: Protect Selected', 'access-lens-protected-media-links' );
+        $bulk_actions[ PML_PREFIX . '_unprotect_selected' ] = esc_html__( 'Access Lens: Unprotect Selected', 'access-lens-protected-media-links' );
         return $bulk_actions;
     }
 
@@ -307,7 +307,7 @@ class PML_Media_Library_Integration
     {
         if ( !current_user_can( 'edit_others_posts' ) )
         {
-            return add_query_arg( PML_PREFIX . '_bulk_error', rawurlencode( __( 'Insufficient permissions.', PML_TEXT_DOMAIN ) ), $redirect_to );
+            return add_query_arg( PML_PREFIX . '_bulk_error', rawurlencode( __( 'Insufficient permissions.', 'access-lens-protected-media-links' ) ), $redirect_to );
         }
 
         $processed_count = 0;
@@ -337,9 +337,9 @@ class PML_Media_Library_Integration
             if ( $processed_count > 0 )
             {
                 $message     = ( '1' === $meta_value_to_set ) ? sprintf(
-                    _n( '%d item protected.', '%d items protected.', $processed_count, PML_TEXT_DOMAIN ),
+                    _n( '%d item protected.', '%d items protected.', $processed_count, 'access-lens-protected-media-links' ),
                     $processed_count,
-                ) : sprintf( _n( '%d item unprotected.', '%d items unprotected.', $processed_count, PML_TEXT_DOMAIN ), $processed_count );
+                ) : sprintf( _n( '%d item unprotected.', '%d items unprotected.', $processed_count, 'access-lens-protected-media-links' ), $processed_count );
                 $redirect_to = add_query_arg( PML_PREFIX . '_bulk_message', rawurlencode( $message ), $redirect_to );
                 if ( method_exists( 'PML_Install', 'regenerate_htaccess_rules' ) )
                 {
@@ -359,8 +359,8 @@ class PML_Media_Library_Integration
                 $actions[ PML_PREFIX . '_quick_edit' ] = sprintf(
                     '<a href="#" class="pml-quick-edit-trigger" data-attachment-id="%d" aria-label="%s">%s</a>',
                     esc_attr( $post->ID ),
-                    esc_attr( sprintf( __( 'Quick edit Access Lens settings for %s', PML_TEXT_DOMAIN ), $post->post_title ) ),
-                    esc_html__( 'Access Lens Quick Edit', PML_TEXT_DOMAIN ),
+                    esc_attr( sprintf( __( 'Quick edit Access Lens settings for %s', 'access-lens-protected-media-links' ), $post->post_title ) ),
+                    esc_html__( 'Access Lens Quick Edit', 'access-lens-protected-media-links' ),
                 );
             }
         }
@@ -374,7 +374,7 @@ class PML_Media_Library_Integration
 
         if ( !$attachment_id || !current_user_can( 'edit_post', $attachment_id ) )
         {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid attachment ID or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid attachment ID or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         $is_protected = (bool)get_post_meta( $attachment_id, '_' . PML_PREFIX . '_is_protected', true );
@@ -393,7 +393,7 @@ class PML_Media_Library_Integration
         }
         else
         {
-            wp_send_json_error( [ 'message' => esc_html__( 'PML_Media_Meta class or method not found.', PML_TEXT_DOMAIN ) ], 500 );
+            wp_send_json_error( [ 'message' => esc_html__( 'PML_Media_Meta class or method not found.', 'access-lens-protected-media-links' ) ], 500 );
         }
     }
 
@@ -418,12 +418,12 @@ class PML_Media_Library_Integration
 
         if ( !$attachment_id || !current_user_can( 'edit_post', $attachment_id ) )
         {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid attachment ID or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid attachment ID or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         if ( empty( $settings_data_raw ) )
         {
-            wp_send_json_error( [ 'message' => esc_html__( 'No settings data provided.', PML_TEXT_DOMAIN ) ], 400 );
+            wp_send_json_error( [ 'message' => esc_html__( 'No settings data provided.', 'access-lens-protected-media-links' ) ], 400 );
         }
 
         // Normalize keys (remove 'pml_settings[]' wrapper if present)
@@ -436,33 +436,33 @@ class PML_Media_Library_Integration
 
         if ( !class_exists( 'PML_Media_Meta' ) || !method_exists( 'PML_Media_Meta', 'save_quick_edit_data' ) )
         {
-            wp_send_json_error( [ 'message' => esc_html__( 'PML_Media_Meta class or method not found.', PML_TEXT_DOMAIN ) ], 500 );
+            wp_send_json_error( [ 'message' => esc_html__( 'PML_Media_Meta class or method not found.', 'access-lens-protected-media-links' ) ], 500 );
         }
 
         $result = PML_Media_Meta::save_quick_edit_data( $attachment_id, $settings_data_to_save );
 
         if ( !$result )
         {
-            wp_send_json_error( [ 'message' => esc_html__( 'Failed to save PML settings.', PML_TEXT_DOMAIN ) ], 500 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Failed to save PML settings.', 'access-lens-protected-media-links' ) ], 500 );
         }
 
         $is_protected_bool = (bool)get_post_meta( $attachment_id, '_' . PML_PREFIX . '_is_protected', true );
         wp_send_json_success(
             [
                 // response data for ui updates
-                'message'       => esc_html__( 'PML settings updated.', PML_TEXT_DOMAIN ),
+                'message'       => esc_html__( 'PML settings updated.', 'access-lens-protected-media-links' ),
                 'is_protected'  => $is_protected_bool,
                 'status_text'   => $is_protected_bool
-                    ? esc_html__( 'Protected', PML_TEXT_DOMAIN )
+                    ? esc_html__( 'Protected', 'access-lens-protected-media-links' )
                     : esc_html__(
                         'Unprotected',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ),
                 'toggle_text'   => $is_protected_bool
-                    ? esc_html__( 'Unprotect', PML_TEXT_DOMAIN )
+                    ? esc_html__( 'Unprotect', 'access-lens-protected-media-links' )
                     : esc_html__(
                         'Protect',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ),
                 'toggle_action' => $is_protected_bool ? 'unprotect' : 'protect',
                 'toggle_icon'   => $is_protected_bool ? 'dashicons-unlock' : 'dashicons-lock',
@@ -488,7 +488,7 @@ class PML_Media_Library_Integration
 
         if ( !$attachment_id || !current_user_can( 'edit_post', $attachment_id ) || !in_array( $new_action, [ 'protect', 'unprotect' ], true ) )
         {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         $new_status_value = ( 'protect' === $new_action ) ? '1' : '0';
@@ -505,14 +505,14 @@ class PML_Media_Library_Integration
             [
                 // Response data for UI updates
                 'message'       => $is_protected_bool
-                    ? esc_html__( 'Attachment protected.', PML_TEXT_DOMAIN )
+                    ? esc_html__( 'Attachment protected.', 'access-lens-protected-media-links' )
                     : esc_html__(
                         'Attachment unprotected.',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ),
                 'is_protected'  => $is_protected_bool,
-                'status_text'   => $is_protected_bool ? esc_html__( 'Protected', PML_TEXT_DOMAIN ) : esc_html__( 'Unprotected', PML_TEXT_DOMAIN ),
-                'toggle_text'   => $is_protected_bool ? esc_html__( 'Unprotect', PML_TEXT_DOMAIN ) : esc_html__( 'Protect', PML_TEXT_DOMAIN ),
+                'status_text'   => $is_protected_bool ? esc_html__( 'Protected', 'access-lens-protected-media-links' ) : esc_html__( 'Unprotected', 'access-lens-protected-media-links' ),
+                'toggle_text'   => $is_protected_bool ? esc_html__( 'Unprotect', 'access-lens-protected-media-links' ) : esc_html__( 'Protect', 'access-lens-protected-media-links' ),
                 'toggle_action' => $is_protected_bool ? 'unprotect' : 'protect',
                 'toggle_icon'   => $is_protected_bool ? 'dashicons-unlock' : 'dashicons-lock',
             ],

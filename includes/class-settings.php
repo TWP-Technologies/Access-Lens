@@ -61,7 +61,7 @@ class PML_Settings
             PML_VERSION,
             true,
         );
-        wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+        wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
         // --- Assets for Main Settings Page ---
         if ( $hook_suffix === $main_settings_hook )
@@ -79,7 +79,7 @@ class PML_Settings
                 PML_VERSION,
                 true,
             );
-            wp_set_script_translations( PML_PLUGIN_SLUG . '-settings-page-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+            wp_set_script_translations( PML_PLUGIN_SLUG . '-settings-page-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
             wp_localize_script(
                 PML_PLUGIN_SLUG . '-settings-page-js',
@@ -87,12 +87,12 @@ class PML_Settings
                 [
                     'ajax_url'                => admin_url( 'admin-ajax.php' ),
                     'search_users_nonce'      => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
-                    'user_select_placeholder' => esc_html__( 'Search for users...', PML_TEXT_DOMAIN ),
-                    'confirm_remove_user'     => esc_html__( 'Are you sure you want to remove this user from the list?', PML_TEXT_DOMAIN ),
-                    'error_searching_users'   => esc_html__( 'Error searching users. Please try again or contact support.', PML_TEXT_DOMAIN ),
+                    'user_select_placeholder' => esc_html__( 'Search for users...', 'access-lens-protected-media-links' ),
+                    'confirm_remove_user'     => esc_html__( 'Are you sure you want to remove this user from the list?', 'access-lens-protected-media-links' ),
+                    'error_searching_users'   => esc_html__( 'Error searching users. Please try again or contact support.', 'access-lens-protected-media-links' ),
                     'error_ajax_failed'       => esc_html__(
                         'An AJAX error occurred. Please check your connection or contact support.',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ),
                     'default_bot_user_agents' => $this->get_default_bot_user_agents(),
                     'default_bot_domains'     => $this->get_default_bot_domains(),
@@ -116,7 +116,7 @@ class PML_Settings
                 PML_VERSION,
                 true,
             );
-            wp_set_script_translations( PML_PLUGIN_SLUG . '-shortcode-generator-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+            wp_set_script_translations( PML_PLUGIN_SLUG . '-shortcode-generator-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
             wp_localize_script(
                 PML_PLUGIN_SLUG . '-shortcode-generator-js',
@@ -124,8 +124,8 @@ class PML_Settings
                 [
                     'ajax_url'                 => admin_url( 'admin-ajax.php' ),
                     'search_media_nonce'       => wp_create_nonce( 'pml_search_media_nonce' ),
-                    'media_select_placeholder' => esc_html__( 'Search for a media file...', PML_TEXT_DOMAIN ),
-                    'text_copied'              => esc_html__( 'Copied!', PML_TEXT_DOMAIN ),
+                    'media_select_placeholder' => esc_html__( 'Search for a media file...', 'access-lens-protected-media-links' ),
+                    'text_copied'              => esc_html__( 'Copied!', 'access-lens-protected-media-links' ),
                 ],
             );
         }
@@ -148,8 +148,8 @@ class PML_Settings
         // the first sub-page with the same slug as the parent becomes the main link.
         add_submenu_page(
             PML_PLUGIN_SLUG,
-            PML_PLUGIN_NAME . ' ' . esc_html__( 'Settings', PML_TEXT_DOMAIN ),
-            esc_html__( 'Settings', PML_TEXT_DOMAIN ),
+            PML_PLUGIN_NAME . ' ' . esc_html__( 'Settings', 'access-lens-protected-media-links' ),
+            esc_html__( 'Settings', 'access-lens-protected-media-links' ),
             'manage_options',
             PML_PLUGIN_SLUG,
             [ $this, 'render_settings_page' ],
@@ -158,8 +158,8 @@ class PML_Settings
         // add the "shortcodes" sub-page.
         add_submenu_page(
             PML_PLUGIN_SLUG,
-            esc_html__( 'Shortcodes', PML_TEXT_DOMAIN ) . ' - ' . PML_PLUGIN_NAME,
-            esc_html__( 'Shortcodes', PML_TEXT_DOMAIN ),
+            esc_html__( 'Shortcodes', 'access-lens-protected-media-links' ) . ' - ' . PML_PLUGIN_NAME,
+            esc_html__( 'Shortcodes', 'access-lens-protected-media-links' ),
             'manage_options',
             PML_PLUGIN_SLUG . '-shortcodes',
             [ $this, 'render_shortcodes_page' ],
@@ -245,17 +245,17 @@ class PML_Settings
 
         return [
             $this->option_name_prefix . 'access_control_section'       => [
-                'title'    => esc_html__( 'Global Access Control Lists', PML_TEXT_DOMAIN ),
+                'title'    => esc_html__( 'Global Access Control Lists', 'access-lens-protected-media-links' ),
                 'callback' => [ $this, 'render_access_control_section_callback' ],
                 'fields'   => [
                     'global_user_lists' => [
-                        'title'           => esc_html__( 'Global User Lists', PML_TEXT_DOMAIN ),
+                        'title'           => esc_html__( 'Global User Lists', 'access-lens-protected-media-links' ),
                         'render_callback' => [ $this, 'render_user_list_manager_field' ],
                         'type'            => 'user_list_manager',
                         'list_type'       => 'user',
                     ],
                     'global_role_lists' => [
-                        'title'           => esc_html__( 'Global Role Lists', PML_TEXT_DOMAIN ),
+                        'title'           => esc_html__( 'Global Role Lists', 'access-lens-protected-media-links' ),
                         'render_callback' => [ $this, 'render_role_list_manager_field' ],
                         'type'            => 'role_list_manager',
                         'list_type'       => 'role',
@@ -264,68 +264,68 @@ class PML_Settings
                 ],
             ],
             $this->option_name_prefix . 'general_settings_section'     => [
-                'title'    => esc_html__( 'General Protection Settings', PML_TEXT_DOMAIN ),
+                'title'    => esc_html__( 'General Protection Settings', 'access-lens-protected-media-links' ),
                 'callback' => function () {
                     echo '<div class="pml-section-description-wrapper"><p>' .
-                         esc_html__( 'Configure default behaviors for protected media links.', PML_TEXT_DOMAIN ) .
+                         esc_html__( 'Configure default behaviors for protected media links.', 'access-lens-protected-media-links' ) .
                          '</p></div>';
                 },
                 'fields'   => [
                     'default_redirect_url'   => [
-                        'title'             => esc_html__( 'Default Unauthorized Redirect URL', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Default Unauthorized Redirect URL', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_text_field' ],
                         'sanitize_callback' => 'esc_url_raw',
                         'args'              => [
                             'description' => esc_html__(
                                 'Global fallback URL for unauthorized access. Leave blank to redirect to homepage.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             'input_type'  => 'url',
                             'placeholder' => home_url( '/' ),
                         ],
                     ],
                     'handle_unmanaged_files' => [
-                        'title'             => esc_html__( 'Handle Non-Media Library Files in Uploads', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Handle Non-Media Library Files in Uploads', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_select_field' ],
                         'sanitize_callback' => 'sanitize_key',
                         'args'              => [
                             'description' => esc_html__(
                                 'How to handle direct requests (via pml_media_request) for files in wp-content/uploads/ that are not in the Media Library.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             'options'     => [
-                                'serve_publicly' => esc_html__( 'Serve Publicly (like a direct link)', PML_TEXT_DOMAIN ),
-                                'deny_access'    => esc_html__( 'Deny Access (use default redirect)', PML_TEXT_DOMAIN ),
+                                'serve_publicly' => esc_html__( 'Serve Publicly (like a direct link)', 'access-lens-protected-media-links' ),
+                                'deny_access'    => esc_html__( 'Deny Access (use default redirect)', 'access-lens-protected-media-links' ),
                             ],
                         ],
                     ],
                 ],
             ],
             $this->option_name_prefix . 'token_settings_section'       => [
-                'title'    => esc_html__( 'Access Token Settings', PML_TEXT_DOMAIN ),
+                'title'    => esc_html__( 'Access Token Settings', 'access-lens-protected-media-links' ),
                 'callback' => function () {
                     echo '<div class="pml-section-description-wrapper"><p>' .
-                         esc_html__( 'Set default parameters for access tokens generated by the plugin.', PML_TEXT_DOMAIN ) .
+                         esc_html__( 'Set default parameters for access tokens generated by the plugin.', 'access-lens-protected-media-links' ) .
                          '</p></div>';
                 },
                 'fields'   => [
                     'default_token_expiry'   => [
-                        'title'             => esc_html__( 'Default Token Expiry Duration', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Default Token Expiry Duration', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_select_field' ],
                         'sanitize_callback' => 'intval',
                         'args'              => [
-                            'description' => esc_html__( 'Default validity period for generated access tokens.', PML_TEXT_DOMAIN ),
+                            'description' => esc_html__( 'Default validity period for generated access tokens.', 'access-lens-protected-media-links' ),
                             'options'     => $this->get_token_expiry_options(),
                         ],
                     ],
                     'default_token_max_uses' => [
-                        'title'             => esc_html__( 'Default Token Maximum Uses', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Default Token Maximum Uses', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_number_field' ],
                         'sanitize_callback' => 'absint',
                         'args'              => [
                             'description' => esc_html__(
                                 'Default maximum number of times a token can be used. Enter 0 for unlimited uses.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             'min'         => 0,
                             'step'        => 1,
@@ -335,64 +335,64 @@ class PML_Settings
                 ],
             ],
             $this->option_name_prefix . 'bot_settings_section'         => [
-                'title'    => esc_html__( 'Search Engine Bot Access', PML_TEXT_DOMAIN ),
+                'title'    => esc_html__( 'Search Engine Bot Access', 'access-lens-protected-media-links' ),
                 'callback' => function () {
                     echo '<div class="pml-section-description-wrapper"><p>' .
-                         esc_html__( 'Configure how verified search engine bots access protected content for SEO indexing.', PML_TEXT_DOMAIN ) .
+                         esc_html__( 'Configure how verified search engine bots access protected content for SEO indexing.', 'access-lens-protected-media-links' ) .
                          '</p></div>';
                 },
                 'fields'   => [
                     'allow_bots'           => [
-                        'title'             => esc_html__( 'Globally Allow Bot Access', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Globally Allow Bot Access', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_checkbox_field' ],
                         'sanitize_callback' => [ $this, 'sanitize_checkbox' ],
                         'args'              => [
                             'description' => esc_html__(
                                 'Allow verified search engine bots to access protected files. Can be overridden per file.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                         ],
                     ],
                     'bot_user_agents'      => [
-                        'title'             => esc_html__( 'Bot User Agent Signatures', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Bot User Agent Signatures', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_textarea_with_button_field' ],
                         'sanitize_callback' => [ $this, 'sanitize_textarea_lines' ],
                         'args'              => [
                             'description' => esc_html__(
                                 'List of User-Agent strings (or parts) to identify potential bots. One per line. Case-insensitive.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             'rows'        => 5,
                             'placeholder' => "googlebot\nbingbot\nslurp",
                             'button_id'   => 'pml_add_default_user_agents',
-                            'button_text' => esc_html__( 'Add Default Search Engine UAs', PML_TEXT_DOMAIN ),
+                            'button_text' => esc_html__( 'Add Default Search Engine UAs', 'access-lens-protected-media-links' ),
                             'data_type'   => 'user_agents',
                         ],
                     ],
                     'verified_bot_domains' => [
-                        'title'             => esc_html__( 'Verified Bot Hostname Suffixes', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Verified Bot Hostname Suffixes', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_textarea_with_button_field' ],
                         'sanitize_callback' => [ $this, 'sanitize_textarea_lines' ],
                         'args'              => [
                             'description' => esc_html__(
                                 'Hostname suffixes used for rDNS/fDNS verification (e.g., .googlebot.com). One per line. Case-insensitive.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             'rows'        => 5,
                             'placeholder' => ".googlebot.com\n.search.msn.com",
                             'button_id'   => 'pml_add_default_bot_domains',
-                            'button_text' => esc_html__( 'Add Default Search Engine Domains', PML_TEXT_DOMAIN ),
+                            'button_text' => esc_html__( 'Add Default Search Engine Domains', 'access-lens-protected-media-links' ),
                             'data_type'   => 'domains',
                         ],
                     ],
                     'bot_dns_cache_ttl'    => [
-                        'title'             => esc_html__( 'Bot DNS Verification Cache TTL', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Bot DNS Verification Cache TTL', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_select_field' ],
                         'sanitize_callback' => 'intval',
                         'args'              => [
                             'description' => esc_html__(
                                 'How long to cache the results of bot DNS verification (rDNS/fDNS lookups). Shorter times are more accurate but increase server load.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             'options'     => $this->get_cache_ttl_options(),
                         ],
@@ -400,43 +400,43 @@ class PML_Settings
                 ],
             ],
             $this->option_name_prefix . 'maintenance_settings_section' => [
-                'title'    => esc_html__( 'Maintenance', PML_TEXT_DOMAIN ),
+                'title'    => esc_html__( 'Maintenance', 'access-lens-protected-media-links' ),
                 'callback' => function () {
                     echo '<div class="pml-section-description-wrapper"><p>' .
-                         esc_html__( 'Configure automated maintenance tasks for the plugin.', PML_TEXT_DOMAIN ) .
+                         esc_html__( 'Configure automated maintenance tasks for the plugin.', 'access-lens-protected-media-links' ) .
                          '</p></div>';
                 },
                 'fields'   => [
                     'cleanup_tokens_enabled'    => [
-                        'title'             => esc_html__( 'Enable Daily Token Cleanup', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Enable Daily Token Cleanup', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_checkbox_field' ],
                         'sanitize_callback' => [ $this, 'sanitize_checkbox' ],
                         'args'              => [
                             'description' => esc_html__(
                                 'Run a daily WP Cron job to update status of expired tokens and optionally delete very old ones.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                         ],
                     ],
                     'cleanup_delete_old_tokens' => [
-                        'title'             => esc_html__( 'Delete Very Old Tokens', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Delete Very Old Tokens', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_checkbox_field' ],
                         'sanitize_callback' => [ $this, 'sanitize_checkbox' ],
                         'args'              => [
                             'description' => esc_html__(
                                 'During daily cleanup, also delete tokens (status: used, expired, revoked) older than the specified age. This helps keep the database table lean.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                         ],
                     ],
                     'cleanup_delete_age_months' => [
-                        'title'             => esc_html__( 'Age to Delete Old Tokens (Months)', PML_TEXT_DOMAIN ),
+                        'title'             => esc_html__( 'Age to Delete Old Tokens (Months)', 'access-lens-protected-media-links' ),
                         'render_callback'   => [ $this, 'render_number_field' ],
                         'sanitize_callback' => 'absint',
                         'args'              => [
                             'description' => esc_html__(
                                 'Define how many months old a non-active token must be before it is deleted by the cleanup job. Only applies if "Delete Very Old Tokens" is enabled.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             'min'         => 1,
                             'step'        => 1,
@@ -446,7 +446,7 @@ class PML_Settings
                 ],
             ],
             $this->option_name_prefix . 'server_config_section'        => [
-                'title'    => esc_html__( 'Server Configuration', PML_TEXT_DOMAIN ),
+                'title'    => esc_html__( 'Server Configuration', 'access-lens-protected-media-links' ),
                 'callback' => [ $this, 'render_server_config_info_section' ],
                 'fields'   => [],
             ],
@@ -458,33 +458,33 @@ class PML_Settings
         echo '<div class="pml-section-description-wrapper">';
         echo '<p>' . esc_html__(
                 'Define site-wide rules for allowing or denying access to protected media. These can be overridden on a per-file basis.',
-                PML_TEXT_DOMAIN,
+                'access-lens-protected-media-links',
             ) . '</p>';
         ?>
         <div class="pml-priority-tip-alert notice notice-info inline pml-collapsible-tip">
             <div class="pml-collapsible-tip-trigger" tabindex="0" role="button" aria-expanded="false" aria-controls="pml-priority-details">
                 <span class="dashicons dashicons-info-outline pml-tip-icon"></span>
-                <h4><?php esc_html_e( 'Understanding Access Rule Priority', PML_TEXT_DOMAIN ); ?></h4>
+                <h4><?php esc_html_e( 'Understanding Access Rule Priority', 'access-lens-protected-media-links' ); ?></h4>
                 <span class="dashicons pml-collapsible-indicator dashicons-arrow-down-alt2"></span>
             </div>
             <div id="pml-priority-details" class="pml-collapsible-content" style="display: none;">
-                <p><?php esc_html_e( 'Access is determined by the first matching rule in the following order:', PML_TEXT_DOMAIN ); ?></p>
+                <p><?php esc_html_e( 'Access is determined by the first matching rule in the following order:', 'access-lens-protected-media-links' ); ?></p>
                 <ol>
-                    <li><?php esc_html_e( 'Global User Allow List', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Global User Deny List', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Per-File User Allow List', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Per-File User Deny List', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Global Role Allow List', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Global Role Deny List', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Per-File Role Allow List', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Per-File Role Deny List', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Verified Bot Access (if enabled)', PML_TEXT_DOMAIN ); ?></li>
-                    <li><?php esc_html_e( 'Valid Access Token', PML_TEXT_DOMAIN ); ?></li>
+                    <li><?php esc_html_e( 'Global User Allow List', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Global User Deny List', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Per-File User Allow List', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Per-File User Deny List', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Global Role Allow List', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Global Role Deny List', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Per-File Role Allow List', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Per-File Role Deny List', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Verified Bot Access (if enabled)', 'access-lens-protected-media-links' ); ?></li>
+                    <li><?php esc_html_e( 'Valid Access Token', 'access-lens-protected-media-links' ); ?></li>
                 </ol>
                 <p>
                     <?php esc_html_e(
                         'For example, if a user is on the "Global User Allow List", they gain access regardless of other deny rules at lower priorities (like role-based or per-file deny). Conversely, a "Global User Deny" will block access even if a role they have is on an allow list. Per-file settings generally override global settings within the same category (user or role).',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?>
                 </p>
             </div>
@@ -496,23 +496,23 @@ class PML_Settings
     public static function get_token_expiry_options(): array
     {
         return [
-            '3600'    => esc_html__( '1 Hour', PML_TEXT_DOMAIN ),
-            '14400'   => esc_html__( '4 Hours', PML_TEXT_DOMAIN ),
-            '86400'   => esc_html__( '1 Day (24 Hours)', PML_TEXT_DOMAIN ),
-            '604800'  => esc_html__( '7 Days', PML_TEXT_DOMAIN ),
-            '2592000' => esc_html__( '30 Days', PML_TEXT_DOMAIN ),
-            '0'       => esc_html__( 'No Expiry (Not Recommended)', PML_TEXT_DOMAIN ),
+            '3600'    => esc_html__( '1 Hour', 'access-lens-protected-media-links' ),
+            '14400'   => esc_html__( '4 Hours', 'access-lens-protected-media-links' ),
+            '86400'   => esc_html__( '1 Day (24 Hours)', 'access-lens-protected-media-links' ),
+            '604800'  => esc_html__( '7 Days', 'access-lens-protected-media-links' ),
+            '2592000' => esc_html__( '30 Days', 'access-lens-protected-media-links' ),
+            '0'       => esc_html__( 'No Expiry (Not Recommended)', 'access-lens-protected-media-links' ),
         ];
     }
 
     private static function get_cache_ttl_options(): array
     {
         return [
-            '300'   => esc_html__( '5 Minutes', PML_TEXT_DOMAIN ),
-            '900'   => esc_html__( '15 Minutes', PML_TEXT_DOMAIN ),
-            '3600'  => esc_html__( '1 Hour', PML_TEXT_DOMAIN ),
-            '14400' => esc_html__( '4 Hours', PML_TEXT_DOMAIN ),
-            '86400' => esc_html__( '24 Hours', PML_TEXT_DOMAIN ),
+            '300'   => esc_html__( '5 Minutes', 'access-lens-protected-media-links' ),
+            '900'   => esc_html__( '15 Minutes', 'access-lens-protected-media-links' ),
+            '3600'  => esc_html__( '1 Hour', 'access-lens-protected-media-links' ),
+            '14400' => esc_html__( '4 Hours', 'access-lens-protected-media-links' ),
+            '86400' => esc_html__( '24 Hours', 'access-lens-protected-media-links' ),
         ];
     }
 
@@ -564,11 +564,11 @@ class PML_Settings
     {
         if ( !current_user_can( 'manage_options' ) )
         {
-            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', PML_TEXT_DOMAIN ) );
+            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'access-lens-protected-media-links' ) );
         }
         ?>
         <div class="wrap pml-settings-wrap">
-            <h1><?php echo esc_html( PML_PLUGIN_NAME ); ?><?php esc_html_e( 'Settings', PML_TEXT_DOMAIN ); ?></h1>
+            <h1><?php echo esc_html( PML_PLUGIN_NAME ); ?><?php esc_html_e( 'Settings', 'access-lens-protected-media-links' ); ?></h1>
             <?php settings_errors(); ?>
             <form method="post" action="options.php">
                 <?php
@@ -585,43 +585,43 @@ class PML_Settings
     {
         if ( !current_user_can( 'manage_options' ) )
         {
-            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', PML_TEXT_DOMAIN ) );
+            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'access-lens-protected-media-links' ) );
         }
         ?>
         <div class="wrap pml-shortcodes-wrap">
             <div class="pml-page-header">
-                <h1><?php esc_html_e( 'Shortcode Generator', PML_TEXT_DOMAIN ); ?></h1>
+                <h1><?php esc_html_e( 'Shortcode Generator', 'access-lens-protected-media-links' ); ?></h1>
                 <p><?php esc_html_e(
                         'Use this tool to easily generate and copy shortcodes for use in your posts, pages, and widgets.',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?></p>
             </div>
 
             <div class="pml-generator-grid">
                 <div class="pml-generator-form-container">
-                    <h2 class="title"><?php esc_html_e( 'Generator', PML_TEXT_DOMAIN ); ?></h2>
+                    <h2 class="title"><?php esc_html_e( 'Generator', 'access-lens-protected-media-links' ); ?></h2>
                     <form id="pml-shortcode-generator-form">
                         <fieldset>
-                            <legend><?php esc_html_e( 'Core Link Settings', PML_TEXT_DOMAIN ); ?></legend>
+                            <legend><?php esc_html_e( 'Core Link Settings', 'access-lens-protected-media-links' ); ?></legend>
                             <div class="form-field">
-                                <label for="pml-media-id"><?php esc_html_e( 'Media File (Required)', PML_TEXT_DOMAIN ); ?></label>
+                                <label for="pml-media-id"><?php esc_html_e( 'Media File (Required)', 'access-lens-protected-media-links' ); ?></label>
                                 <select id="pml-media-id" name="pml_media_id" style="width:100%;"></select>
                             </div>
                             <div class="form-field">
-                                <label for="pml-text"><?php esc_html_e( 'Link Text (Optional)', PML_TEXT_DOMAIN ); ?></label>
+                                <label for="pml-text"><?php esc_html_e( 'Link Text (Optional)', 'access-lens-protected-media-links' ); ?></label>
                                 <input type="text"
                                        id="pml-text"
                                        name="pml_text"
-                                       placeholder="<?php esc_attr_e( 'Defaults to file title', PML_TEXT_DOMAIN ); ?>">
+                                       placeholder="<?php esc_attr_e( 'Defaults to file title', 'access-lens-protected-media-links' ); ?>">
                             </div>
                         </fieldset>
 
                         <fieldset>
-                            <legend><?php esc_html_e( 'Token Behavior', PML_TEXT_DOMAIN ); ?></legend>
+                            <legend><?php esc_html_e( 'Token Behavior', 'access-lens-protected-media-links' ); ?></legend>
                             <div class="form-field">
-                                <label for="pml-duration"><?php esc_html_e( 'Token Duration (Optional)', PML_TEXT_DOMAIN ); ?></label>
+                                <label for="pml-duration"><?php esc_html_e( 'Token Duration (Optional)', 'access-lens-protected-media-links' ); ?></label>
                                 <select id="pml-duration" name="pml_duration">
-                                    <option value=""><?php esc_html_e( 'Use Global Default', PML_TEXT_DOMAIN ); ?> (<?php echo esc_html(
+                                    <option value=""><?php esc_html_e( 'Use Global Default', 'access-lens-protected-media-links' ); ?> (<?php echo esc_html(
                                             PML_Core::format_duration( get_option( PML_PREFIX . '_settings_default_token_expiry' ) ),
                                         ); ?>)
                                     </option>
@@ -631,58 +631,58 @@ class PML_Settings
                                 </select>
                             </div>
                             <div class="form-field">
-                                <label for="pml-max-uses"><?php esc_html_e( 'Maximum Uses (Optional)', PML_TEXT_DOMAIN ); ?></label>
+                                <label for="pml-max-uses"><?php esc_html_e( 'Maximum Uses (Optional)', 'access-lens-protected-media-links' ); ?></label>
                                 <input type="number"
                                        id="pml-max-uses"
                                        name="pml_max_uses"
                                        min="0"
                                        step="1"
-                                       placeholder="<?php esc_attr_e( 'Uses file or global default', PML_TEXT_DOMAIN ); ?>">
+                                       placeholder="<?php esc_attr_e( 'Uses file or global default', 'access-lens-protected-media-links' ); ?>">
                                 <p class="description"><?php esc_html_e(
                                         'Enter 0 for unlimited. This will update the file\'s setting if set higher.',
-                                        PML_TEXT_DOMAIN,
+                                        'access-lens-protected-media-links',
                                     ); ?></p>
                             </div>
                             <div class="form-field form-field-checkbox">
                                 <label>
                                     <input type="checkbox" id="pml-protect" name="pml_protect" value="true" checked>
-                                    <?php esc_html_e( 'Automatically protect this file if unprotected', PML_TEXT_DOMAIN ); ?>
+                                    <?php esc_html_e( 'Automatically protect this file if unprotected', 'access-lens-protected-media-links' ); ?>
                                 </label>
                             </div>
                         </fieldset>
 
                         <fieldset>
-                            <legend><?php esc_html_e( 'Output Formatting', PML_TEXT_DOMAIN ); ?></legend>
+                            <legend><?php esc_html_e( 'Output Formatting', 'access-lens-protected-media-links' ); ?></legend>
                             <div class="form-field form-field-checkbox">
                                 <label>
                                     <input type="checkbox" id="pml-html" name="pml_html" value="true" checked>
-                                    <?php esc_html_e( 'Output as a full HTML link', PML_TEXT_DOMAIN ); ?>
+                                    <?php esc_html_e( 'Output as a full HTML link', 'access-lens-protected-media-links' ); ?>
                                 </label>
                             </div>
                             <div id="pml-open-in-new-tab-wrapper" class="form-field form-field-checkbox">
                                 <label>
                                     <input type="checkbox" id="pml-open_in_new_tab" name="pml_open_in_new_tab" value="true" checked>
-                                    <?php esc_html_e( 'Open link in a new tab', PML_TEXT_DOMAIN ); ?>
+                                    <?php esc_html_e( 'Open link in a new tab', 'access-lens-protected-media-links' ); ?>
                                 </label>
                             </div>
                             <div class="form-field">
-                                <label for="pml-class"><?php esc_html_e( 'CSS Class (Optional)', PML_TEXT_DOMAIN ); ?></label>
+                                <label for="pml-class"><?php esc_html_e( 'CSS Class (Optional)', 'access-lens-protected-media-links' ); ?></label>
                                 <input type="text"
                                        id="pml-class"
                                        name="pml_class"
-                                       placeholder="<?php esc_attr_e( 'e.g., my-download-button', PML_TEXT_DOMAIN ); ?>">
+                                       placeholder="<?php esc_attr_e( 'e.g., my-download-button', 'access-lens-protected-media-links' ); ?>">
                             </div>
                         </fieldset>
                     </form>
                 </div>
 
                 <div class="pml-generator-output-container">
-                    <h2 class="title"><?php esc_html_e( 'Live Output', PML_TEXT_DOMAIN ); ?></h2>
+                    <h2 class="title"><?php esc_html_e( 'Live Output', 'access-lens-protected-media-links' ); ?></h2>
                     <textarea id="pml-generated-shortcode" readonly rows="4"></textarea>
                     <div class="pml-copy-button-wrapper">
                         <button type="button" id="pml-copy-shortcode-button" class="button button-primary">
                             <span class="dashicons dashicons-admin-page"></span>
-                            <?php esc_html_e( 'Copy Shortcode', PML_TEXT_DOMAIN ); ?>
+                            <?php esc_html_e( 'Copy Shortcode', 'access-lens-protected-media-links' ); ?>
                         </button>
                         <span class="pml-copy-feedback"></span>
                     </div>
@@ -690,48 +690,48 @@ class PML_Settings
             </div>
 
             <div class="pml-shortcode-docs">
-                <h2><?php esc_html_e( 'Shortcode Reference', PML_TEXT_DOMAIN ); ?></h2>
+                <h2><?php esc_html_e( 'Shortcode Reference', 'access-lens-protected-media-links' ); ?></h2>
                 <div class="pml-shortcode-reference">
                     <h3>[pml_token_link]</h3>
-                    <p><?php esc_html_e( 'Generates a new token access link to a protected media file.', PML_TEXT_DOMAIN ); ?></p>
+                    <p><?php esc_html_e( 'Generates a new token access link to a protected media file.', 'access-lens-protected-media-links' ); ?></p>
                     <table class="wp-list-table widefat striped">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e( 'Attribute', PML_TEXT_DOMAIN ); ?></th>
-                                <th><?php esc_html_e( 'Required', PML_TEXT_DOMAIN ); ?></th>
-                                <th><?php esc_html_e( 'Description', PML_TEXT_DOMAIN ); ?></th>
-                                <th><?php esc_html_e( 'Default Value', PML_TEXT_DOMAIN ); ?></th>
+                                <th><?php esc_html_e( 'Attribute', 'access-lens-protected-media-links' ); ?></th>
+                                <th><?php esc_html_e( 'Required', 'access-lens-protected-media-links' ); ?></th>
+                                <th><?php esc_html_e( 'Description', 'access-lens-protected-media-links' ); ?></th>
+                                <th><?php esc_html_e( 'Default Value', 'access-lens-protected-media-links' ); ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td><code>id</code></td>
-                                <td><strong><?php esc_html_e( 'Yes', PML_TEXT_DOMAIN ); ?></strong></td>
-                                <td><?php esc_html_e( 'The ID of the media file from the Media Library.', PML_TEXT_DOMAIN ); ?></td>
+                                <td><strong><?php esc_html_e( 'Yes', 'access-lens-protected-media-links' ); ?></strong></td>
+                                <td><?php esc_html_e( 'The ID of the media file from the Media Library.', 'access-lens-protected-media-links' ); ?></td>
                                 <td><em>(None)</em></td>
                             </tr>
                             <tr>
                                 <td><code>text</code></td>
                                 <td>No</td>
-                                <td><?php esc_html_e( 'The clickable text for the link. Ignored if html="false".', PML_TEXT_DOMAIN ); ?></td>
-                                <td><?php esc_html_e( "The media file's title.", PML_TEXT_DOMAIN ); ?></td>
+                                <td><?php esc_html_e( 'The clickable text for the link. Ignored if html="false".', 'access-lens-protected-media-links' ); ?></td>
+                                <td><?php esc_html_e( "The media file's title.", 'access-lens-protected-media-links' ); ?></td>
                             </tr>
                             <tr>
                                 <td><code>duration</code></td>
                                 <td>No</td>
-                                <td><?php esc_html_e( "The token's validity period in seconds (e.g., 3600 for 1 hour).", PML_TEXT_DOMAIN ); ?></td>
-                                <td><?php esc_html_e( 'The global default setting.', PML_TEXT_DOMAIN ); ?></td>
+                                <td><?php esc_html_e( "The token's validity period in seconds (e.g., 3600 for 1 hour).", 'access-lens-protected-media-links' ); ?></td>
+                                <td><?php esc_html_e( 'The global default setting.', 'access-lens-protected-media-links' ); ?></td>
                             </tr>
                             <tr>
                                 <td><code>max_uses</code></td>
                                 <td>No</td>
-                                <td><?php esc_html_e( 'The maximum number of times the token can be used.', PML_TEXT_DOMAIN ); ?></td>
-                                <td><?php esc_html_e( "The file's override or global default.", PML_TEXT_DOMAIN ); ?></td>
+                                <td><?php esc_html_e( 'The maximum number of times the token can be used.', 'access-lens-protected-media-links' ); ?></td>
+                                <td><?php esc_html_e( "The file's override or global default.", 'access-lens-protected-media-links' ); ?></td>
                             </tr>
                             <tr>
                                 <td><code>protect</code></td>
                                 <td>No</td>
-                                <td><?php esc_html_e( 'Automatically protect the media file if it isn\'t already.', PML_TEXT_DOMAIN ); ?></td>
+                                <td><?php esc_html_e( 'Automatically protect the media file if it isn\'t already.', 'access-lens-protected-media-links' ); ?></td>
                                 <td><code>true</code></td>
                             </tr>
                             <tr>
@@ -739,7 +739,7 @@ class PML_Settings
                                 <td>No</td>
                                 <td><?php esc_html_e(
                                         'If "true", outputs a full <a> tag. If "false", outputs only the raw URL.',
-                                        PML_TEXT_DOMAIN,
+                                        'access-lens-protected-media-links',
                                     ); ?></td>
                                 <td><code>true</code></td>
                             </tr>
@@ -748,7 +748,7 @@ class PML_Settings
                                 <td>No</td>
                                 <td><?php esc_html_e(
                                         'If "true", adds target="_blank" to the link. Ignored if html="false".',
-                                        PML_TEXT_DOMAIN,
+                                        'access-lens-protected-media-links',
                                     ); ?></td>
                                 <td><code>true</code></td>
                             </tr>
@@ -757,7 +757,7 @@ class PML_Settings
                                 <td>No</td>
                                 <td><?php esc_html_e(
                                         'Adds a custom CSS class to the <a> link element. Ignored if html="false".',
-                                        PML_TEXT_DOMAIN,
+                                        'access-lens-protected-media-links',
                                     ); ?></td>
                                 <td><em>(None)</em></td>
                             </tr>
@@ -857,7 +857,7 @@ class PML_Settings
         $cols         = $field_args[ 'cols' ] ?? 50;
         $placeholder  = $field_args[ 'placeholder' ] ?? '';
         $button_id    = $field_args[ 'button_id' ] ?? '';
-        $button_text  = $field_args[ 'button_text' ] ?? esc_html__( 'Add Defaults', PML_TEXT_DOMAIN );
+        $button_text  = $field_args[ 'button_text' ] ?? esc_html__( 'Add Defaults', 'access-lens-protected-media-links' );
         $data_type    = $field_args[ 'data_type' ] ?? '';
 
         echo '<div class="pml-textarea-with-button">';
@@ -902,17 +902,17 @@ class PML_Settings
         ?>
         <div class="pml-list-manager-container pml-user-list-manager">
             <fieldset>
-                <legend class="pml-list-legend"><?php esc_html_e( 'Global User Allow List', PML_TEXT_DOMAIN ); ?></legend>
+                <legend class="pml-list-legend"><?php esc_html_e( 'Global User Allow List', 'access-lens-protected-media-links' ); ?></legend>
                 <p class="pml-field-description"><?php esc_html_e(
                         'Users on this list will always be granted access to all protected media globally, overriding all other rules except per-file user deny lists.',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?></p>
                 <select id="pml_global_user_allow_list_select"
                         name="<?php echo esc_attr( $allow_list_option_name ); ?>[]"
                         multiple="multiple"
                         class="pml-user-select-ajax"
                         style="width:100%;"
-                        data-placeholder="<?php esc_attr_e( 'Search and add users to allow list...', PML_TEXT_DOMAIN ); ?>">
+                        data-placeholder="<?php esc_attr_e( 'Search and add users to allow list...', 'access-lens-protected-media-links' ); ?>">
                     <?php foreach ( $allow_list_ids as $user_id ) :
                         $user = get_userdata( $user_id );
                         if ( $user ) : ?>
@@ -925,17 +925,17 @@ class PML_Settings
             </fieldset>
 
             <fieldset>
-                <legend class="pml-list-legend"><?php esc_html_e( 'Global User Deny List', PML_TEXT_DOMAIN ); ?></legend>
+                <legend class="pml-list-legend"><?php esc_html_e( 'Global User Deny List', 'access-lens-protected-media-links' ); ?></legend>
                 <p class="pml-field-description"><?php esc_html_e(
                         'Users on this list will always be denied access globally, unless overridden by a per-file user allow list. This takes precedence over role-based allow rules.',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?></p>
                 <select id="pml_global_user_deny_list_select"
                         name="<?php echo esc_attr( $deny_list_option_name ); ?>[]"
                         multiple="multiple"
                         class="pml-user-select-ajax"
                         style="width:100%;"
-                        data-placeholder="<?php esc_attr_e( 'Search and add users to deny list...', PML_TEXT_DOMAIN ); ?>">
+                        data-placeholder="<?php esc_attr_e( 'Search and add users to deny list...', 'access-lens-protected-media-links' ); ?>">
                     <?php foreach ( $deny_list_ids as $user_id ) :
                         $user = get_userdata( $user_id );
                         if ( $user ) : ?>
@@ -950,7 +950,7 @@ class PML_Settings
                     wp_kses(
                         __(
                             '<strong>Tip:</strong> You can also manage these global user lists from the main WordPress <a href="%s">Users page</a> via row actions.',
-                            PML_TEXT_DOMAIN,
+                            'access-lens-protected-media-links',
                         ),
                         [ 'strong' => [], 'a' => [ 'href' => [] ] ],
                     ),
@@ -971,17 +971,17 @@ class PML_Settings
         ?>
         <div class="pml-list-manager-container pml-role-list-manager">
             <fieldset>
-                <legend class="pml-list-legend"><?php esc_html_e( 'Global Role Allow List', PML_TEXT_DOMAIN ); ?></legend>
+                <legend class="pml-list-legend"><?php esc_html_e( 'Global Role Allow List', 'access-lens-protected-media-links' ); ?></legend>
                 <p class="pml-field-description"><?php esc_html_e(
                         'Users with any of these roles will be granted access globally, unless denied by a user-specific rule or a per-file rule.',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?></p>
                 <select id="<?php echo esc_attr( $allow_list_option_name ); ?>_select"
                         name="<?php echo esc_attr( $allow_list_option_name ); ?>[]"
                         multiple="multiple"
                         class="pml-role-select"
                         style="width:100%;"
-                        data-placeholder="<?php esc_attr_e( 'Select roles to add to allow list...', PML_TEXT_DOMAIN ); ?>">
+                        data-placeholder="<?php esc_attr_e( 'Select roles to add to allow list...', 'access-lens-protected-media-links' ); ?>">
                     <?php foreach ( $all_roles as $slug => $name ) : ?>
                         <option value="<?php echo esc_attr( $slug ); ?>" <?php selected( in_array( $slug, (array)$allow_list_slugs, true ) ); ?>>
                             <?php echo esc_html( $name ); ?> (<?php echo esc_html( $slug ); ?>)
@@ -991,17 +991,17 @@ class PML_Settings
             </fieldset>
 
             <fieldset>
-                <legend class="pml-list-legend"><?php esc_html_e( 'Global Role Deny List', PML_TEXT_DOMAIN ); ?></legend>
+                <legend class="pml-list-legend"><?php esc_html_e( 'Global Role Deny List', 'access-lens-protected-media-links' ); ?></legend>
                 <p class="pml-field-description"><?php esc_html_e(
                         'Users with any of these roles will be denied access globally, unless allowed by a user-specific rule or a per-file rule. This overrides global role allow.',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ); ?></p>
                 <select id="<?php echo esc_attr( $deny_list_option_name ); ?>_select"
                         name="<?php echo esc_attr( $deny_list_option_name ); ?>[]"
                         multiple="multiple"
                         class="pml-role-select"
                         style="width:100%;"
-                        data-placeholder="<?php esc_attr_e( 'Select roles to add to deny list...', PML_TEXT_DOMAIN ); ?>">
+                        data-placeholder="<?php esc_attr_e( 'Select roles to add to deny list...', 'access-lens-protected-media-links' ); ?>">
                     <?php foreach ( $all_roles as $slug => $name ) : ?>
                         <option value="<?php echo esc_attr( $slug ); ?>" <?php selected( in_array( $slug, (array)$deny_list_slugs, true ) ); ?>>
                             <?php echo esc_html( $name ); ?> (<?php echo esc_html( $slug ); ?>)
@@ -1029,25 +1029,25 @@ class PML_Settings
         echo '<div class="pml-section-content-wrapper">'; // Wrap content
         echo '<p>' . esc_html__(
                 'For file protection to work, your web server must be configured to pass requests for uploaded files to WordPress. The plugin attempts to manage this automatically for Apache servers via the .htaccess file.',
-                PML_TEXT_DOMAIN,
+                'access-lens-protected-media-links',
             ) . '</p>';
 
         $server_software = isset( $_SERVER[ 'SERVER_SOFTWARE' ] ) ? sanitize_text_field( wp_unslash( $_SERVER[ 'SERVER_SOFTWARE' ] ) ) : 'Unknown';
         $is_apache       = strpos( strtolower( $server_software ), 'apache' ) !== false;
         $is_nginx        = strpos( strtolower( $server_software ), 'nginx' ) !== false;
 
-        echo '<h4>' . esc_html__( 'Detected Server Software:', PML_TEXT_DOMAIN ) . ' <code>' . esc_html( $server_software ) . '</code></h4>';
+        echo '<h4>' . esc_html__( 'Detected Server Software:', 'access-lens-protected-media-links' ) . ' <code>' . esc_html( $server_software ) . '</code></h4>';
 
         if ( $is_apache )
         {
             echo '<p>' . esc_html__(
                     'It appears you are running an Apache server. The plugin attempts to automatically update your .htaccess file.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ) . '</p>';
-            echo '<h5>' . esc_html__( 'Required .htaccess Rules (for reference):', PML_TEXT_DOMAIN ) . '</h5>';
+            echo '<h5>' . esc_html__( 'Required .htaccess Rules (for reference):', 'access-lens-protected-media-links' ) . '</h5>';
             echo '<p>' . esc_html__(
                     'These rules should be placed inside the # BEGIN Access Lens ... # END Access Lens markers in your .htaccess file, before the standard WordPress rules.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ) . '</p>';
             echo '<pre class="pml-code-block"><code>';
             if ( class_exists( 'PML_Install' ) ) {
@@ -1058,7 +1058,7 @@ class PML_Settings
             {
                 echo '<p class="pml-warning">' . esc_html__(
                         'Warning: The required .htaccess rules may not be present. The rules shown above are generated dynamically; add them manually if needed.',
-                        PML_TEXT_DOMAIN,
+                        'access-lens-protected-media-links',
                     ) . '</p>';
             }
         }
@@ -1066,12 +1066,12 @@ class PML_Settings
         {
             echo '<p>' . esc_html__(
                     'It appears you are running an Nginx server. You will need to manually add rules to your Nginx configuration file for this plugin to work correctly.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ) . '</p>';
-            echo '<h5>' . esc_html__( 'Example Nginx Configuration:', PML_TEXT_DOMAIN ) . '</h5>';
+            echo '<h5>' . esc_html__( 'Example Nginx Configuration:', 'access-lens-protected-media-links' ) . '</h5>';
             echo '<p>' . esc_html__(
                     'Add the following within your server block. You may need to adjust it based on your specific Nginx setup (e.g., if WordPress is in a subdirectory or your PHP-FPM setup differs).',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ) . '</p>';
             $nginx_rules = '';
             if ( class_exists( 'PML_Install' ) ) {
@@ -1079,14 +1079,14 @@ class PML_Settings
             }
             echo '<pre class="pml-code-block">' . esc_html( $nginx_rules ) . '</pre>';
             echo '<p>' .
-                 esc_html__( 'After adding these rules, you must reload your Nginx configuration (e.g., sudo nginx -s reload).', PML_TEXT_DOMAIN ) .
+                 esc_html__( 'After adding these rules, you must reload your Nginx configuration (e.g., sudo nginx -s reload).', 'access-lens-protected-media-links' ) .
                  '</p>';
         }
         else
         {
             echo '<p>' . esc_html__(
                     'Your server software could not be definitively identified as Apache or Nginx. You may need to manually configure rewrite rules for this plugin to function.',
-                    PML_TEXT_DOMAIN,
+                    'access-lens-protected-media-links',
                 ) . '</p>';
         }
         echo '</div>';
@@ -1169,7 +1169,7 @@ class PML_Settings
                         wp_kses(
                             __(
                                 'For file protection to work correctly on your <strong>Apache server</strong>, dynamic rules must be present in your %2$s file. If automatic insertion failed, visit the <a href="%1$s">server configuration instructions</a> to copy the generated rules and add them manually.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             [
                                 'strong' => [],
@@ -1202,7 +1202,7 @@ class PML_Settings
                         wp_kses(
                             __(
                                 'You appear to be using an <strong>Nginx server</strong>. This plugin generates a configuration snippet you must add to your Nginx config. See the <a href="%1$s">server configuration instructions</a> to copy the rules.',
-                                PML_TEXT_DOMAIN,
+                                'access-lens-protected-media-links',
                             ),
                             [
                                 'strong' => [],

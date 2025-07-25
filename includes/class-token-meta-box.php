@@ -58,7 +58,7 @@ class PML_Token_Meta_Box
 
         add_meta_box(
             $this->meta_box_id,
-            esc_html__( 'Access Lens Tokens', PML_TEXT_DOMAIN ),
+            esc_html__( 'Access Lens Tokens', 'access-lens-protected-media-links' ),
             [ $this, 'render_meta_box_content' ],
             'attachment',
             'normal',
@@ -83,9 +83,9 @@ class PML_Token_Meta_Box
         wp_enqueue_script( 'flatpickr', 'https://cdn.jsdelivr.net/npm/flatpickr', [], '4.6.13', true );
         wp_enqueue_script( 'select2', "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/js/select2.min.js", [ 'jquery' ], PML_SELECT2_VERSION, true );
         wp_enqueue_script( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_PLUGIN_URL . 'admin/assets/js/common-utils.js', [ 'jquery', 'wp-i18n' ], PML_VERSION, true );
-        wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+        wp_set_script_translations( PML_PLUGIN_SLUG . '-admin-common-utils-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
         wp_enqueue_script( PML_PLUGIN_SLUG . '-token-meta-box-js', PML_PLUGIN_URL . 'admin/assets/js/token-meta-box.js', [ 'jquery', 'wp-util', 'wp-i18n', 'flatpickr', 'select2', PML_PLUGIN_SLUG . '-admin-common-utils-js' ], PML_VERSION, true );
-        wp_set_script_translations( PML_PLUGIN_SLUG . '-token-meta-box-js', PML_TEXT_DOMAIN, PML_PLUGIN_DIR . 'languages' );
+        wp_set_script_translations( PML_PLUGIN_SLUG . '-token-meta-box-js', 'access-lens-protected-media-links', PML_PLUGIN_DIR . 'languages' );
 
         $max_uses_override = get_post_meta( $post->ID, '_' . PML_PREFIX . '_token_max_uses', true );
         $effective_max_uses = ( '' !== $max_uses_override && is_numeric($max_uses_override) )
@@ -105,11 +105,11 @@ class PML_Token_Meta_Box
                 'nonce_reinstate_token'        => wp_create_nonce( PML_PREFIX . '_reinstate_token_nonce' ),
                 'nonce_format_expiry'          => wp_create_nonce( PML_PREFIX . '_format_expiry_nonce'),
                 'nonce_update_max_uses'        => wp_create_nonce( PML_PREFIX . '_update_max_uses_nonce'),
-                'text_confirm_delete_token'    => esc_html__( 'Are you sure you want to permanently delete this token? This action cannot be undone.', PML_TEXT_DOMAIN ),
+                'text_confirm_delete_token'    => esc_html__( 'Are you sure you want to permanently delete this token? This action cannot be undone.', 'access-lens-protected-media-links' ),
                 'pml_prefix'                   => PML_PREFIX,
-                'text_loading'                 => esc_html__( 'Loading...', PML_TEXT_DOMAIN ),
-                'text_error'                   => esc_html__( 'An error occurred. Please try again.', PML_TEXT_DOMAIN ),
-                'text_copied'                  => esc_html__( 'Copied!', PML_TEXT_DOMAIN ),
+                'text_loading'                 => esc_html__( 'Loading...', 'access-lens-protected-media-links' ),
+                'text_error'                   => esc_html__( 'An error occurred. Please try again.', 'access-lens-protected-media-links' ),
+                'text_copied'                  => esc_html__( 'Copied!', 'access-lens-protected-media-links' ),
                 'timezone_strings'             => wp_timezone_choice( wp_timezone_string(), get_user_locale() ),
                 'default_token_expiry_options' => PML_Settings::get_token_expiry_options(),
                 'user_date_format'             => get_option( 'date_format' ),
@@ -132,15 +132,15 @@ class PML_Token_Meta_Box
         {
             $url = sprintf( "%s#%s_media_protection_meta_box", get_edit_post_link( $attachment_id ), $prefix );
             echo "<div class='pml-notice pml-notice-info'>";
-            printf( wp_kses( __( 'This file is not currently protected by PML. To manage access tokens, please <a href="%s">enable protection</a> in the "Access Lens Settings (PML)" meta box first.', PML_TEXT_DOMAIN ), [ 'a' => [ 'href' => [] ] ] ), esc_url( $url ) );
+            printf( wp_kses( __( 'This file is not currently protected by PML. To manage access tokens, please <a href="%s">enable protection</a> in the "Access Lens Settings (PML)" meta box first.', 'access-lens-protected-media-links' ), [ 'a' => [ 'href' => [] ] ] ), esc_url( $url ) );
             echo '</div></div>';
             return;
         }
 
-        $gen_title    = esc_html__( 'Generate New Token', PML_TEXT_DOMAIN );
-        $create_btn   = esc_html__( 'Create Token', PML_TEXT_DOMAIN );
-        $exist_title  = esc_html__( 'Existing Tokens', PML_TEXT_DOMAIN );
-        $loading_text = esc_html__( 'Loading tokens...', PML_TEXT_DOMAIN );
+        $gen_title    = esc_html__( 'Generate New Token', 'access-lens-protected-media-links' );
+        $create_btn   = esc_html__( 'Create Token', 'access-lens-protected-media-links' );
+        $exist_title  = esc_html__( 'Existing Tokens', 'access-lens-protected-media-links' );
+        $loading_text = esc_html__( 'Loading tokens...', 'access-lens-protected-media-links' );
 
         echo <<<EOT
             <h3>$gen_title</h3>
@@ -166,7 +166,7 @@ class PML_Token_Meta_Box
         $per_page      = isset( $_POST[ 'per_page' ] ) ? absint( $_POST[ 'per_page' ] ) : 10;
 
         if ( !$attachment_id || !current_user_can( 'edit_post', $attachment_id ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         // proactively update statuses for this attachment's tokens before fetching them
@@ -184,14 +184,14 @@ class PML_Token_Meta_Box
         $formatted_tokens = [];
         if ( $tokens ) {
             foreach ( $tokens as $token ) {
-                $user_display_name = esc_html__( 'Guest', PML_TEXT_DOMAIN );
+                $user_display_name = esc_html__( 'Guest', 'access-lens-protected-media-links' );
                 if ( $token->user_id ) {
                     $user_data = get_userdata( $token->user_id );
                     if ( $user_data ) {
                         $user_edit_link    = get_edit_user_link( $token->user_id );
                         $user_display_name = '<a href="' . esc_url( $user_edit_link ) . '" target="_blank">' . esc_html( $user_data->display_name ) . ' (ID: ' . esc_html( $token->user_id ) . ')</a>';
                     } else {
-                        $user_display_name = esc_html__( 'User ID: ', PML_TEXT_DOMAIN ) . esc_html( $token->user_id ) . esc_html__( ' (User not found)', PML_TEXT_DOMAIN );
+                        $user_display_name = esc_html__( 'User ID: ', 'access-lens-protected-media-links' ) . esc_html( $token->user_id ) . esc_html__( ' (User not found)', 'access-lens-protected-media-links' );
                     }
                 }
                 $formatted_tokens[] = [
@@ -218,17 +218,17 @@ class PML_Token_Meta_Box
                                       'per_page'     => $per_page,
                                   ],
                                   'i18n'       => [
-                                      'status_active'    => __( 'Active', PML_TEXT_DOMAIN ),
-                                      'status_expired'   => __( 'Expired', PML_TEXT_DOMAIN ),
-                                      'status_used'      => __( 'Used', PML_TEXT_DOMAIN ),
-                                      'status_revoked'   => __( 'Revoked', PML_TEXT_DOMAIN ),
-                                      'action_revoke'    => __( 'Revoke', PML_TEXT_DOMAIN ),
-                                      'action_delete'    => __( 'Delete', PML_TEXT_DOMAIN ),
-                                      'action_reinstate' => __( 'Reinstate', PML_TEXT_DOMAIN ),
-                                      'action_copy_link' => __( 'Copy Link', PML_TEXT_DOMAIN ),
-                                      'never_expires'    => __( 'Never', PML_TEXT_DOMAIN ),
-                                      'not_yet_used'     => __( 'Not yet', PML_TEXT_DOMAIN ),
-                                      'unlimited_uses'   => __( 'Unlimited', PML_TEXT_DOMAIN ),
+                                      'status_active'    => __( 'Active', 'access-lens-protected-media-links' ),
+                                      'status_expired'   => __( 'Expired', 'access-lens-protected-media-links' ),
+                                      'status_used'      => __( 'Used', 'access-lens-protected-media-links' ),
+                                      'status_revoked'   => __( 'Revoked', 'access-lens-protected-media-links' ),
+                                      'action_revoke'    => __( 'Revoke', 'access-lens-protected-media-links' ),
+                                      'action_delete'    => __( 'Delete', 'access-lens-protected-media-links' ),
+                                      'action_reinstate' => __( 'Reinstate', 'access-lens-protected-media-links' ),
+                                      'action_copy_link' => __( 'Copy Link', 'access-lens-protected-media-links' ),
+                                      'never_expires'    => __( 'Never', 'access-lens-protected-media-links' ),
+                                      'not_yet_used'     => __( 'Not yet', 'access-lens-protected-media-links' ),
+                                      'unlimited_uses'   => __( 'Unlimited', 'access-lens-protected-media-links' ),
                                   ],
                               ] );
     }
@@ -239,7 +239,7 @@ class PML_Token_Meta_Box
         $attachment_id = isset( $_POST[ 'attachment_id' ] ) ? absint( $_POST[ 'attachment_id' ] ) : 0;
 
         if ( !$attachment_id || !current_user_can( 'edit_post', $attachment_id ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         $expiry_type = isset( $_POST[ 'expiry_type' ] ) ? sanitize_key( $_POST[ 'expiry_type' ] ) : 'default';
@@ -253,7 +253,7 @@ class PML_Token_Meta_Box
             : (int) get_option( PML_PREFIX . '_settings_default_token_max_uses', 1 );
 
         if ($effective_max_uses > 0 && $token_args['max_uses'] > $effective_max_uses) {
-            wp_send_json_error( [ 'message' => sprintf(esc_html__( 'Max uses cannot exceed the file limit of %d.', PML_TEXT_DOMAIN ), $effective_max_uses) ], 400 );
+            wp_send_json_error( [ 'message' => sprintf(esc_html__( 'Max uses cannot exceed the file limit of %d.', 'access-lens-protected-media-links' ), $effective_max_uses) ], 400 );
         }
 
         switch ( $expiry_type ) {
@@ -266,7 +266,7 @@ class PML_Token_Meta_Box
                 $custom_timezone     = isset( $_POST[ 'custom_timezone' ] ) ? sanitize_text_field( $_POST[ 'custom_timezone' ] ) : wp_timezone_string();
 
                 if ( empty( $custom_datetime_str ) ) {
-                    wp_send_json_error( [ 'message' => esc_html__( 'Custom date and time cannot be empty.', PML_TEXT_DOMAIN ) ], 400 );
+                    wp_send_json_error( [ 'message' => esc_html__( 'Custom date and time cannot be empty.', 'access-lens-protected-media-links' ) ], 400 );
                 }
 
                 try {
@@ -277,11 +277,11 @@ class PML_Token_Meta_Box
                     $utc_expires_at_str = $datetime->format( 'Y-m-d H:i:s' );
 
                     if ( !PML_Token_Manager::is_datetime_in_future( $utc_expires_at_str ) ) {
-                        wp_send_json_error( [ 'message' => esc_html__( 'Custom expiry date must be in the future.', PML_TEXT_DOMAIN ) ], 400 );
+                        wp_send_json_error( [ 'message' => esc_html__( 'Custom expiry date must be in the future.', 'access-lens-protected-media-links' ) ], 400 );
                     }
                     $token_args[ 'utc_expires_at' ] = $utc_expires_at_str;
                 } catch ( Exception $e ) {
-                    wp_send_json_error( [ 'message' => esc_html__( 'Invalid custom date, time, or timezone.', PML_TEXT_DOMAIN ) . ' ' . $e->getMessage() ], 400 );
+                    wp_send_json_error( [ 'message' => esc_html__( 'Invalid custom date, time, or timezone.', 'access-lens-protected-media-links' ) . ' ' . $e->getMessage() ], 400 );
                 }
                 break;
         }
@@ -290,11 +290,11 @@ class PML_Token_Meta_Box
         $new_token  = PML_Token_Manager::store_token( $token_data );
 
         if ( $new_token ) {
-            wp_send_json_success( [ 'message' => esc_html__( 'Token generated successfully.', PML_TEXT_DOMAIN ), 'token' => $new_token, ] );
+            wp_send_json_success( [ 'message' => esc_html__( 'Token generated successfully.', 'access-lens-protected-media-links' ), 'token' => $new_token, ] );
         } else {
             global $wpdb;
             $db_error_message = !empty($wpdb->last_error) ? ' DB Error: ' . esc_html($wpdb->last_error) : '';
-            wp_send_json_error( [ 'message' => esc_html__( 'Failed to store the new token.', PML_TEXT_DOMAIN ) . $db_error_message ], 500 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Failed to store the new token.', 'access-lens-protected-media-links' ) . $db_error_message ], 500 );
         }
     }
 
@@ -304,7 +304,7 @@ class PML_Token_Meta_Box
         $token_id = isset( $_POST[ 'token_id' ] ) ? absint( $_POST[ 'token_id' ] ) : 0;
 
         if ( !$token_id || !current_user_can( 'edit_posts' ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         global $wpdb;
@@ -312,15 +312,15 @@ class PML_Token_Meta_Box
         $token      = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $token_id ) );
 
         if ( !$token || !current_user_can( 'edit_post', $token->attachment_id ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Token not found or permission denied.', PML_TEXT_DOMAIN ) ], 404 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Token not found or permission denied.', 'access-lens-protected-media-links' ) ], 404 );
         }
 
         $updated = PML_Token_Manager::update_token_fields( $token->token_value, [ 'status' => 'revoked' ], [ '%s' ] );
 
         if ( $updated ) {
-            wp_send_json_success( [ 'message' => esc_html__( 'Token has been revoked.', PML_TEXT_DOMAIN ) ] );
+            wp_send_json_success( [ 'message' => esc_html__( 'Token has been revoked.', 'access-lens-protected-media-links' ) ] );
         } else {
-            wp_send_json_error( [ 'message' => esc_html__( 'Failed to revoke the token.', PML_TEXT_DOMAIN ) ], 500 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Failed to revoke the token.', 'access-lens-protected-media-links' ) ], 500 );
         }
     }
 
@@ -330,7 +330,7 @@ class PML_Token_Meta_Box
         $token_id = isset( $_POST[ 'token_id' ] ) ? absint( $_POST[ 'token_id' ] ) : 0;
 
         if ( !$token_id || !current_user_can( 'edit_posts' ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         global $wpdb;
@@ -338,15 +338,15 @@ class PML_Token_Meta_Box
         $token      = $wpdb->get_row( $wpdb->prepare( "SELECT attachment_id FROM {$table_name} WHERE id = %d", $token_id ) );
 
         if ( !$token || !current_user_can( 'edit_post', $token->attachment_id ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Token not found or permission denied.', PML_TEXT_DOMAIN ) ], 404 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Token not found or permission denied.', 'access-lens-protected-media-links' ) ], 404 );
         }
 
         $deleted = $wpdb->delete( $table_name, [ 'id' => $token_id ], [ '%d' ] );
 
         if ( $deleted ) {
-            wp_send_json_success( [ 'message' => esc_html__( 'Token permanently deleted.', PML_TEXT_DOMAIN ) ] );
+            wp_send_json_success( [ 'message' => esc_html__( 'Token permanently deleted.', 'access-lens-protected-media-links' ) ] );
         } else {
-            wp_send_json_error( [ 'message' => esc_html__( 'Failed to delete the token.', PML_TEXT_DOMAIN ) ], 500 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Failed to delete the token.', 'access-lens-protected-media-links' ) ], 500 );
         }
     }
 
@@ -356,7 +356,7 @@ class PML_Token_Meta_Box
         $token_id = isset( $_POST[ 'token_id' ] ) ? absint( $_POST[ 'token_id' ] ) : 0;
 
         if ( !$token_id || !current_user_can( 'edit_posts' ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         global $wpdb;
@@ -364,7 +364,7 @@ class PML_Token_Meta_Box
         $token      = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $token_id ) );
 
         if ( !$token || !current_user_can( 'edit_post', $token->attachment_id ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Token not found or permission denied.', PML_TEXT_DOMAIN ) ], 404 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Token not found or permission denied.', 'access-lens-protected-media-links' ) ], 404 );
         }
 
         $new_expiry_type     = isset( $_POST[ 'new_expiry_type' ] ) ? sanitize_key( $_POST[ 'new_expiry_type' ] ) : null;
@@ -383,7 +383,7 @@ class PML_Token_Meta_Box
                     $custom_timezone     = isset( $_POST[ 'new_custom_timezone' ] ) ? sanitize_text_field( $_POST[ 'new_custom_timezone' ] ) : wp_timezone_string();
 
                     if ( empty( $custom_datetime_str ) ) {
-                        wp_send_json_error( [ 'message' => esc_html__( 'New custom expiry date cannot be empty.', PML_TEXT_DOMAIN ) ], 400 );
+                        wp_send_json_error( [ 'message' => esc_html__( 'New custom expiry date cannot be empty.', 'access-lens-protected-media-links' ) ], 400 );
                     }
 
                     try {
@@ -392,7 +392,7 @@ class PML_Token_Meta_Box
                         $datetime->setTimezone( new DateTimeZone( 'UTC' ) );
                         $utc_expires_at_str = $datetime->format( 'Y-m-d H:i:s' );
                     } catch ( Exception $e ) {
-                        wp_send_json_error( [ 'message' => esc_html__( 'Invalid new custom expiry date.', PML_TEXT_DOMAIN ) ], 400 );
+                        wp_send_json_error( [ 'message' => esc_html__( 'Invalid new custom expiry date.', 'access-lens-protected-media-links' ) ], 400 );
                     }
                     break;
                 case 'default':
@@ -403,7 +403,7 @@ class PML_Token_Meta_Box
         }
 
         if ( !PML_Token_Manager::is_datetime_in_future( $utc_expires_at_str ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'The new expiry date must be in the future.', PML_TEXT_DOMAIN ) ], 400 );
+            wp_send_json_error( [ 'message' => esc_html__( 'The new expiry date must be in the future.', 'access-lens-protected-media-links' ) ], 400 );
         }
 
         $data_to_update[ 'expires_at' ] = $utc_expires_at_str;
@@ -412,9 +412,9 @@ class PML_Token_Meta_Box
         $updated = PML_Token_Manager::update_token_fields( $token->token_value, $data_to_update, $format_to_update );
 
         if ( $updated ) {
-            wp_send_json_success( [ 'message' => esc_html__( 'Token has been reinstated.', PML_TEXT_DOMAIN ) ] );
+            wp_send_json_success( [ 'message' => esc_html__( 'Token has been reinstated.', 'access-lens-protected-media-links' ) ] );
         } else {
-            wp_send_json_error( [ 'message' => esc_html__( 'Failed to reinstate the token.', PML_TEXT_DOMAIN ) ], 500 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Failed to reinstate the token.', 'access-lens-protected-media-links' ) ], 500 );
         }
     }
 
@@ -472,7 +472,7 @@ class PML_Token_Meta_Box
         $new_max_uses = isset($_POST['max_uses']) ? absint($_POST['max_uses']) : 0;
 
         if ( !$token_id || !current_user_can( 'edit_posts' ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', PML_TEXT_DOMAIN ) ], 403 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Invalid request or insufficient permissions.', 'access-lens-protected-media-links' ) ], 403 );
         }
 
         global $wpdb;
@@ -480,7 +480,7 @@ class PML_Token_Meta_Box
         $token = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $token_id ) );
 
         if ( !$token || !current_user_can( 'edit_post', $token->attachment_id ) ) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Token not found or permission denied.', PML_TEXT_DOMAIN ) ], 404 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Token not found or permission denied.', 'access-lens-protected-media-links' ) ], 404 );
         }
 
         $max_uses_override = get_post_meta( $token->attachment_id, '_' . PML_PREFIX . '_token_max_uses', true );
@@ -489,11 +489,11 @@ class PML_Token_Meta_Box
             : (int) get_option( PML_PREFIX . '_settings_default_token_max_uses', 1 );
 
         if ($effective_max_uses > 0 && $new_max_uses > $effective_max_uses) {
-            wp_send_json_error( [ 'message' => sprintf(esc_html__( 'Update failed. Max uses cannot exceed the file limit of %d.', PML_TEXT_DOMAIN ), $effective_max_uses) ], 400 );
+            wp_send_json_error( [ 'message' => sprintf(esc_html__( 'Update failed. Max uses cannot exceed the file limit of %d.', 'access-lens-protected-media-links' ), $effective_max_uses) ], 400 );
         }
 
         if ($new_max_uses > 0 && $token->use_count >= $new_max_uses) {
-            wp_send_json_error( [ 'message' => esc_html__( 'Update failed. New max uses must be greater than the current number of uses.', PML_TEXT_DOMAIN ) ], 400 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Update failed. New max uses must be greater than the current number of uses.', 'access-lens-protected-media-links' ) ], 400 );
         }
 
         $data_to_update = ['max_uses' => $new_max_uses];
@@ -502,9 +502,9 @@ class PML_Token_Meta_Box
         $updated = PML_Token_Manager::update_token_fields($token->token_value, $data_to_update, $format_to_update);
 
         if ( $updated ) {
-            wp_send_json_success( [ 'message' => esc_html__( 'Max uses updated successfully.', PML_TEXT_DOMAIN ) ] );
+            wp_send_json_success( [ 'message' => esc_html__( 'Max uses updated successfully.', 'access-lens-protected-media-links' ) ] );
         } else {
-            wp_send_json_error( [ 'message' => esc_html__( 'Failed to update max uses. The value may be the same as the current one.', PML_TEXT_DOMAIN ) ], 500 );
+            wp_send_json_error( [ 'message' => esc_html__( 'Failed to update max uses. The value may be the same as the current one.', 'access-lens-protected-media-links' ) ], 500 );
         }
     }
 }

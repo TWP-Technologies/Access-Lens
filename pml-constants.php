@@ -3,7 +3,6 @@
 
 const PML_PLUGIN_NAME     = 'Access Lens';
 const PML_PLUGIN_SLUG     = 'protected-media-links';
-const PML_TEXT_DOMAIN     = 'protected-media-links';
 const PML_PREFIX          = 'pml';
 const PML_VERSION         = '1.1.0';
 const PML_DB_VERSION      = '1.0.0';
