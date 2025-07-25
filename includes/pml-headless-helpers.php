@@ -283,17 +283,6 @@ function pml_headless_define_constants( wpdb $wpdb )
             define( 'WPMU_PLUGIN_URL', rtrim( WP_CONTENT_URL, '/' ) . '/mu-plugins' );
         }
     }
-
-    // Define deprecated relative path constants.
-    // These are string literals, by convention relative to ABSPATH.
-    if ( !defined( 'PLUGINDIR' ) )
-    {
-        define( 'PLUGINDIR', 'wp-content/plugins' );
-    }
-    if ( !defined( 'MUPLUGINDIR' ) )
-    {
-        define( 'MUPLUGINDIR', 'wp-content/mu-plugins' );
-    }
 }
 
 if ( !function_exists( '__' ) )
