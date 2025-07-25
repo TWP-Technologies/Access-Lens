@@ -7,7 +7,7 @@
  * Version:           1.1.0
  * Author:            TWP Technologies
  * Author URI:        https://twp.tech/
- * License:           GPL-3.0
+ * License:           GPLv3 or later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       protected-media-links
  * Domain Path:       /languages
