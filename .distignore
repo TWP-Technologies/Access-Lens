@@ -1,0 +1,2 @@
+# Files and directories excluded from plugin distribution archives.
+build/

@@ -13,6 +13,12 @@
  * @package AccessLensBuild
  */
 
+if ( 'cli' !== PHP_SAPI )
+{
+    fwrite( STDERR, "This script can only be executed from the command line.\n" );
+    exit( 1 );
+}
+
 echo "Starting Access Lens (PML) class map generation (PHP 7.4 Compatible)...\n";
 
 // Define the plugin directory. Adjust if this script is placed elsewhere.
