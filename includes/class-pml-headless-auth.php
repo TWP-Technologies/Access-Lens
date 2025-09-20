@@ -106,10 +106,6 @@ class PML_Headless_Auth
             return null;
         }
 
-        if ( 3 !== substr_count( $cookie, '|' ) ) {
-            return null;
-        }
-
         $cookie_elements = explode( '|', $cookie );
         if ( count( $cookie_elements ) !== 4 ) {
             return null;
