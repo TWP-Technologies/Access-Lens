@@ -79,20 +79,34 @@ class PML_Headless_Auth
         $cookie = '';
         $scheme = '';
 
-        // Check for the secure auth cookie first.
-        if ( ! empty( $_COOKIE[ SECURE_AUTH_COOKIE ] ) ) {
-            $cookie = $_COOKIE[ SECURE_AUTH_COOKIE ];
-            $scheme = 'secure_auth';
-        } elseif ( ! empty( $_COOKIE[ AUTH_COOKIE ] ) ) {
-            // Fall back to the non-secure auth cookie.
-            $cookie = $_COOKIE[ AUTH_COOKIE ];
-            $scheme = 'auth';
-        } elseif ( ! empty( $_COOKIE[ LOGGED_IN_COOKIE ] ) ) {
-            // If only the logged-in cookie is present, use it as a fallback.
-            $cookie = $_COOKIE[ LOGGED_IN_COOKIE ];
-            $scheme = 'logged_in';
-        } else {
+        $cookie_candidates = [
+            'secure_auth' => SECURE_AUTH_COOKIE,
+            'auth'        => AUTH_COOKIE,
+            'logged_in'   => LOGGED_IN_COOKIE,
+        ];
+
+        foreach ( $cookie_candidates as $candidate_scheme => $cookie_name ) {
+            if ( ! isset( $_COOKIE[ $cookie_name ] ) ) {
+                continue;
+            }
+
+            $candidate_value = sanitize_text_field( wp_unslash( $_COOKIE[ $cookie_name ] ) );
+
+            if ( '' === $candidate_value ) {
+                continue;
+            }
+
+            $cookie = $candidate_value;
+            $scheme = $candidate_scheme;
+            break;
+        }
+
+        if ( '' === $cookie ) {
             // No authentication cookie was found at all.
+            return null;
+        }
+
+        if ( 3 !== substr_count( $cookie, '|' ) ) {
             return null;
         }
 
