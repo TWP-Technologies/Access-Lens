@@ -1,4 +1,8 @@
 <?php
+if ( !defined( 'ABSPATH' ) && !defined( 'PML_ALLOW_DIRECT' ) )
+{
+    exit;
+}
 // Shared plugin constants for Access Lens.
 
 const PML_PLUGIN_NAME     = 'Access Lens';
