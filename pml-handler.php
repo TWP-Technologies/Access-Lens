@@ -65,32 +65,30 @@ $access_token_param = isset( $_GET['access_token'] ) ? $_GET['access_token'] : n
 $access_token       = is_string( $access_token_param ) ? sanitize_text_field( $access_token_param ) : null;
 
 $remote_addr_raw           = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
-$pml_sanitized_remote_addr = '';
+$pml_sanitized_remote_addr = 'UNKNOWN';
 if ( is_string( $remote_addr_raw ) && '' !== $remote_addr_raw ) {
     $validated_ip = filter_var( $remote_addr_raw, FILTER_VALIDATE_IP );
     if ( false !== $validated_ip ) {
         $pml_sanitized_remote_addr = $validated_ip;
-    } else {
-        $pml_sanitized_remote_addr = sanitize_text_field( $remote_addr_raw );
     }
 }
 
 $server_software_raw           = isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '';
 $pml_sanitized_server_software = is_string( $server_software_raw ) ? sanitize_text_field( $server_software_raw ) : '';
-        serve_file( $real_file, 'Unmanaged Public File' );
+        serve_file( $real_file, 'Unmanaged Public File', $pml_sanitized_remote_addr, $pml_sanitized_server_software );
     }
-    deny_access( null, 'unmanaged_restricted' );
+    deny_access( null, 'unmanaged_restricted', $pml_sanitized_remote_addr );
 }
 
 $pml_meta = pml_headless_get_pml_meta( $attachment_id, $wpdb );
 if ( empty( $pml_meta['pml_is_protected'] ) ) {
-    serve_file( $real_file, 'Unmanaged Public File' );
+    serve_file( $real_file, 'Unmanaged Public File', $pml_sanitized_remote_addr, $pml_sanitized_server_software );
 }
 
 if ( $access_token ) {
     $token_status = $token_manager->validate_token( $access_token, $attachment_id );
     if ( 'valid' === $token_status && $token_manager->record_token_usage( $access_token ) ) {
-        serve_file( $real_file, 'Valid Token' );
+        serve_file( $real_file, 'Valid Token', $pml_sanitized_remote_addr, $pml_sanitized_server_software );
     }
     if ( in_array( $token_status, [ 'expired', 'used_limit_reached' ], true ) ) {
         $token_manager->update_token_fields( $access_token, [ 'status' => $token_status ], [ '%s' ] );
@@ -100,26 +98,24 @@ if ( $access_token ) {
 $auth        = new PML_Headless_Auth( $wpdb );
 $current_user = $auth->get_current_user();
 if ( $current_user && is_access_granted_by_user_role( $current_user, $pml_meta, $wpdb ) ) {
-    serve_file( $real_file, 'Access Granted by User/Role Rule' );
+    serve_file( $real_file, 'Access Granted by User/Role Rule', $pml_sanitized_remote_addr, $pml_sanitized_server_software );
 }
 
 $bot = $bot_detector;
 if ( $bot->is_verified_bot() ) {
-    serve_file( $real_file, 'Verified Bot' );
+    serve_file( $real_file, 'Verified Bot', $pml_sanitized_remote_addr, $pml_sanitized_server_software );
 }
 
-deny_access( $pml_meta, 'restricted_default' );
+deny_access( $pml_meta, 'restricted_default', $pml_sanitized_remote_addr );
 
 // --- Helper Functions ---
-function serve_file( string $file_path, string $reason = 'Unknown' ): void {
-    global $pml_sanitized_remote_addr, $pml_sanitized_server_software;
-
+function serve_file( string $file_path, string $reason = 'Unknown', string $client_ip = 'UNKNOWN', string $server_software = '' ): void {
     // Log successful access for debugging and auditing purposes.
-    $client_ip   = $pml_sanitized_remote_addr ? $pml_sanitized_remote_addr : 'UNKNOWN';
+    $log_ip      = $client_ip ?: 'UNKNOWN';
     $log_message = sprintf(
         "[PML Access Granted] Served '%s' to IP %s. Reason: %s",
         basename( $file_path ),
-        $client_ip,
+        $log_ip,
         $reason
     );
     error_log( $log_message );
@@ -134,7 +130,7 @@ function serve_file( string $file_path, string $reason = 'Unknown' ): void {
     if ( ob_get_level() ) {
         @ob_end_clean();
     }
-    $server = $pml_sanitized_server_software;
+    $server = $server_software;
     if ( stripos( $server, 'nginx' ) !== false || stripos( $server, 'litespeed' ) !== false ) {
         $internal = defined( 'PML_INTERNAL_REDIRECT_PREFIX' ) ? trim( PML_INTERNAL_REDIRECT_PREFIX ) : '';
         if ( $internal ) {
@@ -159,12 +155,10 @@ function serve_file( string $file_path, string $reason = 'Unknown' ): void {
     exit;
 }
 
-function deny_access( ?array $pml_meta, string $slug ): void {
-    global $pml_sanitized_remote_addr;
-
+function deny_access( ?array $pml_meta, string $slug, string $client_ip = 'UNKNOWN' ): void {
     // Log denied access for debugging and auditing purposes.
-    $client_ip   = $pml_sanitized_remote_addr ? $pml_sanitized_remote_addr : 'UNKNOWN';
-    $log_message = sprintf( '[PML Access Denied] Denied access for IP %s. Reason Code: %s', $client_ip, $slug );
+    $log_ip      = $client_ip ?: 'UNKNOWN';
+    $log_message = sprintf( '[PML Access Denied] Denied access for IP %s. Reason Code: %s', $log_ip, $slug );
     error_log( $log_message );
 
     $home_url_fallback = pml_headless_get_option( 'home', '/', $GLOBALS['wpdb'] );
