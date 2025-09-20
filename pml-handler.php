@@ -58,12 +58,21 @@ $token_manager = new PML_Token_Manager( $wpdb );
 $bot_detector  = new PML_Bot_Detector( $wpdb );
 
 // --- Phase 2: Input Sanitization & File Validation ---
-$request_param = isset( $_GET['pml_media_request'] ) ? wp_unslash( $_GET['pml_media_request'] ) : '';
+$request_param = isset( $_GET['pml_media_request'] ) ? $_GET['pml_media_request'] : '';
 $request_raw   = is_string( $request_param ) ? sanitize_text_field( $request_param ) : '';
 
-$access_token_param = isset( $_GET['access_token'] ) ? wp_unslash( $_GET['access_token'] ) : null;
+$access_token_param = isset( $_GET['access_token'] ) ? $_GET['access_token'] : null;
 $access_token       = is_string( $access_token_param ) ? sanitize_text_field( $access_token_param ) : null;
 
+$remote_addr_raw           = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
+$pml_sanitized_remote_addr = '';
+if ( is_string( $remote_addr_raw ) && '' !== $remote_addr_raw ) {
+    $validated_ip = filter_var( $remote_addr_raw, FILTER_VALIDATE_IP );
+    $pml_sanitized_remote_addr = ( false !== $validated_ip ) ? $validated_ip : 'UNKNOWN';
+}
+
+$server_software_raw           = isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '';
+$pml_sanitized_server_software = is_string( $server_software_raw ) ? sanitize_text_field( $server_software_raw ) : '';
 $remote_addr_raw           = isset( $_SERVER['REMOTE_ADDR'] ) ? wp_unslash( $_SERVER['REMOTE_ADDR'] ) : '';
 $pml_sanitized_remote_addr = '';
 if ( is_string( $remote_addr_raw ) && '' !== $remote_addr_raw ) {
