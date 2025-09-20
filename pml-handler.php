@@ -75,6 +75,24 @@ if ( is_string( $remote_addr_raw ) && '' !== $remote_addr_raw ) {
 
 $server_software_raw           = isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '';
 $pml_sanitized_server_software = is_string( $server_software_raw ) ? sanitize_text_field( $server_software_raw ) : '';
+
+$path_segments = array_map( 'sanitize_file_name', explode( '/', $request_raw ) );
+$relative_path = implode( '/', array_filter( $path_segments ) );
+
+$upload_dir = pml_headless_get_upload_dir( $wpdb );
+$full_path  = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+
+$real_base = realpath( $upload_dir['basedir'] );
+$real_file = realpath( $full_path );
+if ( false === $real_base || false === $real_file || strpos( $real_file, $real_base ) !== 0 || ! is_readable( $real_file ) ) {
+    deny_access( null, 'invalid_path', $pml_sanitized_remote_addr );
+}
+
+// --- Phase 3: Access Control ---
+$attachment_id = pml_headless_get_attachment_id_from_path( $relative_path, $wpdb );
+if ( ! $attachment_id ) {
+    $handle_unmanaged = pml_headless_get_option( PML_PREFIX . '_settings_handle_unmanaged_files', 'serve_publicly', $wpdb );
+    if ( 'serve_publicly' === $handle_unmanaged ) {
         serve_file( $real_file, 'Unmanaged Public File', $pml_sanitized_remote_addr, $pml_sanitized_server_software );
     }
     deny_access( null, 'unmanaged_restricted', $pml_sanitized_remote_addr );
