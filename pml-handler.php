@@ -3,6 +3,9 @@
 // Bypasses full WordPress load for faster protected file serving.
 
 // --- Phase 1: Minimal Bootstrap ---
+if ( ! defined( 'PML_ALLOW_DIRECT' ) ) {
+    define( 'PML_ALLOW_DIRECT', true );
+}
 require_once dirname( __FILE__ ) . '/pml-constants.php';
 define( 'SHORTINIT', true );
 

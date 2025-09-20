@@ -164,3 +164,8 @@ We welcome contributions from the community! Whether it's reporting a bug, sugge
 -   **Security First:** Use nonces, capability checks, and proper sanitization/escaping on all data.
 
 Please open an issue or pull request on our [GitHub repository](https://github.com/TWP-Technologies/Access-Lens).
+
+## 🛠️ Developer Notes
+
+-   **Class map generator:** Run `php build/generate-class-map.php` from the command line whenever classes are added or files are renamed under `includes/`. The script must be executed via the CLI (it will exit early otherwise) and respects the optional `PML_PLUGIN_DIR_FOR_BUILD` constant if the plugin lives outside the default directory layout. A successful run regenerates `includes/pml-class-map.php` with paths relative to the includes directory.
+-   **Release packaging:** WordPress distribution archives created with tools such as `wp dist-archive` automatically exclude the `build/` directory via `.distignore`, ensuring development-only assets are left out of release zips.
