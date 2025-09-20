@@ -122,38 +122,64 @@ class PML_Token_Meta_Box
 
     public function render_meta_box_content( WP_Post $post ): void
     {
-        $attachment_id = $post->ID;
+        $attachment_id = absint( $post->ID );
         $is_protected  = (bool) get_post_meta( $attachment_id, '_' . PML_PREFIX . '_is_protected', true );
         $prefix        = PML_PREFIX;
 
-        echo "<div id='$prefix-token-manager-app' class='pml-token-manager-app' data-attachment-id='$attachment_id'>";
+        $container_id                  = sprintf( '%s-token-manager-app', $prefix );
+        $generate_form_wrapper_class   = sprintf( '%s-generate-token-form-wrapper', $prefix );
+        $generate_form_fields_id       = sprintf( '%s-generate-token-form-fields', $prefix );
+        $generate_token_button_id      = sprintf( '%s-generate-token-button', $prefix );
+        $generate_token_spinner_id     = sprintf( '%s-generate-token-spinner', $prefix );
+        $generate_token_feedback_id    = sprintf( '%s-generate-token-feedback', $prefix );
+        $tokens_list_wrapper_id        = sprintf( '%s-tokens-list-wrapper', $prefix );
+        $token_actions_feedback_id     = sprintf( '%s-token-actions-feedback', $prefix );
+
+        printf(
+            '<div id="%1$s" class="pml-token-manager-app" data-attachment-id="%2$d">',
+            esc_attr( $container_id ),
+            absint( $attachment_id )
+        );
 
         if ( !$is_protected )
         {
-            $url = sprintf( "%s#%s_media_protection_meta_box", get_edit_post_link( $attachment_id ), $prefix );
-            echo "<div class='pml-notice pml-notice-info'>";
-            printf( wp_kses( __( 'This file is not currently protected by PML. To manage access tokens, please <a href="%s">enable protection</a> in the "Access Lens Settings (PML)" meta box first.', 'access-lens-protected-media-links' ), [ 'a' => [ 'href' => [] ] ] ), esc_url( $url ) );
-            echo '</div></div>';
+            $url = sprintf( '%s#%s_media_protection_meta_box', get_edit_post_link( $attachment_id ), $prefix );
+
+            printf( '<div class="pml-notice pml-notice-info">' );
+            printf(
+                wp_kses( __( 'This file is not currently protected by PML. To manage access tokens, please <a href="%s">enable protection</a> in the "Access Lens Settings (PML)" meta box first.', 'access-lens-protected-media-links' ), [ 'a' => [ 'href' => [] ] ] ),
+                esc_url( $url )
+            );
+            printf( '</div>' );
+            printf( '</div>' );
             return;
         }
 
-        $gen_title    = esc_html__( 'Generate New Token', 'access-lens-protected-media-links' );
-        $create_btn   = esc_html__( 'Create Token', 'access-lens-protected-media-links' );
-        $exist_title  = esc_html__( 'Existing Tokens', 'access-lens-protected-media-links' );
-        $loading_text = esc_html__( 'Loading tokens...', 'access-lens-protected-media-links' );
+        $gen_title    = __( 'Generate New Token', 'access-lens-protected-media-links' );
+        $create_btn   = __( 'Create Token', 'access-lens-protected-media-links' );
+        $exist_title  = __( 'Existing Tokens', 'access-lens-protected-media-links' );
+        $loading_text = __( 'Loading tokens...', 'access-lens-protected-media-links' );
 
-        echo "<h3>$gen_title</h3>
-              <div class='$prefix-generate-token-form-wrapper'>
-                <div id='$prefix-generate-token-form-fields'></div>
-                <button type='button' id='$prefix-generate-token-button' class='button button-primary'>$create_btn</button>
-                <span class='spinner' id='$prefix-generate-token-spinner'></span>
-                <div id='$prefix-generate-token-feedback'></div>
-              </div>
-              <hr>
-              <h3>$exist_title</h3>
-              <div id='$prefix-tokens-list-wrapper'><p class='pml-loading-text'>$loading_text</p></div>
-              <div id='$prefix-token-actions-feedback' style='margin-top: 10px;'></div>";
-        echo "</div>"; // closes div#{PML_PREFIX}-token-manager-app
+        printf( '<h3>%s</h3>', esc_html( $gen_title ) );
+        printf( '<div class="%s">', esc_attr( $generate_form_wrapper_class ) );
+        printf( '<div id="%s"></div>', esc_attr( $generate_form_fields_id ) );
+        printf(
+            '<button type="button" id="%1$s" class="button button-primary">%2$s</button>',
+            esc_attr( $generate_token_button_id ),
+            esc_html( $create_btn )
+        );
+        printf( '<span class="spinner" id="%s"></span>', esc_attr( $generate_token_spinner_id ) );
+        printf( '<div id="%s"></div>', esc_attr( $generate_token_feedback_id ) );
+        printf( '</div>' );
+        printf( '<hr>' );
+        printf( '<h3>%s</h3>', esc_html( $exist_title ) );
+        printf(
+            '<div id="%1$s"><p class="pml-loading-text">%2$s</p></div>',
+            esc_attr( $tokens_list_wrapper_id ),
+            esc_html( $loading_text )
+        );
+        printf( '<div id="%s" style="margin-top: 10px;"></div>', esc_attr( $token_actions_feedback_id ) );
+        printf( '</div>' ); // closes div#{PML_PREFIX}-token-manager-app
     }
 
     public function ajax_fetch_attachment_tokens(): void
