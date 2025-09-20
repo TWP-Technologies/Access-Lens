@@ -71,7 +71,7 @@ if ( is_string( $remote_addr_raw ) && '' !== $remote_addr_raw ) {
     if ( false !== $validated_ip ) {
         $pml_sanitized_remote_addr = $validated_ip;
     } else {
-        $pml_sanitized_remote_addr = sanitize_text_field( $remote_addr_raw );
+        $pml_sanitized_remote_addr = 'UNKNOWN';
     }
 }
 
