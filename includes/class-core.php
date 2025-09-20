@@ -54,6 +54,40 @@ final class PML_Core
         {
             add_action( 'plugins_loaded', [ 'PML_Install', 'run_database_upgrades' ], 5 ); // Run early
         }
+
+        add_action( 'admin_enqueue_scripts', [ $this, 'register_admin_vendor_assets' ], 5, 0 );
+    }
+
+    public function register_admin_vendor_assets(): void
+    {
+        if ( !is_admin() )
+        {
+            return;
+        }
+
+        $select2_css_path = PML_PLUGIN_URL . 'vendor/select2/' . PML_SELECT2_VERSION . '/css/select2.min.css';
+        if ( !wp_style_is( PML_SELECT2_HANDLE, 'registered' ) )
+        {
+            wp_register_style( PML_SELECT2_HANDLE, $select2_css_path, [], PML_SELECT2_VERSION );
+        }
+
+        $select2_js_path = PML_PLUGIN_URL . 'vendor/select2/' . PML_SELECT2_VERSION . '/js/select2.min.js';
+        if ( !wp_script_is( PML_SELECT2_HANDLE, 'registered' ) )
+        {
+            wp_register_script( PML_SELECT2_HANDLE, $select2_js_path, [ 'jquery' ], PML_SELECT2_VERSION, true );
+        }
+
+        $flatpickr_css_path = PML_PLUGIN_URL . 'vendor/flatpickr/' . PML_FLATPICKR_VERSION . '/css/flatpickr.min.css';
+        if ( !wp_style_is( PML_FLATPICKR_HANDLE, 'registered' ) )
+        {
+            wp_register_style( PML_FLATPICKR_HANDLE, $flatpickr_css_path, [], PML_FLATPICKR_VERSION );
+        }
+
+        $flatpickr_js_path = PML_PLUGIN_URL . 'vendor/flatpickr/' . PML_FLATPICKR_VERSION . '/js/flatpickr.min.js';
+        if ( !wp_script_is( PML_FLATPICKR_HANDLE, 'registered' ) )
+        {
+            wp_register_script( PML_FLATPICKR_HANDLE, $flatpickr_js_path, [], PML_FLATPICKR_VERSION, true );
+        }
     }
 
     private function load_components()

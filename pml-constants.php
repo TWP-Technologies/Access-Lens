@@ -14,7 +14,10 @@ const PML_MIN_PHP_VERSION = '7.4';
 const PML_PLUGIN_FILE     = __DIR__ . '/protected-media-links.php';
 //define( 'PML_PLUGIN_DIR', pml_plugin_dir_path() ); // defined at the end of this file
 //define( 'PML_PLUGIN_URL', pml_plugin_dir_url() );  // defined at the end of this file
-const PML_SELECT2_VERSION = '4.0.13';
+const PML_SELECT2_VERSION        = '4.0.13';
+const PML_FLATPICKR_VERSION      = '4.6.13';
+const PML_SELECT2_HANDLE         = 'pml-select2';
+const PML_FLATPICKR_HANDLE       = 'pml-flatpickr';
 
 // Prefix path for Nginx or LiteSpeed internal redirects.
 // Define this in wp-config.php to enable X-Accel-Redirect or X-LiteSpeed-Location.
