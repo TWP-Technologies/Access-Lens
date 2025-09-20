@@ -58,8 +58,25 @@ $token_manager = new PML_Token_Manager( $wpdb );
 $bot_detector  = new PML_Bot_Detector( $wpdb );
 
 // --- Phase 2: Input Sanitization & File Validation ---
-$request_raw = isset( $_GET['pml_media_request'] ) ? $_GET['pml_media_request'] : '';
-$access_token = isset( $_GET['access_token'] ) ? sanitize_text_field( $_GET['access_token'] ) : null;
+$request_param = isset( $_GET['pml_media_request'] ) ? wp_unslash( $_GET['pml_media_request'] ) : '';
+$request_raw   = is_string( $request_param ) ? sanitize_text_field( $request_param ) : '';
+
+$access_token_param = isset( $_GET['access_token'] ) ? wp_unslash( $_GET['access_token'] ) : null;
+$access_token       = is_string( $access_token_param ) ? sanitize_text_field( $access_token_param ) : null;
+
+$remote_addr_raw           = isset( $_SERVER['REMOTE_ADDR'] ) ? wp_unslash( $_SERVER['REMOTE_ADDR'] ) : '';
+$pml_sanitized_remote_addr = '';
+if ( is_string( $remote_addr_raw ) && '' !== $remote_addr_raw ) {
+    $validated_ip = filter_var( $remote_addr_raw, FILTER_VALIDATE_IP );
+    if ( false !== $validated_ip ) {
+        $pml_sanitized_remote_addr = $validated_ip;
+    } else {
+        $pml_sanitized_remote_addr = sanitize_text_field( $remote_addr_raw );
+    }
+}
+
+$server_software_raw           = isset( $_SERVER['SERVER_SOFTWARE'] ) ? wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) : '';
+$pml_sanitized_server_software = is_string( $server_software_raw ) ? sanitize_text_field( $server_software_raw ) : '';
 
 $path_segments = array_map( 'sanitize_file_name', explode( '/', $request_raw ) );
 $relative_path = implode( '/', array_filter( $path_segments ) );
@@ -113,11 +130,14 @@ deny_access( $pml_meta, 'restricted_default' );
 
 // --- Helper Functions ---
 function serve_file( string $file_path, string $reason = 'Unknown' ): void {
+    global $pml_sanitized_remote_addr, $pml_sanitized_server_software;
+
     // Log successful access for debugging and auditing purposes.
+    $client_ip   = $pml_sanitized_remote_addr ? $pml_sanitized_remote_addr : 'UNKNOWN';
     $log_message = sprintf(
         "[PML Access Granted] Served '%s' to IP %s. Reason: %s",
         basename( $file_path ),
-        $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN',
+        $client_ip,
         $reason
     );
     error_log( $log_message );
@@ -132,7 +152,7 @@ function serve_file( string $file_path, string $reason = 'Unknown' ): void {
     if ( ob_get_level() ) {
         @ob_end_clean();
     }
-    $server = $_SERVER['SERVER_SOFTWARE'] ?? '';
+    $server = $pml_sanitized_server_software;
     if ( stripos( $server, 'nginx' ) !== false || stripos( $server, 'litespeed' ) !== false ) {
         $internal = defined( 'PML_INTERNAL_REDIRECT_PREFIX' ) ? trim( PML_INTERNAL_REDIRECT_PREFIX ) : '';
         if ( $internal ) {
@@ -158,8 +178,11 @@ function serve_file( string $file_path, string $reason = 'Unknown' ): void {
 }
 
 function deny_access( ?array $pml_meta, string $slug ): void {
+    global $pml_sanitized_remote_addr;
+
     // Log denied access for debugging and auditing purposes.
-    $log_message = sprintf( '[PML Access Denied] Denied access for IP %s. Reason Code: %s', $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN', $slug );
+    $client_ip   = $pml_sanitized_remote_addr ? $pml_sanitized_remote_addr : 'UNKNOWN';
+    $log_message = sprintf( '[PML Access Denied] Denied access for IP %s. Reason Code: %s', $client_ip, $slug );
     error_log( $log_message );
 
     $home_url_fallback = pml_headless_get_option( 'home', '/', $GLOBALS['wpdb'] );
