@@ -40,19 +40,8 @@ class PML_Settings
         }
 
         // --- Common Assets for All PML Pages ---
-        wp_enqueue_style(
-            'select2',
-            "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/css/select2.min.css",
-            [],
-            PML_SELECT2_VERSION,
-        );
-        wp_enqueue_script(
-            'select2',
-            "https://cdnjs.cloudflare.com/ajax/libs/select2/" . PML_SELECT2_VERSION . "/js/select2.min.js",
-            [ 'jquery' ],
-            PML_SELECT2_VERSION,
-            true,
-        );
+        wp_enqueue_style( PML_SELECT2_HANDLE );
+        wp_enqueue_script( PML_SELECT2_HANDLE );
         wp_enqueue_style( PML_PLUGIN_SLUG . '-admin-common-css', PML_PLUGIN_URL . 'admin/assets/css/common.css', [ 'dashicons' ], PML_VERSION );
         wp_enqueue_script(
             PML_PLUGIN_SLUG . '-admin-common-utils-js',
@@ -69,13 +58,13 @@ class PML_Settings
             wp_enqueue_style(
                 PML_PLUGIN_SLUG . '-settings-page-css',
                 PML_PLUGIN_URL . 'admin/assets/css/settings-page.css',
-                [ PML_PLUGIN_SLUG . '-admin-common-css', 'select2' ],
+                [ PML_PLUGIN_SLUG . '-admin-common-css', PML_SELECT2_HANDLE ],
                 PML_VERSION,
             );
             wp_enqueue_script(
                 PML_PLUGIN_SLUG . '-settings-page-js',
                 PML_PLUGIN_URL . 'admin/assets/js/settings-page.js',
-                [ 'jquery', 'select2', PML_PLUGIN_SLUG . '-admin-common-utils-js', 'wp-i18n' ],
+                [ 'jquery', PML_SELECT2_HANDLE, PML_PLUGIN_SLUG . '-admin-common-utils-js', 'wp-i18n' ],
                 PML_VERSION,
                 true,
             );
@@ -112,7 +101,7 @@ class PML_Settings
             wp_enqueue_script(
                 PML_PLUGIN_SLUG . '-shortcode-generator-js',
                 PML_PLUGIN_URL . 'admin/assets/js/shortcode-generator.js',
-                [ 'jquery', 'select2', 'wp-i18n' ],
+                [ 'jquery', PML_SELECT2_HANDLE, 'wp-i18n' ],
                 PML_VERSION,
                 true,
             );

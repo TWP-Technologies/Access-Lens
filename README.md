@@ -139,6 +139,13 @@ define( 'PML_INTERNAL_REDIRECT_PREFIX', '/pml-secure-files/' );
 Set the value to your internal location path. The handler will then emit `X-Accel-Redirect` or `X-LiteSpeed-Location` headers.
 </details>
 
+## 📦 Bundled Libraries
+
+This plugin ships the following third-party assets in `vendor/` so admin interfaces can run without CDN access:
+
+- [Select2](https://select2.org/) v4.0.13 — MIT License. See `vendor/select2/4.0.13/LICENSE` for the full text.
+- [Flatpickr](https://flatpickr.js.org/) v4.6.13 — MIT License. See `vendor/flatpickr/4.6.13/LICENSE` for the full text.
+
 ## 🔭 Scope: What This Plugin Is & Isn't
 
 It's important to understand the scope of this plugin to ensure it meets your needs.

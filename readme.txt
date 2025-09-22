@@ -107,6 +107,13 @@ define( 'PML_INTERNAL_REDIRECT_PREFIX', '/pml-secure-files/' );
 
 Set the value to your internal location path. The handler will then emit `X-Accel-Redirect` or `X-LiteSpeed-Location` headers.
 
+== Bundled Libraries ==
+
+The following JavaScript libraries are included locally in the `vendor/` directory so the plugin works without third-party CDNs:
+
+* Select2 v4.0.13 — MIT License (see `vendor/select2/4.0.13/LICENSE`).
+* Flatpickr v4.6.13 — MIT License (see `vendor/flatpickr/4.6.13/LICENSE`).
+
 == Screenshots ==
 
 1. Media Library integration - Easily protect files and generate secure links
