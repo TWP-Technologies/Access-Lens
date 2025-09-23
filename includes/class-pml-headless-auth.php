@@ -90,7 +90,7 @@ class PML_Headless_Auth
                 continue;
             }
 
-            $candidate_value = $this::unslash_recursive( $_COOKIE[ $cookie_name ] );
+            $candidate_value = self::unslash_recursive( $_COOKIE[ $cookie_name ] );
 
             if ( '' === $candidate_value ) {
                 continue;

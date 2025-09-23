@@ -136,8 +136,9 @@ final class PML_Shortcodes
         if ( !$as_html )
         {
             $output = esc_url( $url );
-            self::$generated_links_cache[ $cache_key ] = $output;
-            return $output;
+        if ( isset( self::$generated_links_cache[ $cache_key ] ) )
+        {
+            return self::$generated_links_cache[ $cache_key ];
         }
 
         $link_text = !empty( $atts[ 'text' ] ) ? esc_html( $atts[ 'text' ] ) : esc_html( get_the_title( $attachment_id ) );
