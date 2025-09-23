@@ -31,6 +31,30 @@ require_once ABSPATH . WPINC . '/functions.php';
 require_once ABSPATH . WPINC . '/class-wp-error.php';
 require_once ABSPATH . WPINC . '/plugin.php';
 
+// ensure wp_kses is available when wordpress triggers deprecated-file notices under shortinit.
+if ( ! function_exists( 'pml_ensure_wp_kses_loaded' ) ) {
+    function pml_ensure_wp_kses_loaded(): void
+    {
+        static $pml_kses_loaded = false;
+
+        if ( $pml_kses_loaded ) {
+            return;
+        }
+
+        if ( function_exists( 'wp_kses' ) ) {
+            $pml_kses_loaded = true;
+            return;
+        }
+
+        require_once ABSPATH . WPINC . '/formatting.php';
+        require_once ABSPATH . WPINC . '/kses.php';
+
+        $pml_kses_loaded = true;
+    }
+}
+
+add_action( 'wp_trigger_error_run', 'pml_ensure_wp_kses_loaded', 0 ); // prevents error from deprecated-file notice and other wp errors
+
 if ( file_exists( ABSPATH . WPINC . '/class-wpdb.php' ) )
 {
     /**
@@ -242,4 +266,9 @@ function is_access_granted_by_user_role( object $user, array $pml_meta, wpdb $wp
     }
     return false;
 }
+
+
+
+
+
 
