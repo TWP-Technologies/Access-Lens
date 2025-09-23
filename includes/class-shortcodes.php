@@ -79,9 +79,9 @@ final class PML_Shortcodes
 
         $cache_key = md5( serialize( $atts ) );
 
-        if ( isset( $this->generated_links_cache[ $cache_key ] ) )
+        if ( isset( self::$generated_links_cache[ $cache_key ] ) )
         {
-            return $this->generated_links_cache[ $cache_key ];
+            return self::$generated_links_cache[ $cache_key ];
         }
 
         $attachment_id = absint( $atts[ 'id' ] );
@@ -136,7 +136,7 @@ final class PML_Shortcodes
         if ( !$as_html )
         {
             $output = esc_url( $url );
-            $this->generated_links_cache[ $cache_key ] = $output;
+            self::$generated_links_cache[ $cache_key ] = $output;
             return $output;
         }
 
@@ -151,7 +151,7 @@ final class PML_Shortcodes
 
         $output = sprintf( '<a href="%s"%s%s>%s</a>', esc_url( $url ), $target_attr, $css_class, $link_text );
 
-        $this->generated_links_cache[ $cache_key ] = $output;
+        self::$generated_links_cache[ $cache_key ] = $output;
 
         return $output;
     }
