@@ -24,6 +24,7 @@ if ( !defined( 'ABSPATH' ) )
 
 // Load shared plugin constants.
 require_once __DIR__ . '/pml-constants.php';
+require_once __DIR__ . '/includes/pml-debug-bootstrap.php';
 
 $pml_generated_links_cache = [];
 
@@ -93,6 +94,8 @@ if ( !pml_compatibility_check() )
 {
     return;
 }
+
+pml_bootstrap_debug_utilities();
 
 /**
  * Class map autoloader for the plugin.
