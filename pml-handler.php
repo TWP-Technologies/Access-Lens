@@ -30,6 +30,9 @@ require_once $wp_config_path;
 require_once ABSPATH . WPINC . '/functions.php';
 require_once ABSPATH . WPINC . '/class-wp-error.php';
 require_once ABSPATH . WPINC . '/plugin.php';
+require_once __DIR__ . '/includes/pml-debug-bootstrap.php';
+
+pml_bootstrap_debug_utilities();
 
 if ( file_exists( ABSPATH . WPINC . '/class-wpdb.php' ) )
 {
@@ -242,4 +245,3 @@ function is_access_granted_by_user_role( object $user, array $pml_meta, wpdb $wp
     }
     return false;
 }
-

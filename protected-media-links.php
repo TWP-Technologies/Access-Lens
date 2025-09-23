@@ -4,7 +4,7 @@
  * Plugin Name:       Access Lens - Protected Media Links
  * Plugin URI:        https://twp.tech/services/
  * Description:       Protects media files from direct public access, allowing access for search engine bots, authorized users via unique tokens, and specific user/role exclusions.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Author:            TWP Technologies
  * Author URI:        https://twp.tech/
  * License:           GPLv3 or later
@@ -24,6 +24,7 @@ if ( !defined( 'ABSPATH' ) )
 
 // Load shared plugin constants.
 require_once __DIR__ . '/pml-constants.php';
+require_once __DIR__ . '/includes/pml-debug-bootstrap.php';
 
 $pml_generated_links_cache = [];
 
@@ -93,6 +94,8 @@ if ( !pml_compatibility_check() )
 {
     return;
 }
+
+pml_bootstrap_debug_utilities();
 
 /**
  * Class map autoloader for the plugin.

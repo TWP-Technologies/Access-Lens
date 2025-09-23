@@ -3,9 +3,9 @@ Contributors: twptechnologies
 Donate link: https://twp.tech/
 Tags: media, security, protection, files, downloads, media library, access control, SEO, search engine
 Requires at least: 5.9
-Tested up to: 6.8
+Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
