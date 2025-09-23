@@ -79,9 +79,9 @@ final class PML_Shortcodes
 
         $cache_key = md5( serialize( $atts ) );
 
-        if ( isset( $this->generated_links_cache[ $cache_key ] ) )
+        if ( isset( self::$generated_links_cache[ $cache_key ] ) )
         {
-            return $this->generated_links_cache[ $cache_key ];
+            return self::$generated_links_cache[ $cache_key ];
         }
 
         $attachment_id = absint( $atts[ 'id' ] );
@@ -136,9 +136,8 @@ final class PML_Shortcodes
         if ( !$as_html )
         {
             $output = esc_url( $url );
-        if ( isset( self::$generated_links_cache[ $cache_key ] ) )
-        {
-            return self::$generated_links_cache[ $cache_key ];
+            self::$generated_links_cache[ $cache_key ] = $output;
+            return $output;
         }
 
         $link_text = !empty( $atts[ 'text' ] ) ? esc_html( $atts[ 'text' ] ) : esc_html( get_the_title( $attachment_id ) );

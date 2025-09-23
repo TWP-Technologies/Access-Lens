@@ -92,6 +92,12 @@ class PML_Headless_Auth
 
             $candidate_value = self::unslash_recursive( $_COOKIE[ $cookie_name ] );
 
+            if ( ! is_string( $candidate_value ) ) {
+                continue;
+            }
+
+            $candidate_value = sanitize_text_field( $candidate_value );
+
             if ( '' === $candidate_value ) {
                 continue;
             }
