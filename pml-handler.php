@@ -6,25 +6,45 @@
 if ( ! defined( 'PML_ALLOW_DIRECT' ) ) {
     define( 'PML_ALLOW_DIRECT', true );
 }
+
+if ( ! defined( 'SHORTINIT' ) || ! SHORTINIT ) {
+    define( 'SHORTINIT', true );
+}
+
 require_once dirname( __FILE__ ) . '/pml-constants.php';
-define( 'SHORTINIT', true );
 
 // Locate wp-config.php from typical plugin directory structures.
 $wp_config_path = dirname( __FILE__, 3 ) . '/wp-config.php';
 if ( ! file_exists( $wp_config_path ) ) {
     $wp_config_path = dirname( __FILE__, 4 ) . '/wp-config.php';
 }
+
 if ( ! file_exists( $wp_config_path ) ) {
     http_response_code( 503 );
     error_log( 'PML Handler: Could not locate wp-config.php.' );
     exit( 'Configuration error.' );
 }
+
 require_once $wp_config_path;
 
 require_once ABSPATH . WPINC . '/functions.php';
 require_once ABSPATH . WPINC . '/class-wp-error.php';
 require_once ABSPATH . WPINC . '/plugin.php';
-require_once ABSPATH . WPINC . '/wp-db.php';
+
+if ( file_exists( ABSPATH . WPINC . '/class-wpdb.php' ) )
+{
+    /**
+     * use the newer wpdb class if available
+     * @since WP 6.1.0
+     * @link https://github.com/WordPress/wordpress-develop/commit/fdb6e13fedc46fc19852479bad2488c9eab1ed9f
+     */
+    require_once ABSPATH . WPINC . '/class-wpdb.php';
+}
+else
+{
+    require_once ABSPATH . WPINC . '/wp-db.php';
+}
+
 require_once ABSPATH . WPINC . '/pluggable.php';
 require_once ABSPATH . WPINC . '/compat.php';
 
@@ -35,11 +55,11 @@ if ( ! isset( $wpdb ) ) {
 
 // Provide a minimal sanitize_text_field replacement if not loaded.
 if ( ! function_exists( 'sanitize_text_field' ) ) {
-    function sanitize_text_field( $str ) {
+    function sanitize_text_field( $str ): string
+    {
         $filtered = is_string( $str ) ? $str : '';
         $filtered = trim( preg_replace( '/[\r\n\t]+/', ' ', $filtered ) );
-        $filtered = strip_tags( $filtered );
-        return $filtered;
+        return strip_tags( $filtered );
     }
 }
 
@@ -58,13 +78,13 @@ $token_manager = new PML_Token_Manager( $wpdb );
 $bot_detector  = new PML_Bot_Detector( $wpdb );
 
 // --- Phase 2: Input Sanitization & File Validation ---
-$request_param = isset( $_GET['pml_media_request'] ) ? $_GET['pml_media_request'] : '';
+$request_param = $_GET[ 'pml_media_request' ] ?? '';
 $request_raw   = is_string( $request_param ) ? sanitize_text_field( $request_param ) : '';
 
-$access_token_param = isset( $_GET['access_token'] ) ? $_GET['access_token'] : null;
+$access_token_param = $_GET[ 'access_token' ] ?? null;
 $access_token       = is_string( $access_token_param ) ? sanitize_text_field( $access_token_param ) : null;
 
-$remote_addr_raw           = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
+$remote_addr_raw           = $_SERVER[ 'REMOTE_ADDR' ] ?? '';
 $pml_sanitized_remote_addr = 'UNKNOWN';
 if ( is_string( $remote_addr_raw ) && '' !== $remote_addr_raw ) {
     $validated_ip = filter_var( $remote_addr_raw, FILTER_VALIDATE_IP );
@@ -73,7 +93,7 @@ if ( is_string( $remote_addr_raw ) && '' !== $remote_addr_raw ) {
     }
 }
 
-$server_software_raw           = isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '';
+$server_software_raw           = $_SERVER[ 'SERVER_SOFTWARE' ] ?? '';
 $pml_sanitized_server_software = is_string( $server_software_raw ) ? sanitize_text_field( $server_software_raw ) : '';
 
 $path_segments = array_map( 'sanitize_file_name', explode( '/', $request_raw ) );

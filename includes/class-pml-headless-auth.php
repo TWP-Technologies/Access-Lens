@@ -90,7 +90,7 @@ class PML_Headless_Auth
                 continue;
             }
 
-            $candidate_value = sanitize_text_field( wp_unslash( $_COOKIE[ $cookie_name ] ) );
+            $candidate_value = $this::unslash_recursive( $_COOKIE[ $cookie_name ] );
 
             if ( '' === $candidate_value ) {
                 continue;
@@ -119,6 +119,33 @@ class PML_Headless_Auth
             'scheme'     => $scheme,
         ];
     }
+
+    /**
+     * Remove slashes from a value without relying on WordPress helpers.
+     *
+     * Inspired by wp_unslash(), this recursively maps `stripslashes()` across
+     * arrays and strings while leaving other data types untouched so that
+     * cookie values are normalised before sanitization.
+     *
+     * @param mixed $value Value to clean.
+     *
+     * @link https://github.com/WordPress/wordpress-develop/blob/6.8.2/src/wp-includes/formatting.php#L5787-L5799
+     *
+     * @return mixed
+     */
+    private static function unslash_recursive( $value )
+    {
+        if ( is_array( $value ) ) {
+            return array_map( [ self::class, 'unslash_recursive' ], $value );
+        }
+
+        if ( is_string( $value ) ) {
+            return stripslashes( $value );
+        }
+
+        return $value;
+    }
+
 
     /**
      * Validates the parsed auth cookie elements.
