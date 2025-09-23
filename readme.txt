@@ -123,6 +123,27 @@ The following JavaScript libraries are included locally in the `vendor/` directo
 
 == Changelog ==
 
+= 1.2.1 =
+## What's Changed
+* fix: ensure wp_kses is loaded during deprecated file notices and errors by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/42
+
+**Full Changelog**: https://github.com/TWP-Technologies/Access-Lens/commits/v1.2.1
+
+= 1.2.0 =
+## What's Changed
+* refactor: enhance caching and sanitization logic by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/41
+* refactor: replace CDN dependencies with bundled assets by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/40
+* refactor: enhance HTML output in token meta box by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/39
+* refactor: improve input sanitization and logging by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/38
+* refactor: simplify cookie authentication retrieval logic by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/37
+* feat: add CLI execution restriction to class map generator by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/36
+* Enhance output with ABSPATH check by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/35
+* refactor: remove deprecated constants and clean up markup by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/34
+* refactor: replace PML_TEXT_DOMAIN with full text domain by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/33
+* refactor: update license and text domain in plugin by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/32
+
+**Full Changelog**: https://github.com/TWP-Technologies/Access-Lens/commits/v1.2.1 (v1.2.0 was not officially tagged)
+
 = 1.1.0 =
 ## What's Changed
 * Update to latest by @KnotFalse in https://github.com/TWP-Technologies/Access-Lens/pull/1
