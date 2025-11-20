@@ -1,0 +1,108 @@
+name: Build Release Asset
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  PLUGIN_SLUG: protected-media-links
+  BUILD_DIR: ${{ github.workspace }}/build
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Derive version metadata
+        id: meta
+        run: |
+          TAG="${GITHUB_REF_NAME:-$(jq -r '.release.tag_name // empty' "$GITHUB_EVENT_PATH")}"
+          if [ -z "$TAG" ]; then
+            echo "Tag not found; cannot build release." >&2
+            exit 1
+          fi
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "asset_name=${PLUGIN_SLUG}-${VERSION}.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install JS deps
+        run: npm ci --legacy-peer-deps
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Stage plugin payload
+        run: |
+          rm -rf "$BUILD_DIR"
+          mkdir -p "$BUILD_DIR/$PLUGIN_SLUG"
+          rsync -a \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'node_modules' \
+            --exclude 'logs' \
+            --exclude '.DS_Store' \
+            ./ "$BUILD_DIR/$PLUGIN_SLUG"/
+
+      - name: Create zip with stable top-level folder
+        run: |
+          cd "$BUILD_DIR"
+          zip -r "${{ steps.meta.outputs.asset_name }}" "$PLUGIN_SLUG"
+
+      - name: Validate top-level folder
+        run: |
+          python -c "import os,sys,zipfile; bd,slug,asset=sys.argv[1:]; zp=os.path.join(bd,asset); names=[n for n in zipfile.ZipFile(zp).namelist() if not n.endswith('/')][:20]; import sys as s; s.exit(f'Top-level folder mismatch in {asset}') if not all(n.startswith(slug + '/') for n in names) else None; print(f'Validated {asset}: entries start with {slug}/')" "$BUILD_DIR" "$PLUGIN_SLUG" "${{ steps.meta.outputs.asset_name }}"
+
+      - name: Upload curated asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          files: ${{ env.BUILD_DIR }}/${{ steps.meta.outputs.asset_name }}
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete auto-generated source archives
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const tag = '${{ steps.meta.outputs.tag }}';
+            const keep = '${{ steps.meta.outputs.asset_name }}';
+
+            const release = context.payload.release ||
+              (await github.rest.repos.getReleaseByTag({ owner, repo, tag })).data;
+
+            const patterns = [
+              new RegExp(`^${repo}-.*\\.zip$`, 'i'),
+              new RegExp(`^${repo}-.*\\.tar\\.gz$`, 'i'),
+              /^source_code\\.zip$/i,
+              /^source_code\\.tar\\.gz$/i,
+            ];
+
+            for (const asset of release.assets) {
+              if (asset.name === keep) continue;
+              if (patterns.some(rx => rx.test(asset.name))) {
+                await github.rest.repos.deleteReleaseAsset({
+                  owner, repo, asset_id: asset.id,
+                });
+                core.info(`Deleted ${asset.name}`);
+              }
+            }

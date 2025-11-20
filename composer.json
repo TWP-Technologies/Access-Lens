@@ -1,0 +1,19 @@
+{
+    "name": "twp-tech/protected-media-links",
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Knot False",
+            "email": "33779537+KnotFalse@users.noreply.github.com"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "3.0"
+    }
+}
