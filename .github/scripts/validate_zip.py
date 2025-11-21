@@ -14,7 +14,7 @@ def main() -> int:
     zip_path = os.path.join(build_dir, asset)
 
     with zipfile.ZipFile(zip_path) as zf:
-        names = [n for n in zf.namelist() if not n.endswith("/")][:20]
+        names = [n for n in zf.namelist() if not n.endswith("/")]
         if not all(name.startswith(f"{slug}/") for name in names):
             print(f"Top-level folder mismatch in {asset}", file=sys.stderr)
             return 1
