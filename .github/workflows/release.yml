@@ -66,19 +66,7 @@ jobs:
 
       - name: Validate top-level folder
         run: |
-          python - "$BUILD_DIR" "$PLUGIN_SLUG" "${{ steps.meta.outputs.asset_name }}" <<'PY'
-            import os, sys, zipfile
-
-            build_dir, slug, asset = sys.argv[1:]
-            zip_path = os.path.join(build_dir, asset)
-
-            with zipfile.ZipFile(zip_path) as z:
-                names = [n for n in z.namelist() if not n.endswith('/')][:20]
-                if not all(name.startswith(slug + '/') for name in names):
-                    sys.exit(f"Top-level folder mismatch in {asset}")
-
-            print(f"Validated {asset}: entries start with {slug}/")
-          PY
+          python .github/scripts/validate_zip.py "$BUILD_DIR" "$PLUGIN_SLUG" "${{ steps.meta.outputs.asset_name }}"
 
       - name: Upload curated asset
         uses: softprops/action-gh-release@v2
