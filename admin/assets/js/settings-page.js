@@ -111,10 +111,13 @@ jQuery(document).ready(function ($) {
         );
     }
     if (typeof $.fn.select2 === 'function' && $('select.pml-role-select').length) {
-        $('select.pml-role-select').select2({
-            width: '100%',
-            placeholder: $(this).data('placeholder') ||
-                (wp.i18n && wp.i18n.__ ? wp.i18n.__('Select roles...') : 'Select roles...'),
+        $('select.pml-role-select').each(function () {
+            const $select = $(this);
+            $select.select2({
+                width: '100%',
+                placeholder: $select.data('placeholder') ||
+                    (wp.i18n && wp.i18n.__ ? wp.i18n.__('Select roles...') : 'Select roles...'),
+            });
         });
     }
 
