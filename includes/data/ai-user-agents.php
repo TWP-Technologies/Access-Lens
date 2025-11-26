@@ -25,7 +25,6 @@ return [
     'cohere-ai',
     'Omgilibot',
     'Omgili',
-    'FacebookBot',
     'Amazonbot', // Often used for Alexa/AI
     'Applebot-Extended', // Apple's AI/Siri bot
 ];

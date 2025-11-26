@@ -1,6 +1,6 @@
 <?php
 /**
- * Extended Bot User Agents List
+ * Paranoid Mode Bot User Agents List
  *
  * A massive list of known bot user agent patterns for "Paranoid Mode".
  * Source: https://github.com/monperrus/crawler-user-agents

@@ -1,6 +1,6 @@
 <?php
 /**
- * Extended Bot Domains List
+ * Paranoid Mode Bot Domains List
  *
  * A comprehensive list of verified rDNS/fDNS domains for "Paranoid Mode".
  * Note: Many bots share domains or do not have a specific verified rDNS suffix
@@ -93,7 +93,6 @@ return [
     '.eset.com',
     '.avast.com',
     '.avg.com',
-    '.pinterest.com',
     '.instagram.com',
     '.tiktok.com',
     '.snapchat.com',

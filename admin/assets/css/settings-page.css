@@ -176,7 +176,6 @@
     margin-bottom: 20px;
     padding: 0;
     display: block;
-    border-left-width: 4px;
     border-radius: 4px;
     border: 1px solid #cce5ff;
     border-left-width: 4px;
@@ -289,15 +288,6 @@
         font-size: 0.9em;
     }
 
-    /* Ensure the textarea takes full width on a new line if needed, 
-       but the current HTML structure puts buttons *before* textarea in the same container.
-       We might want the buttons above the textarea. 
-       Let's check the HTML structure in class-settings.php again.
-       The PHP outputs buttons then textarea inside .pml-textarea-with-button.
-       So row direction puts them side-by-side. 
-       If we want buttons *above* the textarea but side-by-side with each other, 
-       we need the textarea to break to a new line.
-    */
     & textarea {
         flex-basis: 100%;
         /* Force textarea to new line */

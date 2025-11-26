@@ -161,7 +161,7 @@ jQuery(document).ready(function ($) {
         const $button = $(this);
         const targetTextareaId = $button.data('target-textarea');
         const dataType = $button.data('type'); // 'user_agents' or 'domains'
-        const mode = $button.data('mode'); // 'paranoid' or undefined
+        const mode = $button.data('mode'); // 'extended', 'paranoid', 'ai', or undefined (for default)
         const $textarea = $('#' + targetTextareaId);
 
         if (!$textarea.length) {

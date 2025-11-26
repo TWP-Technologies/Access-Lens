@@ -18,6 +18,7 @@ return [
     '.bytedance.com',
     '.cohere.ai',
     '.omgili.com',
-    '.amazon.com', // Broad, but includes Amazonbot
+    '.google.com', // Google-Extended AI crawler verification
+    '.amazon.com', // Broad, but includes Amazonbot (also listed in paranoid mode intentionally)
     '.apple.com', // Applebot-Extended often comes from here or applebot.apple.com
 ];
