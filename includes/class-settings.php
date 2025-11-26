@@ -74,17 +74,23 @@ class PML_Settings
                 PML_PLUGIN_SLUG . '-settings-page-js',
                 'pml_admin_params',
                 [
-                    'ajax_url'                => admin_url( 'admin-ajax.php' ),
-                    'search_users_nonce'      => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
-                    'user_select_placeholder' => esc_html__( 'Search for users...', 'access-lens-protected-media-links' ),
-                    'confirm_remove_user'     => esc_html__( 'Are you sure you want to remove this user from the list?', 'access-lens-protected-media-links' ),
-                    'error_searching_users'   => esc_html__( 'Error searching users. Please try again or contact support.', 'access-lens-protected-media-links' ),
-                    'error_ajax_failed'       => esc_html__(
+                    'ajax_url'                 => admin_url( 'admin-ajax.php' ),
+                    'search_users_nonce'       => wp_create_nonce( PML_PREFIX . '_search_users_nonce' ),
+                    'user_select_placeholder'  => esc_html__( 'Search for users...', 'access-lens-protected-media-links' ),
+                    'confirm_remove_user'      => esc_html__( 'Are you sure you want to remove this user from the list?', 'access-lens-protected-media-links' ),
+                    'error_searching_users'    => esc_html__( 'Error searching users. Please try again or contact support.', 'access-lens-protected-media-links' ),
+                    'error_ajax_failed'        => esc_html__(
                         'An AJAX error occurred. Please check your connection or contact support.',
                         'access-lens-protected-media-links',
                     ),
-                    'default_bot_user_agents' => $this->get_default_bot_user_agents(),
-                    'default_bot_domains'     => $this->get_default_bot_domains(),
+                    'default_bot_user_agents'  => $this->get_default_bot_user_agents(),
+                    'default_bot_domains'      => $this->get_default_bot_domains(),
+                    'extended_bot_user_agents' => $this->get_extended_bot_user_agents(),
+                    'extended_bot_domains'     => $this->get_extended_bot_domains(),
+                    'paranoid_bot_user_agents' => $this->get_paranoid_bot_user_agents(),
+                    'paranoid_bot_domains'     => $this->get_paranoid_bot_domains(),
+                    'ai_bot_user_agents'       => $this->get_ai_bot_user_agents(),
+                    'ai_bot_domains'           => $this->get_ai_bot_domains(),
                 ],
             );
         }
@@ -347,15 +353,18 @@ class PML_Settings
                         'render_callback'   => [ $this, 'render_textarea_with_button_field' ],
                         'sanitize_callback' => [ $this, 'sanitize_textarea_lines' ],
                         'args'              => [
-                            'description' => esc_html__(
+                            'description'          => esc_html__(
                                 'List of User-Agent strings (or parts) to identify potential bots. One per line. Case-insensitive.',
                                 'access-lens-protected-media-links',
                             ),
-                            'rows'        => 5,
-                            'placeholder' => "googlebot\nbingbot\nslurp",
-                            'button_id'   => 'pml_add_default_user_agents',
-                            'button_text' => esc_html__( 'Add Default Search Engine UAs', 'access-lens-protected-media-links' ),
-                            'data_type'   => 'user_agents',
+                            'rows'                 => 5,
+                            'placeholder'          => "googlebot\nbingbot\nslurp",
+                            'button_id'            => 'pml_add_default_user_agents',
+                            'button_text'          => esc_html__( 'Add Default Search Engine UAs', 'access-lens-protected-media-links' ),
+                            'extended_button_text' => esc_html__( 'Add Extended Bots', 'access-lens-protected-media-links' ),
+                            'paranoid_button_text' => esc_html__( 'Add All Known Bots (Paranoid Mode)', 'access-lens-protected-media-links' ),
+                            'ai_button_text'       => esc_html__( 'Add Generative AI/LLM Bots', 'access-lens-protected-media-links' ),
+                            'data_type'            => 'user_agents',
                         ],
                     ],
                     'verified_bot_domains' => [
@@ -363,15 +372,18 @@ class PML_Settings
                         'render_callback'   => [ $this, 'render_textarea_with_button_field' ],
                         'sanitize_callback' => [ $this, 'sanitize_textarea_lines' ],
                         'args'              => [
-                            'description' => esc_html__(
+                            'description'          => esc_html__(
                                 'Hostname suffixes used for rDNS/fDNS verification (e.g., .googlebot.com). One per line. Case-insensitive.',
                                 'access-lens-protected-media-links',
                             ),
-                            'rows'        => 5,
-                            'placeholder' => ".googlebot.com\n.search.msn.com",
-                            'button_id'   => 'pml_add_default_bot_domains',
-                            'button_text' => esc_html__( 'Add Default Search Engine Domains', 'access-lens-protected-media-links' ),
-                            'data_type'   => 'domains',
+                            'rows'                 => 5,
+                            'placeholder'          => ".googlebot.com\n.search.msn.com",
+                            'button_id'            => 'pml_add_default_bot_domains',
+                            'button_text'          => esc_html__( 'Add Default Search Engine Domains', 'access-lens-protected-media-links' ),
+                            'extended_button_text' => esc_html__( 'Add Extended Bot Domains', 'access-lens-protected-media-links' ),
+                            'paranoid_button_text' => esc_html__( 'Add All Known Bot Domains (Paranoid Mode)', 'access-lens-protected-media-links' ),
+                            'ai_button_text'       => esc_html__( 'Add Generative AI/LLM Domains', 'access-lens-protected-media-links' ),
+                            'data_type'            => 'domains',
                         ],
                     ],
                     'bot_dns_cache_ttl'    => [
@@ -547,6 +559,111 @@ class PML_Settings
             'petalbot.com',
             'bytespider.com',
         ];
+    }
+
+    public static function get_extended_bot_user_agents(): array
+    {
+        return [
+            'googlebot',
+            'bingbot',
+            'slurp',
+            'duckduckbot',
+            'baiduspider',
+            'yandexbot',
+            'sogou',
+            'exabot',
+            'facebot',
+            'facebookexternalhit',
+            'ia_archiver',
+            'applebot',
+            'ahrefsbot',
+            'semrushbot',
+            'mj12bot',
+            'dotbot',
+            'petalbot',
+            'bytespider',
+            'twitterbot',
+            'linkedinbot',
+            'pinterestbot',
+            'slackbot',
+            'discordbot',
+            'whatsapp',
+            'telegrambot',
+            'flipboard',
+            'tumblr',
+            'skypeuripreview',
+            'nuzzel',
+            'quora link preview',
+            'qwantify',
+            'pinterest',
+            'bitlybot',
+            'vkshare',
+            'w3c_validator',
+            'redditbot',
+            'embedly',
+        ];
+    }
+
+    public static function get_extended_bot_domains(): array
+    {
+        return [
+            '.googlebot.com',
+            '.google.com',
+            '.search.msn.com',
+            '.crawl.yahoo.net',
+            '.baidu.com',
+            '.baidu.jp',
+            '.yandex.com',
+            '.yandex.ru',
+            '.yandex.net',
+            '.sogou.com',
+            '.exabot.com',
+            '.applebot.apple.com',
+            'ahrefs.com',
+            'semrush.com',
+            'mj12bot.com',
+            'dotbot.org',
+            'petalbot.com',
+            'bytespider.com',
+            '.fbsv.net',
+            '.tfbnw.net',
+            '.facebook.com',
+            '.twitter.com',
+            '.linkedin.com',
+            '.pinterest.com',
+            '.slack-imgs.com',
+            '.discordapp.com',
+            '.telegram.org',
+            '.whatsapp.net',
+            '.vk.com',
+            '.reddit.com',
+            '.w3.org',
+            '.bit.ly',
+        ];
+    }
+
+    public static function get_paranoid_bot_user_agents(): array
+    {
+        $list = require PML_PLUGIN_DIR . 'includes/data/paranoid-user-agents.php';
+        return is_array( $list ) ? $list : [];
+    }
+
+    public static function get_paranoid_bot_domains(): array
+    {
+        $list = require PML_PLUGIN_DIR . 'includes/data/paranoid-domains.php';
+        return is_array( $list ) ? $list : [];
+    }
+
+    public static function get_ai_bot_user_agents(): array
+    {
+        $list = require PML_PLUGIN_DIR . 'includes/data/ai-user-agents.php';
+        return is_array( $list ) ? $list : [];
+    }
+
+    public static function get_ai_bot_domains(): array
+    {
+        $list = require PML_PLUGIN_DIR . 'includes/data/ai-domains.php';
+        return is_array( $list ) ? $list : [];
     }
 
     public function render_settings_page()
@@ -849,6 +966,10 @@ class PML_Settings
         $button_text  = $field_args[ 'button_text' ] ?? esc_html__( 'Add Defaults', 'access-lens-protected-media-links' );
         $data_type    = $field_args[ 'data_type' ] ?? '';
 
+        $extended_button_text = $field_args[ 'extended_button_text' ] ?? '';
+        $paranoid_button_text = $field_args[ 'paranoid_button_text' ] ?? '';
+        $ai_button_text       = $field_args[ 'ai_button_text' ] ?? '';
+
         echo '<div class="pml-textarea-with-button">';
         if ( $button_id && $button_text )
         {
@@ -859,6 +980,39 @@ class PML_Settings
                 esc_attr( $data_type ),
                 esc_html( $button_text ),
             );
+
+            if ( $extended_button_text )
+            {
+                echo ' '; // spacer
+                printf(
+                    '<button type="button" class="button button-secondary pml-add-defaults-button" data-target-textarea="%s" data-type="%s" data-mode="extended">%s</button>',
+                    esc_attr( $args[ 'label_for' ] ),
+                    esc_attr( $data_type ),
+                    esc_html( $extended_button_text ),
+                );
+            }
+
+            if ( $paranoid_button_text )
+            {
+                echo ' '; // spacer
+                printf(
+                    '<button type="button" class="button button-secondary pml-add-defaults-button" data-target-textarea="%s" data-type="%s" data-mode="paranoid">%s</button>',
+                    esc_attr( $args[ 'label_for' ] ),
+                    esc_attr( $data_type ),
+                    esc_html( $paranoid_button_text ),
+                );
+            }
+
+            if ( $ai_button_text )
+            {
+                echo ' '; // spacer
+                printf(
+                    '<button type="button" class="button button-secondary pml-add-defaults-button" data-target-textarea="%s" data-type="%s" data-mode="ai">%s</button>',
+                    esc_attr( $args[ 'label_for' ] ),
+                    esc_attr( $data_type ),
+                    esc_html( $ai_button_text ),
+                );
+            }
         }
         echo '<textarea id="' .
              esc_attr( $args[ 'label_for' ] ) .
@@ -911,6 +1065,9 @@ class PML_Settings
                         <?php endif;
                     endforeach; ?>
                 </select>
+                <button type="button" class="button button-secondary pml-open-select2-button" data-target-select="#pml_global_user_allow_list_select">
+                    <span class="dashicons dashicons-plus"></span> <?php esc_html_e( 'Add', 'access-lens-protected-media-links' ); ?>
+                </button>
             </fieldset>
 
             <fieldset>
@@ -934,6 +1091,9 @@ class PML_Settings
                         <?php endif;
                     endforeach; ?>
                 </select>
+                <button type="button" class="button button-secondary pml-open-select2-button" data-target-select="#pml_global_user_deny_list_select">
+                    <span class="dashicons dashicons-plus"></span> <?php esc_html_e( 'Add', 'access-lens-protected-media-links' ); ?>
+                </button>
             </fieldset>
             <p class="pml-field-description pml-tip"><?php printf(
                     wp_kses(
@@ -977,6 +1137,9 @@ class PML_Settings
                         </option>
                     <?php endforeach; ?>
                 </select>
+                <button type="button" class="button button-secondary pml-open-select2-button" data-target-select="#<?php echo esc_attr( $allow_list_option_name ); ?>_select">
+                    <span class="dashicons dashicons-plus"></span> <?php esc_html_e( 'Add', 'access-lens-protected-media-links' ); ?>
+                </button>
             </fieldset>
 
             <fieldset>
@@ -997,6 +1160,9 @@ class PML_Settings
                         </option>
                     <?php endforeach; ?>
                 </select>
+                <button type="button" class="button button-secondary pml-open-select2-button" data-target-select="#<?php echo esc_attr( $deny_list_option_name ); ?>_select">
+                    <span class="dashicons dashicons-plus"></span> <?php esc_html_e( 'Add', 'access-lens-protected-media-links' ); ?>
+                </button>
             </fieldset>
         </div>
         <script type="text/javascript">
