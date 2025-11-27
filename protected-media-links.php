@@ -13,6 +13,7 @@
  * Domain Path:       /languages
  * Requires PHP:      7.4
  * Requires WP:       5.9
+ * GitHub Plugin URI: https://github.com/TWP-Technologies/Access-Lens
  * Release Asset:     true
  * @formatter:on
  */
